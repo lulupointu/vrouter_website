@@ -269,12 +269,7 @@ class BodyWidget extends StatelessWidget {
               break;
             }
           }
-          // try {
-          //   selectedSubSection = selectedMainSection.subSections.firstWhere(
-          //       (section) => Uri.encodeComponent(section.title) == subSectionTitle);
-          // } on StateError {
-          //   selectedSubSection = null;
-          // }
+
           if (selectedSubSection == null) {
             VRouterData.of(context)
                 .push('/guide/${Uri.encodeComponent(selectedMainSection.title)}');
@@ -298,40 +293,70 @@ class BodyWidget extends StatelessWidget {
       }
     }
 
+    // Put default value if needed
     selectedMainSection ??= sections.first;
-    selectedSubSection ??= selectedMainSection.subSections.first;
+    if (selectedSubSection == null) {
+      selectedSubSection ??= selectedMainSection.subSections.first;
+      // Try to get the previous subSection
+      final selectedMainSectionIndex = sections.indexOf(selectedMainSection);
+      final subSectionIndex = selectedMainSection.subSections.indexOf(selectedSubSection);
+      if (subSectionIndex != 0) {
+        previousSubSectionTitle =
+            selectedMainSection.subSections[subSectionIndex - 1].title;
+        previousSubSectionLink =
+        '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+      } else {
+        if (selectedMainSectionIndex != 0) {
+          previousSubSectionTitle =
+              sections[selectedMainSectionIndex - 1].subSections.last.title;
+          previousSubSectionLink =
+          '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex - 1].title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+        }
+      }
 
-    return VNavigationGuard(
-      afterEnter: (context, __, ___) => checkParamsValidity(context),
-      afterUpdate: (_, __, ___) => checkParamsValidity(context),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            flex: 15,
-            child: LeftNavigationBar(sections: sections),
+      // Try to get the next subSection
+      if (subSectionIndex != selectedMainSection.subSections.length - 1) {
+        nextSubSectionTitle =
+            selectedMainSection.subSections[subSectionIndex + 1].title;
+        nextSubSectionLink =
+        '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+      } else {
+        if (selectedMainSectionIndex != sections.length - 1) {
+          nextSubSectionTitle =
+              sections[selectedMainSectionIndex + 1].subSections.first.title;
+          nextSubSectionLink =
+          '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex + 1].title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+        }
+      }
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Flexible(
+          flex: 15,
+          child: LeftNavigationBar(sections: sections),
+        ),
+        Container(
+          width: 1,
+          color: separatorColor,
+        ),
+        Expanded(
+          child: TutorialPagesHandler(
+            selectedMainSection: selectedMainSection,
+            previousSubSectionTitle: previousSubSectionTitle,
+            previousSubSectionLink: previousSubSectionLink,
+            selectedSubSection: selectedSubSection,
+            nextSubSectionTitle: nextSubSectionTitle,
+            nextSubSectionLink: nextSubSectionLink,
+            selectedPageSection: selectedPageSection,
           ),
-          Container(
-            width: 1,
-            color: separatorColor,
-          ),
-          Expanded(
-            child: TutorialPagesHandler(
-              selectedMainSection: selectedMainSection,
-              previousSubSectionTitle: previousSubSectionTitle,
-              previousSubSectionLink: previousSubSectionLink,
-              selectedSubSection: selectedSubSection,
-              nextSubSectionTitle: nextSubSectionTitle,
-              nextSubSectionLink: nextSubSectionLink,
-              selectedPageSection: selectedPageSection,
-            ),
-            flex: 85,
-          )
-        ],
-      ),
+          flex: 85,
+        )
+      ],
     );
   }
 
-  void checkParamsValidity(BuildContext context) {}
+
 }
