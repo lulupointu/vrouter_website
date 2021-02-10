@@ -37,30 +37,27 @@ class InAppPage extends StatelessWidget {
 class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Link(
-      uri: Uri.parse('/'),
-      builder: (_, followLink) {
-        return GestureDetector(
-          onTap: () => followLink(),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                  'assets/v_logo.svg',
-                  height: 50,
-                ),
-                Text(
-                  'Router',
-                  style: GoogleFonts.ubuntu(
-                      textStyle: TextStyle(fontSize: 30, color: Color(0xFF015292))),
-                ),
-              ],
-            ),
-          ),
-        );
+    return LinkButton(
+      onPressed: () {
+        VRouterData.of(context).push('/');
       },
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/v_logo.svg',
+              height: 50,
+            ),
+            Text(
+              'Router',
+              style: GoogleFonts.ubuntu(
+                  textStyle: TextStyle(fontSize: 30, color: Color(0xFF015292))),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
