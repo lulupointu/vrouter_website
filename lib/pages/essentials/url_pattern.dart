@@ -177,7 +177,7 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       VRouterData.of(context)
-                          .pushExternal('https://pub.dev/packages/path_to_regexp');
+                          .pushExternal('https://pub.dev/packages/path_to_regexp', openNewWindow: true);
                     }),
               TextSpan(
                 text: ' package to do url matching so you can use do thing like this:',

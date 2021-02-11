@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:complete_app/vrouter/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,65 +10,29 @@ import 'package:vrouter_website/main.dart';
 import 'package:vrouter_website/pages/Introduction/installation.dart';
 import 'package:vrouter_website/pages/Introduction/what_is_vrouter.dart';
 import 'package:vrouter_website/pages/essentials/getting_started.dart';
+import 'package:vrouter_website/pages/advanced/navigation_control.dart';
 import 'package:vrouter_website/pages/essentials/nested_route.dart';
 import 'package:vrouter_website/pages/essentials/programmatic_navigation.dart';
+import 'package:vrouter_website/pages/essentials/redirection.dart';
 import 'package:vrouter_website/pages/essentials/vChild.dart';
 
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 import 'left_navigation_bar.dart';
+import 'pages/advanced/back_buttons.dart';
+import 'pages/advanced/fetchin_data.dart';
+import 'pages/advanced/history_state.dart';
+import 'pages/advanced/transitions.dart';
+import 'pages/essentials/about_material_app.dart';
+import 'pages/essentials/history_mode.dart';
 import 'pages/essentials/name_and_aliases.dart';
 import 'pages/essentials/url_pattern.dart';
 
 class InAppPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          HeaderWidget(),
-          Container(height: 1, color: separatorColor),
-          Expanded(child: BodyWidget()),
-        ],
-      ),
-    );
-  }
-}
-
-class HeaderWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return LinkButton(
-      onPressed: () {
-        VRouterData.of(context).push('/');
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              'assets/v_logo.svg',
-              height: 50,
-            ),
-            Text(
-              'Router',
-              style: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(fontSize: 30, color: Color(0xFF015292))),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BodyWidget extends StatelessWidget {
   final List<MainSection> sections = [
     MainSection(title: 'Introduction', subSections: [
       SubSection(
-        title: 'What is VRouter?',
+        title: 'What Is VRouter?',
         description: WhatIsVRouterDescription(),
         pageSections: [
           PageSection(
@@ -79,7 +45,7 @@ class BodyWidget extends StatelessWidget {
         title: 'Installation',
         description: InstallationDescription(),
         pageSections: [
-          PageSection(title: 'Add dependency', description: AddDependencyPageSection()),
+          PageSection(title: 'Add Dependency', description: AddDependencyPageSection()),
           PageSection(title: 'Install', description: InstallPageSection()),
           PageSection(title: 'Import', description: ImportPageSection()),
         ],
@@ -87,7 +53,7 @@ class BodyWidget extends StatelessWidget {
     ]),
     MainSection(title: 'Essentials', subSections: [
       SubSection(
-        title: 'Getting started',
+        title: 'Getting Started',
         description: GettingStartedDescription(),
         pageSections: [
           PageSection(title: 'VRouter', description: VRouterPageSection()),
@@ -98,12 +64,12 @@ class BodyWidget extends StatelessWidget {
         title: 'Programmatic Navigation',
         description: ProgrammaticNavigationDescription(),
         pageSections: [
-          PageSection(title: 'Push a route', description: PushARoutePageSection()),
-          PageSection(title: 'Replace a route', description: ReplaceARoutePageSection()),
+          PageSection(title: 'Push A Route', description: PushARoutePageSection()),
+          PageSection(title: 'Replace A Route', description: ReplaceARoutePageSection()),
         ],
       ),
       SubSection(
-        title: 'Nested routes',
+        title: 'Nested Routes',
         description: NestedRouteDescription(),
         pageSections: [
           PageSection(title: 'Pathless VRouteElement', description: PathlessPageSection()),
@@ -113,91 +79,100 @@ class BodyWidget extends StatelessWidget {
         title: 'VChild',
         description: VChildDescription(),
         pageSections: [
-          PageSection(title: 'VChild basics', description: VChildBasicsPageSection()),
-          PageSection(title: 'Identify a VChild', description: IdentifyAVChildPageSection()),
+          PageSection(title: 'VChild Basics', description: VChildBasicsPageSection()),
+          PageSection(title: 'Identify A VChild', description: IdentifyAVChildPageSection()),
         ],
       ),
       SubSection(
-        title: 'Url pattern',
+        title: 'Url Pattern',
         pageSections: [
-          PageSection(title: 'Path parameters', description: PathParametersPageSection()),
+          PageSection(title: 'Path Parameters', description: PathParametersPageSection()),
           PageSection(
-              title: 'Advanced pattern matching',
+              title: 'Advanced Pattern Matching',
               description: AdvancedPatternMatchingPageSection()),
-          PageSection(title: 'Matching priority', description: MatchingPriorityPageSection()),
+          PageSection(title: 'Matching Priority', description: MatchingPriorityPageSection()),
         ],
       ),
       SubSection(
-        title: 'Name and aliases',
+        title: 'Name And Aliases',
         pageSections: [
-          PageSection(title: 'Named route', description: NamedRoutePageSection()),
+          PageSection(title: 'Named Route', description: NamedRoutePageSection()),
           PageSection(title: 'Aliases', description: AliasesPageSection()),
         ],
       ),
       SubSection(
-        title: 'Navigation control',
-        pageSections: [
-          PageSection(title: 'Control the navigation', description: Container()),
-          PageSection(title: 'VNavigationGuard', description: Container()),
-          PageSection(title: 'The navigation cycle', description: Container()),
-          PageSection(title: 'Web caveat', description: Container()),
-        ],
-      ),
-      SubSection(
         title: 'Redirection',
+        description: RedirectionDescription(),
         pageSections: [
-          PageSection(title: 'Redirects and VRedirector', description: Container()),
-          PageSection(title: 'Aliases', description: Container()),
+          PageSection(title: 'VRouteRedirector', description: VRouteRedirectorPageSection()),
         ],
       ),
       SubSection(
-        title: 'HTML5 history mode',
+        title: 'HTML5 History Mode',
+        description: HistoryModeDescription(),
         pageSections: [],
       ),
       SubSection(
+        description: AboutMaterialAppDescription(),
         title: 'About MaterialApp',
         pageSections: [],
       ),
     ]),
     MainSection(title: 'Advanced', subSections: [
       SubSection(
-        title: 'Passing Data',
-        pageSections: [],
-      ),
-      SubSection(
-        title: 'History state',
+        title: 'Navigation Control',
+        description: NavigationControlDescription(),
         pageSections: [
-          PageSection(title: 'VRouter', description: Container()),
-          PageSection(title: 'VRoute', description: Container()),
-          PageSection(title: 'VNavigationGuard', description: Container()),
+          PageSection(title: 'VNavigationGuard', description: VNavigationGuardPageSection()),
+          PageSection(
+              title: 'The Navigation Cycle', description: NavigationCyclePageSection()),
+          PageSection(title: 'Web Caveat', description: WebCaveatPageSection()),
         ],
       ),
       SubSection(
         title: 'Transitions',
+        description: TransitionDescription(),
         pageSections: [
-          PageSection(title: 'Local route transitions', description: Container()),
-          PageSection(title: 'Default transition', description: Container()),
+          PageSection(
+              title: 'Default Transition', description: DefaultTransitionPageSection()),
+          PageSection(
+              title: 'Local Route Transitions',
+              description: LocalRouteTransitionPageSection()),
+          PageSection(title: 'Key Warning', description: KeyWarningPageSection()),
         ],
       ),
       SubSection(
-        title: 'Data fetching',
+        title: 'Data Fetching',
+        description: DataFetchingDescription(),
         pageSections: [
-          PageSection(title: 'Fetching after navigation', description: Container()),
-          PageSection(title: 'Fetching before navigation', description: Container()),
+          PageSection(
+              title: 'Fetching Before Navigation',
+              description: FetchingDataBeforeNavigationPageSection()),
+          PageSection(
+              title: 'Fetching After Navigation',
+              description: FetchingDataAfterNavigationPageSection()),
         ],
       ),
       SubSection(
-        title: 'Back buttons',
+        title: 'Back Buttons',
+        description: BackButtonsDescription(),
         pageSections: [
-          PageSection(title: 'onPop', description: Container()),
-          PageSection(title: 'onSystemPop', description: Container()),
+          PageSection(title: 'onPop', description: OnPopPageSection()),
+          PageSection(title: 'onSystemPop', description: OnSystemPopPageSection()),
         ],
       ),
       SubSection(
-        title: 'Browser events',
+        title: 'History State',
+        description: HistoryStateDescription(),
         pageSections: [
-          PageSection(title: 'Forward/Back button', description: Container()),
-          PageSection(title: 'Typed url', description: Container()),
+          PageSection(
+              title: 'Pushing A History State',
+              description: PushingAHistoryStatePageSection()),
+          PageSection(
+              title: 'Replace A History State',
+              description: ReplaceAHistoryStatePageSection()),
+          PageSection(
+              title: 'Saving Before Leave', description: SavingBeforeLeavePageSection()),
         ],
       ),
     ]),
@@ -301,62 +276,355 @@ class BodyWidget extends StatelessWidget {
       final selectedMainSectionIndex = sections.indexOf(selectedMainSection);
       final subSectionIndex = selectedMainSection.subSections.indexOf(selectedSubSection);
       if (subSectionIndex != 0) {
-        previousSubSectionTitle =
-            selectedMainSection.subSections[subSectionIndex - 1].title;
+        previousSubSectionTitle = selectedMainSection.subSections[subSectionIndex - 1].title;
         previousSubSectionLink =
-        '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+            '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
       } else {
         if (selectedMainSectionIndex != 0) {
           previousSubSectionTitle =
               sections[selectedMainSectionIndex - 1].subSections.last.title;
           previousSubSectionLink =
-          '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex - 1].title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+              '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex - 1].title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
         }
       }
 
       // Try to get the next subSection
       if (subSectionIndex != selectedMainSection.subSections.length - 1) {
-        nextSubSectionTitle =
-            selectedMainSection.subSections[subSectionIndex + 1].title;
+        nextSubSectionTitle = selectedMainSection.subSections[subSectionIndex + 1].title;
         nextSubSectionLink =
-        '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+            '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
       } else {
         if (selectedMainSectionIndex != sections.length - 1) {
-          nextSubSectionTitle =
-              sections[selectedMainSectionIndex + 1].subSections.first.title;
+          nextSubSectionTitle = sections[selectedMainSectionIndex + 1].subSections.first.title;
           nextSubSectionLink =
-          '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex + 1].title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+              '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex + 1].title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
         }
       }
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Flexible(
-          flex: 15,
-          child: LeftNavigationBar(sections: sections),
-        ),
-        Container(
-          width: 1,
-          color: separatorColor,
-        ),
-        Expanded(
-          child: TutorialPagesHandler(
-            selectedMainSection: selectedMainSection,
-            previousSubSectionTitle: previousSubSectionTitle,
-            previousSubSectionLink: previousSubSectionLink,
-            selectedSubSection: selectedSubSection,
-            nextSubSectionTitle: nextSubSectionTitle,
-            nextSubSectionLink: nextSubSectionLink,
-            selectedPageSection: selectedPageSection,
-          ),
-          flex: 85,
-        )
-      ],
+    final leftNavigationBar = LeftNavigationBar(sections: sections);
+    final tutorialPageHandler = TutorialPagesHandler(
+      selectedMainSection: selectedMainSection,
+      previousSubSectionTitle: previousSubSectionTitle,
+      previousSubSectionLink: previousSubSectionLink,
+      selectedSubSection: selectedSubSection,
+      nextSubSectionTitle: nextSubSectionTitle,
+      nextSubSectionLink: nextSubSectionLink,
+      selectedPageSection: selectedPageSection,
+    );
+
+    return ScrollConfiguration(
+      behavior: MyScrollBehavior(),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return (constraints.maxWidth > 1000)
+            ? ComputerInApp(
+                tutorialPageHandler: tutorialPageHandler,
+                leftNavigationBar: leftNavigationBar,
+              )
+            : MobileInApp(
+                tutorialPageHandler: tutorialPageHandler,
+                leftNavigationBar: leftNavigationBar,
+              );
+      }),
     );
   }
+}
 
+class ComputerInApp extends StatelessWidget {
+  final LeftNavigationBar leftNavigationBar;
+  final TutorialPagesHandler tutorialPageHandler;
 
+  const ComputerInApp(
+      {Key key, @required this.leftNavigationBar, @required this.tutorialPageHandler})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          VRouterLogo(),
+          Container(height: 1, color: separatorColor),
+          Expanded(
+              child: ComputerBodyWidget(
+            tutorialPagesHandler: tutorialPageHandler,
+            leftNavigationBar: leftNavigationBar,
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+class VRouterLogo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return LinkButton(
+      onPressed: () {
+        VRouterData.of(context).push('/');
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                'assets/v_logo.svg',
+                height: min(50, kToolbarHeight - 20),
+              ),
+              Text(
+                'Router',
+                style: GoogleFonts.ubuntu(
+                    textStyle: TextStyle(fontSize: 30, color: Color(0xFF015292))),
+              ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class ComputerBodyWidget extends StatelessWidget {
+  final LeftNavigationBar leftNavigationBar;
+  final TutorialPagesHandler tutorialPagesHandler;
+
+  const ComputerBodyWidget({
+    Key key,
+    @required this.leftNavigationBar,
+    @required this.tutorialPagesHandler,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 100 * constraints.maxWidth / 15),
+              child: leftNavigationBar,
+            ),
+            Container(
+              width: 1,
+              color: separatorColor,
+            ),
+            Expanded(
+              child: tutorialPagesHandler,
+            )
+          ],
+        );
+      },
+    );
+  }
+}
+
+class MobileInApp extends StatefulWidget {
+  final LeftNavigationBar leftNavigationBar;
+  final TutorialPagesHandler tutorialPageHandler;
+
+  const MobileInApp(
+      {Key key, @required this.leftNavigationBar, @required this.tutorialPageHandler})
+      : super(key: key);
+
+  @override
+  _MobileInAppState createState() => _MobileInAppState();
+}
+
+class _MobileInAppState extends State<MobileInApp> {
+  bool showLeftNavigationBar = false;
+  bool isAnimating = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return VNavigationGuard(
+      afterUpdate: (_, __, ___) {
+        if (showLeftNavigationBar) {
+          setState(() {
+            showLeftNavigationBar = false;
+            isAnimating = true;
+          });
+        }
+      },
+      onPop: (_) async {
+        if (showLeftNavigationBar) {
+          setState(() {
+            showLeftNavigationBar = false;
+            isAnimating = true;
+          });
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Stack(
+            alignment: AlignmentDirectional.centerStart,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: VRouterLogo(),
+              ),
+              IconButton(
+                onPressed: () => setState(() {
+                  isAnimating = true;
+                  showLeftNavigationBar = !showLeftNavigationBar;
+                }),
+                icon: Icon(Icons.menu),
+              )
+            ],
+          ),
+        ),
+        body: Stack(
+          children: [
+            widget.tutorialPageHandler,
+            if (showLeftNavigationBar || isAnimating)
+              TweenAnimationBuilder<double>(
+                duration: Duration(milliseconds: 300),
+                tween: Tween<double>(begin: 0, end: (showLeftNavigationBar) ? 1 : 0),
+                builder: (context, value, _) {
+                  final newIsAnimating =
+                      (showLeftNavigationBar) ? !(value == 1) : !(value == 0);
+                  if (newIsAnimating != isAnimating) {
+                    WidgetsBinding.instance.addPostFrameCallback(
+                        (_) => setState(() => isAnimating = newIsAnimating));
+                  }
+                  return GestureDetector(
+                    onTap: () {
+                      isAnimating = true;
+                      setState(() => showLeftNavigationBar = false);
+                    },
+                    child: Container(
+                      color: Colors.black.withAlpha((50 * value).ceil()),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: GestureDetector(
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return SlideTransition(
+                                position:
+                                    Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(0, 0))
+                                        .animate(AlwaysStoppedAnimation<double>(value)),
+                                child: Container(
+                                  color: Colors.white,
+                                  height: constraints.maxHeight,
+                                  child: widget.leftNavigationBar,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MobileBody extends StatefulWidget {
+  final LeftNavigationBar leftNavigationBar;
+  final TutorialPagesHandler tutorialPagesHandler;
+
+  const MobileBody({
+    Key key,
+    @required this.leftNavigationBar,
+    @required this.tutorialPagesHandler,
+  }) : super(key: key);
+
+  @override
+  _MobileBodyState createState() => _MobileBodyState();
+}
+
+class _MobileBodyState extends State<MobileBody> {
+  bool showLeftNavigationBar = false;
+  bool isAnimating = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return VNavigationGuard(
+      afterUpdate: (_, __, ___) {
+        if (showLeftNavigationBar) {
+          setState(() {
+            showLeftNavigationBar = false;
+            isAnimating = true;
+          });
+        }
+      },
+      onPop: (_) async {
+        if (showLeftNavigationBar) {
+          setState(() {
+            showLeftNavigationBar = false;
+            isAnimating = true;
+          });
+          return false;
+        }
+        return true;
+      },
+      child: Stack(
+        children: [
+          widget.tutorialPagesHandler,
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                onPressed: () => setState(() => showLeftNavigationBar = true),
+                icon: Icon(Icons.menu),
+              ),
+            ),
+          ),
+          if (showLeftNavigationBar || isAnimating)
+            TweenAnimationBuilder<double>(
+              duration: Duration(milliseconds: 300),
+              tween: Tween<double>(begin: 0, end: (showLeftNavigationBar) ? 1 : 0),
+              builder: (context, value, _) {
+                final newIsAnimating = (showLeftNavigationBar) ? !(value == 1) : !(value == 0);
+                if (newIsAnimating != isAnimating) {
+                  WidgetsBinding.instance.addPostFrameCallback(
+                      (_) => setState(() => isAnimating = newIsAnimating));
+                }
+                return GestureDetector(
+                  onTap: () {
+                    isAnimating = true;
+                    setState(() => showLeftNavigationBar = false);
+                  },
+                  child: Container(
+                    color: Colors.black.withAlpha((50 * value).ceil()),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: GestureDetector(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SlideTransition(
+                              position:
+                                  Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(0, 0))
+                                      .animate(AlwaysStoppedAnimation<double>(value)),
+                              child: Container(
+                                color: Colors.white,
+                                height: constraints.maxHeight,
+                                child: widget.leftNavigationBar,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
 }

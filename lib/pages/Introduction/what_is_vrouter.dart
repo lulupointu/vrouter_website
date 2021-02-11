@@ -21,7 +21,7 @@ class WhatIsVRouterDescription extends StatelessWidget {
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      VRouterData.of(context).pushExternal('https://router.vuejs.org');
+                      VRouterData.of(context).pushExternal('https://router.vuejs.org', openNewWindow: true);
                     }),
               TextSpan(
                 text:

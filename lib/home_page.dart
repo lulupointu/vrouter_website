@@ -48,12 +48,12 @@ class LogoWidget extends StatelessWidget {
       children: [
         SvgPicture.asset(
           'assets/v_logo.svg',
-          height: 150,
+          width: min(130, MediaQuery.of(context).size.width/4),
         ),
         Text(
           'Router',
           style: GoogleFonts.ubuntu(
-              textStyle: TextStyle(fontSize: 100, color: Color(0xFF015292))),
+              textStyle: TextStyle(fontSize: min(100, MediaQuery.of(context).size.width/5), color: Color(0xFF015292))),
         ),
       ],
     );
@@ -76,6 +76,7 @@ class CatchPhraseWidget extends StatelessWidget {
     return Text(
       'An easy way to manage routing on Flutter.',
       style: GoogleFonts.ubuntu(textStyle: TextStyle(fontSize: 20, color: Color(0xFF015292))),
+      textAlign: TextAlign.center,
     );
   }
 }
@@ -83,19 +84,19 @@ class CatchPhraseWidget extends StatelessWidget {
 class CallToActionWidgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      runSpacing: min(MediaQuery.of(context).size.width / 20, 40),
+      spacing: min(MediaQuery.of(context).size.width / 20, 40),
       children: [
         LightButton(
           title: 'GitHub',
           onPressed: () => VRouterData.of(context).pushExternal('github.com'),
         ),
-        SizedBox(width: min(MediaQuery.of(context).size.width / 20, 40)),
         LightButton(
           title: 'Pub.dev',
           onPressed: () => VRouterData.of(context).pushExternal('pub.dev'), // TODO: change this to package url
         ),
-        SizedBox(width: min(MediaQuery.of(context).size.width / 20, 40)),
         GetStartedButton(),
       ],
     );

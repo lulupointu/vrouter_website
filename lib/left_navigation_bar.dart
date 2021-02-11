@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LeftNavigationBar extends StatelessWidget {
   final List<MainSection> sections;
+  final ScrollController _scrollController = ScrollController();
 
   LeftNavigationBar({@required this.sections});
 
@@ -13,16 +14,19 @@ class LeftNavigationBar extends StatelessWidget {
     return LeftNavigationBarData(
       sections: sections,
       child: Scrollbar(
+        controller: _scrollController,
         child: Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: SingleChildScrollView(
-            child: Builder(builder: (context) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: sections,
-              );
-            }),
+            controller: _scrollController,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 32.0),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: sections,
+                ),
+            ),
           ),
         ),
       ),
