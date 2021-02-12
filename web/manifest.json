@@ -1,6 +1,6 @@
 {
-    "name": "vrouter",
-    "short_name": "vrouter",
+    "name": "VRouter",
+    "short_name": "VRouter",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
