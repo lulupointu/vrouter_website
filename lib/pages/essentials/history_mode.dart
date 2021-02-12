@@ -21,7 +21,7 @@ class HistoryModeDescription extends StatelessWidget {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       VRouterData.of(context)
-                          .pushExternal('https://pub.dev/packages/url_strategy', openNewWindow: true);
+                          .pushExternal('https://pub.dev/packages/url_strategy', openNewTab: true);
                     }),
               TextSpan(
                 text: ''' 
@@ -45,7 +45,7 @@ VRouter(mode: VRouterMode.history, routes: ...)
         SelectableText.rich(
           TextSpan(
             text: '''When using hash mode the path will be displayed after the “#/” in the url. 
-When using history mode, the url will display normally. However, you have to configure your server specifically or the user will have a 404 not found error if they type anything in the browser. Mitigating this problem is easy but an extra step. 
+When using history mode, the url will display normally. However, you have to configure your server specifically or the user will have a 404 not found error if they type anything in the BrowserHelpers. Mitigating this problem is easy but an extra step. 
 ''',
             style: textStyle,
             children: [
@@ -55,7 +55,7 @@ When using history mode, the url will display normally. However, you have to con
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       VRouterData.of(context)
-                          .pushExternal('https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations', openNewWindow: true);
+                          .pushExternal('https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations', openNewTab: true);
                     }),
             ],
           ),

@@ -58,7 +58,7 @@ VRouterData.of(context).pushNamed('home', pathParameters: {'user' :'username'});
 VRouterData.of(context).pushExternal('google.com');
 
 // On the web, you can choose to open in a new window
-VRouterData.of(context).pushExternal('google.com', openNewWindow: true);
+VRouterData.of(context).pushExternal('google.com', openNewTab: true);
           ''',
         ),
       ],
