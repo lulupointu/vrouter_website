@@ -81,25 +81,25 @@ class OtherWidget extends StatelessWidget {
           children: [
             TableRow(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child:
                         Center(child: Text('pattern', style: textStyle.copyWith(fontWeight: FontWeight.bold))),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text('matched path',
                           style: textStyle.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text('VRouteData\n.of(context)\n.pathParameters',
                           style: textStyle.copyWith(fontWeight: FontWeight.bold)),
@@ -110,21 +110,21 @@ class OtherWidget extends StatelessWidget {
             ),
             TableRow(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text('/user/:name', style: textStyle),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text('/user/bob', style: textStyle),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text('{‘name’: ‘bob’}', style: textStyle),
                   ),
                 ),
@@ -132,21 +132,21 @@ class OtherWidget extends StatelessWidget {
             ),
             TableRow(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text('/user/:name/post/:postId', style: textStyle),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text('/user/bob/post/123', style: textStyle),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCell(
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text('{‘name’: ‘bob’, ‘postId: ‘123’}', style: textStyle),
                   ),
                 ),
