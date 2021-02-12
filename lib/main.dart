@@ -26,7 +26,7 @@ void main() {
             name: 'guide',
             widget: InAppPage(),
             aliases: ['/guide', '/guide/:mainSection', '/guide/:mainSection/:subSection']),
-        VRouteRedirector(path: '.*', redirectTo: '/'), // TODO: change this to unknown page
+        VRouteRedirector(path: ':_(.*)', redirectTo: '/'),
       ],
     ),
   );

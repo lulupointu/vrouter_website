@@ -64,7 +64,7 @@ VRouter(
  routes: [
    VStacked(path: '/', widget: Login()),
    VStacked(path: '/unknown', widget: UnknownPathWidget()),
-   VRouteRedirector(path: '.*', redirectTo: '/unknown'),
+   VRouteRedirector(path: ':_(.*)', redirectTo: '/unknown'),
  ],
 ),
           ''',
