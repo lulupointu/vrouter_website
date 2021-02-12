@@ -154,8 +154,8 @@ class InAppPage extends StatelessWidget {
         ],
       ),
       SubSection(
-        title: 'Back Buttons',
-        description: BackButtonsDescription(),
+        title: 'Pop Events',
+        description: PopEventsDescription(),
         pageSections: [
           PageSection(title: 'onPop', description: OnPopPageSection()),
           PageSection(title: 'onSystemPop', description: OnSystemPopPageSection()),

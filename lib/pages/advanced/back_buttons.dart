@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/main.dart';
 
-class BackButtonsDescription extends StatelessWidget {
+class PopEventsDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
