@@ -12,7 +12,7 @@ void main() {
     VRouter(
       title: 'Router',
       debugShowCheckedModeBanner: false,
-      mode: VRouterMode.history,
+      mode: VRouterModes.history,
       buildTransition: (animation, __, child) {
         return FadeTransition(
           opacity: animation,

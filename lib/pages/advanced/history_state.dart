@@ -33,7 +33,7 @@ When pushing a route, you can pass a state as a String argument. This argument w
         MyDartCodeViewer(
           code: r'''
 // You can push the state alongside a new url
-VRouterData.of(context).push('/profile', newRouterState: 'bob');
+VRouterData.of(context).push('/profile', routerState: 'bob');
           ''',
         ),
         SizedBox(height: 10),
