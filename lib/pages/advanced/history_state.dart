@@ -169,9 +169,22 @@ VNavigationGuard(
         SizedBox(height: 10),
         SelectableText.rich(
           TextSpan(
-            text: '''
-This can be really useful on the web, so that if the user uses the back button, you can restore the state (using afterEnter for example).''',
+            text: '''     
+This can be really useful on the web, so that if the user uses the back button, you can restore the state (using afterEnter for example).
+
+''',
             style: textStyle,
+            children: [
+              TextSpan(
+                text: '''Warning:''',
+                style: textStyle.copyWith(fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: '''
+ when using saveHistoryState in VNavigationGuard, the state is saved in VRouteElementData. So if you have multiple VNavigationGuards for the same VRouteElement, only one should use saveHistoryState.''',
+                style: textStyle.copyWith(fontWeight: FontWeight.normal),
+              ),
+            ],
           ),
         ),
       ],
