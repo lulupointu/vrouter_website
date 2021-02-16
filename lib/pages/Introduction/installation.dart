@@ -81,7 +81,7 @@ class ImportPageSection extends StatelessWidget {
         MyDartCodeViewer(
           code: r'''
 import 'package:vrouter/vrouter.dart';
-          ''', // TODO: change this to real import
+          ''',
         ),
       ],
     );

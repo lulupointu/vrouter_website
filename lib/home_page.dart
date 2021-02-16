@@ -91,11 +91,11 @@ class CallToActionWidgets extends StatelessWidget {
       children: [
         LightButton(
           title: 'GitHub',
-          onPressed: () => VRouterData.of(context).pushExternal('github.com'),
+          onPressed: () => VRouterData.of(context).pushExternal('https://github.com/lulupointu/vrouter'),
         ),
         LightButton(
           title: 'Pub.dev',
-          onPressed: () => VRouterData.of(context).pushExternal('pub.dev'), // TODO: change this to package url
+          onPressed: () => VRouterData.of(context).pushExternal('https://pub.dev/packages/vrouter'),
         ),
         GetStartedButton(),
       ],
