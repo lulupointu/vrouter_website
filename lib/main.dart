@@ -1,5 +1,5 @@
 import 'package:clipboard/clipboard.dart';
-import 'package:complete_app/vrouter/main.dart';
+import 'package:vrouter/vrouter.dart';
 import 'package:dart_code_viewer/dart_code_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

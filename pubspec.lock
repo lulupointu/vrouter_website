@@ -50,13 +50,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0-nullsafety.5"
-  complete_app:
-    dependency: "direct main"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "1.0.0+1"
   convert:
     dependency: transitive
     description:
@@ -187,10 +180,12 @@ packages:
   move_to_background:
     dependency: transitive
     description:
-      name: move_to_background
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
+      path: "."
+      ref: master
+      resolved-ref: "20f8a799b6effa4ce6d7169d113ce05028ed736e"
+      url: "https://github.com/lulupointu/move_to_background"
+    source: git
+    version: "1.0.1-nullsafety.1"
   nested:
     dependency: transitive
     description:
@@ -413,6 +408,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0-nullsafety.5"
+  vrouter:
+    dependency: "direct main"
+    description:
+      path: "../../vrouter"
+      relative: true
+    source: path
+    version: "0.0.1"
   win32:
     dependency: transitive
     description:

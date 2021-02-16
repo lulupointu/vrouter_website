@@ -1,4 +1,4 @@
-import 'package:complete_app/vrouter/main.dart';
+import 'package:vrouter/vrouter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/main.dart';
