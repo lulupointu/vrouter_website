@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
 import 'package:vrouter_website/main.dart';
 
 class RedirectionDescription extends StatelessWidget {
@@ -12,21 +14,19 @@ class RedirectionDescription extends StatelessWidget {
           TextSpan(
             text: '''
 Redirection often happens when the user lands on a page and you want him to go to a new one seemingly.
-To achieve such an effect, using the beforeLeave or beforeEnter (either on the router, on a VRouteElement or a VNavigationGuard) can be very effective. 
-All you need to do is redirect using VRouterData for navigating, and return false to indicate that the current navigation change should be ignored.''',
+To achieve such an effect, using the beforeLeave or beforeEnter (either in VRouter, VRouteElement or VNavigationGuard) can be very effective. 
+All you need to do is to use vRedirector, which is a parameter of this methods, to redirect the user.''',
             style: textStyle,
           ),
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-beforeLeave: (context, __, ___, ____) async {
- if (shouldRedirect) {
-   VRouterData.of(context).pushReplacement('newUrl');
-   // We must return false to stop the current url update
-   return false;
- }
- return true;
+beforeLeave: (vRedirector, ____) async {
+  // shouldRedirect is your variable
+  if (shouldRedirect)
+    // You must use vRedirector to redirect
+    vRedirector.pushReplacement('newUrl');
 },
           ''',
         ),
@@ -34,10 +34,25 @@ beforeLeave: (context, __, ___, ____) async {
         SelectableText.rich(
           TextSpan(
             text: '''
-Note that you should always consider the navigation cycle to know the order in which the functions are called.''',
+Note that vRedirector also holds information about the previous and the next route
+            
+Also note that you should always consider the ''',
             style: textStyle,
+            children: [
+              TextSpan(
+                  text: 'navigation cycle',
+                  style: linkStyle,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      VRouterData.of(context).push('/guide/Advanced/Navigation Control/The Navigation Cycle');
+                    }),
+              TextSpan(
+                text:
+                ' to know the order in which the functions are called.',
+              ),
+            ],
           ),
-        ),
+        )
       ],
     );
   }

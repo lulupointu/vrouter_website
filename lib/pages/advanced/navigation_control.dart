@@ -40,14 +40,14 @@ VNavigationGuard is a widget that can be used like any other. It is useful to ha
         MyDartCodeViewer(
           code: r'''
 VNavigationGuard(
-  // This is called before leaving the route, returning false cancels the navigation
-  beforeLeave: (_, __, ___, ____) async => (isLoggedIn) ? true : false,
+  // This is called before leaving the route
+  beforeLeave: (vRedirector, __) async => (!isLoggedIn) ? vRedirector.stopRedirection() : null,
   // This is called if this widget is in the old route and in the new route
-  afterUpdate: () => (isLoggedIn) ? VRouterData.of(context).push('/profile') : null,
+  afterUpdate: (_, __, ___) => (isLoggedIn) ? VRouterData.of(context).push('/profile') : null,
   // This is called the first time this widget is displayed in the route
-  afterEnter: () => (isLoggedIn) ? VRouterData.of(context).push('/profile') : null,
+  afterEnter: (_, __, ___) => (isLoggedIn) ? VRouterData.of(context).push('/profile') : null,
   child: ...,
-),
+)
           ''',
         ),
       ],
@@ -79,7 +79,7 @@ When you try to navigate, here is when will happen:
 Deactivated VNavigationGuard are those attached to widgets which were in the previousRoute but not in the new one.
 Reused VNavigationGuard are those attached to widgets which were in the previousRoute and in the new one.
 Initialized VNavigationGuard are those attached to widgets which were not in the previousRoute but are in the new one.
-Any beforeLeave or beforeEnter function returns a future which will be awaited. If any of these functions return false, then the redirection will be stopped.''',
+Any beforeLeave or beforeEnter function returns a future which will be awaited. In those functions, you can use vRedirector to get information about the previous and the new route. You can also you vRedirector to stop the redirection (vRedirector.stopRedirection()) or to redirect using vRedirector.push, vRedirector.pushNamed, etc. However note that in beforeLeave or beforeEnter you should NOT use VRouterData to redirect.''',
         style: textStyle,
       ),
     );
@@ -94,7 +94,7 @@ class WebCaveatPageSection extends StatelessWidget {
         text: '''
 When a user tries to access an external url by clicking on a button where you use VRouterData.of(context).pushExternal, everything works as expected.
 
-When a user tries to access an external url either by typing it, or using the forward/backward button to navigate to them, you can’t prevent the user from navigating. This means that if any beforeLeave returns false, this will be ignored. 
+When a user tries to access an external url either by typing it, or using the forward/backward button to navigate to them, you can’t prevent the user from navigating. This means that if any you use vRedirector to redirect elsewhere, this will be ignored. 
 
 Reloading the page cannot be stopped as well.
 

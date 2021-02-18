@@ -19,9 +19,9 @@ import 'package:vrouter_website/pages/essentials/vChild.dart';
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 import 'left_navigation_bar.dart';
-import 'pages/advanced/back_buttons.dart';
-import 'pages/advanced/fetchin_data.dart';
+import 'pages/advanced/fetching_data.dart';
 import 'pages/advanced/history_state.dart';
+import 'pages/advanced/pop_events.dart';
 import 'pages/advanced/transitions.dart';
 import 'pages/essentials/about_material_app.dart';
 import 'pages/essentials/history_mode.dart';

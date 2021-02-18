@@ -71,34 +71,27 @@ Note that in VNavigationGuard, onPop is called starting from the most nested one
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-VRouter(
-  beforeEnter: (context, from, to) async {
-    final isUserConnected = await database.isUserConnected();
-    if (!isUserConnected) {
-      VRouterData.of(context).push('/login');
-      // If we redirect, we return false
-      return false;
-    }
-    return true;
+VStacked(
+  // popping while the path is '/profile' will call this
+  onPop: (context) async {
+    VRouterData.of(context).push('/other'); // You can use VRouterData to redirect
+    return false; // returning false stops the pop event
   },
-  routes: [
-    VStacked(
-      // The path /login has no data fetching
-      path: '/login',
-      widget: LoginWidget(),
-      subroutes: [
-        VStacked(
-          path: 'profile',
-          // The path /login/profile fetches data
-          beforeEnter: (context, from, to) async {
-            await database.getUserInfo();
-            return true;
-          },
-          widget: ProfileWidget(),
-        )
-      ],
-    ),
-  ],
+  path: 'profile',
+  widget: ProfileWidget(),
+)
+          ''',
+        ),
+        SizedBox(height: 10),
+        MyDartCodeViewer(
+          code: r'''
+VNavigationGuard(
+  // If this VNavigationGuard is in the path and a pop
+  // event occurs, this will be called
+  onPop: (context) async {
+    ...
+  },
+  child: ...,
 )
           ''',
         ),
@@ -132,36 +125,24 @@ Note that in VNavigationGuard, onSystemPop is called starting from the most nest
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-VRouter(
-  beforeEnter: (context, from, to) async {
-    final isUserConnected = await database.isUserConnected();
-    if (!isUserConnected) {
-      VRouterData.of(context).push('/login');
-      // If we redirect, we return false
-      return false;
-    }
-    return true;
+VStacked(
+  // pressing the android back button while the path is '/profile' will call this
+  onSystemPop: (context) async {
+    VRouterData.of(context).push('/other'); // You can use VRouterData to redirect
+    return false; // returning false stops the pop event
   },
-  routes: [
-    VStacked(
-      // The path /login has no data fetching
-      path: '/login',
-      widget: LoginWidget(),
-      subroutes: [
-        VStacked(
-          path: 'profile',
-          // The path /login/profile fetches data
-          beforeEnter: (context, from, to) async {
-            await database.getUserInfo();
-            return true;
-          },
-          widget: ProfileWidget(),
-        )
-      ],
-    ),
-  ],
+  path: '/profile',
+  widget: ProfileWidget(),
 )
           ''',
+        ),
+        SizedBox(height: 10),
+        SelectableText.rich(
+          TextSpan(
+            text: '''
+Note that is no systemPop methods are implemented, the pop cycle will start instead.''',
+            style: textStyle,
+          ),
         ),
       ],
     );
