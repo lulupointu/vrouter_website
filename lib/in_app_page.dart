@@ -5,20 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/link.dart';
 import 'package:vrouter_website/main.dart';
 import 'package:vrouter_website/pages/Introduction/installation.dart';
 import 'package:vrouter_website/pages/Introduction/what_is_vrouter.dart';
 import 'package:vrouter_website/pages/essentials/getting_started.dart';
 import 'package:vrouter_website/pages/advanced/navigation_control.dart';
-import 'package:vrouter_website/pages/essentials/nested_route.dart';
 import 'package:vrouter_website/pages/essentials/programmatic_navigation.dart';
 import 'package:vrouter_website/pages/essentials/redirection.dart';
-import 'package:vrouter_website/pages/essentials/vChild.dart';
 
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 import 'left_navigation_bar.dart';
+import 'pages/advanced/custom_pages.dart';
 import 'pages/advanced/fetching_data.dart';
 import 'pages/advanced/history_state.dart';
 import 'pages/advanced/pop_events.dart';
@@ -26,7 +24,10 @@ import 'pages/advanced/transitions.dart';
 import 'pages/essentials/about_material_app.dart';
 import 'pages/essentials/history_mode.dart';
 import 'pages/essentials/name_and_aliases.dart';
+import 'pages/essentials/nesting_widgets.dart';
+import 'pages/essentials/route_formation.dart';
 import 'pages/essentials/url_pattern.dart';
+import 'pages/examples/examples.dart';
 
 class InAppPage extends StatelessWidget {
   final List<MainSection> sections = [
@@ -51,6 +52,16 @@ class InAppPage extends StatelessWidget {
         ],
       ),
     ]),
+    // MainExampleSection(
+    //   title: 'Examples',
+    //   subExampleSections: [
+    //     SubExampleSection(
+    //       title: 'Example1',
+    //       description: Text('This is a small example'),
+    //       codePath: 'examples/example.dart',
+    //     ),
+    //   ],
+    // ),
     MainSection(title: 'Essentials', subSections: [
       SubSection(
         title: 'Getting Started',
@@ -58,6 +69,7 @@ class InAppPage extends StatelessWidget {
         pageSections: [
           PageSection(title: 'VRouter', description: VRouterPageSection()),
           PageSection(title: 'VRouteElement', description: VRouteElementPageSection()),
+          PageSection(title: 'VRouter Magic', description: VRouterMagicPageSection()),
         ],
       ),
       SubSection(
@@ -69,29 +81,17 @@ class InAppPage extends StatelessWidget {
         ],
       ),
       SubSection(
-        title: 'Nested Routes',
-        description: NestedRouteDescription(),
+        title: 'Route formation',
+        description: RouteFormationDescription(),
         pageSections: [
-          PageSection(title: 'Pathless VRouteElement', description: PathlessPageSection()),
+          PageSection(title: 'Stacked widgets', description: StackedWidgetPageSection()),
+          PageSection(title: 'Path formation', description: PathFormationPageSection()),
         ],
       ),
       SubSection(
-        title: 'VChild',
-        description: VChildDescription(),
-        pageSections: [
-          PageSection(title: 'VChild Basics', description: VChildBasicsPageSection()),
-          PageSection(title: 'Identify A VChild', description: IdentifyAVChildPageSection()),
-        ],
-      ),
-      SubSection(
-        title: 'Url Pattern',
-        pageSections: [
-          PageSection(title: 'Path Parameters', description: PathParametersPageSection()),
-          PageSection(
-              title: 'Advanced Pattern Matching',
-              description: AdvancedPatternMatchingPageSection()),
-          PageSection(title: 'Matching Priority', description: MatchingPriorityPageSection()),
-        ],
+        title: 'Widget nesting',
+        description: WidgetNestingDescription(),
+        pageSections: [],
       ),
       SubSection(
         title: 'Name And Aliases',
@@ -105,6 +105,7 @@ class InAppPage extends StatelessWidget {
         description: RedirectionDescription(),
         pageSections: [
           PageSection(title: 'VRouteRedirector', description: VRouteRedirectorPageSection()),
+          PageSection(title: 'VRedirector', description: VRedirectorPageSection()),
         ],
       ),
       SubSection(
@@ -120,10 +121,22 @@ class InAppPage extends StatelessWidget {
     ]),
     MainSection(title: 'Advanced', subSections: [
       SubSection(
+        title: 'Path parameters',
+        pageSections: [
+          PageSection(
+              title: 'Path parameters basics', description: PathParametersBasicsPageSection()),
+          PageSection(
+              title: 'Advanced Pattern Matching',
+              description: AdvancedPatternMatchingPageSection()),
+          PageSection(title: 'Matching Priority', description: MatchingPriorityPageSection()),
+        ],
+      ),
+      SubSection(
         title: 'Navigation Control',
         description: NavigationControlDescription(),
         pageSections: [
-          PageSection(title: 'VNavigationGuard', description: VNavigationGuardPageSection()),
+          PageSection(title: 'VGuard', description: VGuardPageSection()),
+          PageSection(title: 'VWidgetGuard', description: VWidgetGuardPageSection()),
           PageSection(
               title: 'The Navigation Cycle', description: NavigationCyclePageSection()),
           PageSection(title: 'Web Caveat', description: WebCaveatPageSection()),
@@ -138,7 +151,6 @@ class InAppPage extends StatelessWidget {
           PageSection(
               title: 'Local Route Transitions',
               description: LocalRouteTransitionPageSection()),
-          PageSection(title: 'Key Warning', description: KeyWarningPageSection()),
         ],
       ),
       SubSection(
@@ -175,6 +187,14 @@ class InAppPage extends StatelessWidget {
               title: 'Saving Before Leave', description: SavingBeforeLeavePageSection()),
         ],
       ),
+      SubSection(
+        title: 'Custom Pages',
+        description: CustomPagesDescription(),
+        pageSections: [
+          PageSection(title: 'VPage', description: VPagePageSection()),
+          PageSection(title: 'VNesterPage', description: VNesterPagePageSection()),
+        ],
+      ),
     ]),
   ];
 
@@ -188,26 +208,27 @@ class InAppPage extends StatelessWidget {
     String nextSubSectionTitle;
     PageSection selectedPageSection;
 
-    final mainSectionTitle = VRouteData.of(context).pathParameters['mainSection'];
+    final mainSectionTitle = context.vRouter.pathParameters['mainSection'];
     if (mainSectionTitle != null) {
       // Check the validity of the main section
       try {
-        selectedMainSection = sections
-            .firstWhere((section) => Uri.encodeComponent(section.title) == mainSectionTitle);
+        selectedMainSection =
+            sections.firstWhere((section) => section.title == mainSectionTitle);
       } on StateError {
         selectedMainSection = null;
       }
       if (selectedMainSection == null) {
-        VRouterData.of(context).push('/guide');
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          context.vRouter.pushNamed('guide');
+        });
       } else {
-        final subSectionTitle = VRouteData.of(context).pathParameters['subSection'];
+        final subSectionTitle = context.vRouter.pathParameters['subSection'];
         if (subSectionTitle != null) {
           // Check the validity of the sub section
           for (var subSectionIndex = 0;
               subSectionIndex < selectedMainSection.subSections.length;
               subSectionIndex++) {
-            if (Uri.encodeComponent(selectedMainSection.subSections[subSectionIndex].title) ==
-                subSectionTitle) {
+            if (selectedMainSection.subSections[subSectionIndex].title == subSectionTitle) {
               selectedSubSection = selectedMainSection.subSections[subSectionIndex];
 
               // Try to get the previous subSection
@@ -216,13 +237,13 @@ class InAppPage extends StatelessWidget {
                 previousSubSectionTitle =
                     selectedMainSection.subSections[subSectionIndex - 1].title;
                 previousSubSectionLink =
-                    '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+                    '/guide/${selectedMainSection.title}/${previousSubSectionTitle}';
               } else {
                 if (selectedMainSectionIndex != 0) {
                   previousSubSectionTitle =
                       sections[selectedMainSectionIndex - 1].subSections.last.title;
                   previousSubSectionLink =
-                      '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex - 1].title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+                      '/guide/${sections[selectedMainSectionIndex - 1].title}/${previousSubSectionTitle}';
                 }
               }
 
@@ -231,13 +252,13 @@ class InAppPage extends StatelessWidget {
                 nextSubSectionTitle =
                     selectedMainSection.subSections[subSectionIndex + 1].title;
                 nextSubSectionLink =
-                    '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+                    '/guide/${selectedMainSection.title}/${nextSubSectionTitle}';
               } else {
                 if (selectedMainSectionIndex != sections.length - 1) {
                   nextSubSectionTitle =
                       sections[selectedMainSectionIndex + 1].subSections.first.title;
                   nextSubSectionLink =
-                      '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex + 1].title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+                      '/guide/${sections[selectedMainSectionIndex + 1].title}/${nextSubSectionTitle}';
                 }
               }
 
@@ -246,21 +267,28 @@ class InAppPage extends StatelessWidget {
           }
 
           if (selectedSubSection == null) {
-            VRouterData.of(context)
-                .push('/guide/${Uri.encodeComponent(selectedMainSection.title)}');
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              context.vRouter.pushNamed('guide', pathParameters: {
+                'mainSection': selectedMainSection.title,
+              });
+            });
           } else {
-            final pageSectionTitle = VRouteData.of(context).pathParameters['pageSection'];
+            final pageSectionTitle = context.vRouter.pathParameters['pageSection'];
             if (pageSectionTitle != null) {
               // Check the validity of the page section
               try {
-                selectedPageSection = selectedSubSection.pageSections?.firstWhere(
-                    (section) => Uri.encodeComponent(section.title) == pageSectionTitle);
+                selectedPageSection = selectedSubSection.pageSections
+                    ?.firstWhere((section) => section.title == pageSectionTitle);
               } on StateError {
                 selectedPageSection = null;
               }
               if (selectedPageSection == null) {
-                VRouterData.of(context).push(
-                    '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(selectedSubSection.title)}');
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  context.vRouter.pushNamed('guide', pathParameters: {
+                    'mainSection': selectedMainSection.title,
+                    'subSection': selectedSubSection.title,
+                  });
+                });
               }
             }
           }
@@ -278,31 +306,29 @@ class InAppPage extends StatelessWidget {
       if (subSectionIndex != 0) {
         previousSubSectionTitle = selectedMainSection.subSections[subSectionIndex - 1].title;
         previousSubSectionLink =
-            '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+            '/guide/${selectedMainSection.title}/${previousSubSectionTitle}';
       } else {
         if (selectedMainSectionIndex != 0) {
           previousSubSectionTitle =
               sections[selectedMainSectionIndex - 1].subSections.last.title;
           previousSubSectionLink =
-              '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex - 1].title)}/${Uri.encodeComponent(previousSubSectionTitle)}';
+              '/guide/${sections[selectedMainSectionIndex - 1].title}/${previousSubSectionTitle}';
         }
       }
 
       // Try to get the next subSection
       if (subSectionIndex != selectedMainSection.subSections.length - 1) {
         nextSubSectionTitle = selectedMainSection.subSections[subSectionIndex + 1].title;
-        nextSubSectionLink =
-            '/guide/${Uri.encodeComponent(selectedMainSection.title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+        nextSubSectionLink = '/guide/${selectedMainSection.title}/${nextSubSectionTitle}';
       } else {
         if (selectedMainSectionIndex != sections.length - 1) {
           nextSubSectionTitle = sections[selectedMainSectionIndex + 1].subSections.first.title;
           nextSubSectionLink =
-              '/guide/${Uri.encodeComponent(sections[selectedMainSectionIndex + 1].title)}/${Uri.encodeComponent(nextSubSectionTitle)}';
+              '/guide/${sections[selectedMainSectionIndex + 1].title}/${nextSubSectionTitle}';
         }
       }
     }
 
-    final leftNavigationBar = LeftNavigationBar(sections: sections);
     final tutorialPageHandler = TutorialPagesHandler(
       selectedMainSection: selectedMainSection,
       previousSubSectionTitle: previousSubSectionTitle,
@@ -319,11 +345,11 @@ class InAppPage extends StatelessWidget {
         return (constraints.maxWidth > 1000)
             ? ComputerInApp(
                 tutorialPageHandler: tutorialPageHandler,
-                leftNavigationBar: leftNavigationBar,
+                leftNavigationBar: LeftNavigationBar(sections: sections),
               )
             : MobileInApp(
                 tutorialPageHandler: tutorialPageHandler,
-                leftNavigationBar: leftNavigationBar,
+                leftNavigationBar: LeftNavigationBar(sections: sections),
               );
       }),
     );
@@ -362,7 +388,7 @@ class VRouterLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return LinkButton(
       onPressed: () {
-        VRouterData.of(context).push('/');
+        context.vRouter.push('/');
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -441,7 +467,7 @@ class _MobileInAppState extends State<MobileInApp> {
 
   @override
   Widget build(BuildContext context) {
-    return VNavigationGuard(
+    return VWidgetGuard(
       afterUpdate: (_, __, ___) {
         if (showLeftNavigationBar) {
           setState(() {
@@ -551,7 +577,7 @@ class _MobileBodyState extends State<MobileBody> {
 
   @override
   Widget build(BuildContext context) {
-    return VNavigationGuard(
+    return VWidgetGuard(
       afterUpdate: (_, __, ___) {
         if (showLeftNavigationBar) {
           setState(() {

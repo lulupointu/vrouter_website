@@ -1,7 +1,9 @@
+import 'package:dart_pad_widget/dart_pad_widget.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 class LeftNavigationBar extends StatelessWidget {
   final List<MainSection> sections;
@@ -22,10 +24,10 @@ class LeftNavigationBar extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 32.0),
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sections,
-                ),
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: sections,
+              ),
             ),
           ),
         ),
@@ -63,8 +65,8 @@ class MainSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = (VRouteData.of(context).pathParameters['mainSection'] != null)
-        ? (VRouteData.of(context).pathParameters['mainSection'] == Uri.encodeComponent(title))
+    final isSelected = (context.vRouter.pathParameters['mainSection'] != null)
+        ? (context.vRouter.pathParameters['mainSection'] == title)
         : LeftNavigationBar.of(context).sections.first == this;
 
     return MainSectionData(
@@ -81,9 +83,7 @@ class MainSection extends StatelessWidget {
               title,
               style: GoogleFonts.ubuntu(
                   textStyle: TextStyle(
-                      fontSize: 17.5,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF2c3e50))),
+                      fontSize: 17.5, fontWeight: FontWeight.w700, color: Color(0xFF2c3e50))),
             ),
           ),
           ...subSections,
@@ -95,6 +95,54 @@ class MainSection extends StatelessWidget {
   static MainSectionData of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MainSectionData>();
   }
+
+  TutorialPage buildPage({
+    Key key,
+    @required String previousSubSectionTitle,
+    @required String previousSubSectionLink,
+    @required SubSection selectedSubSection,
+    @required String nextSubSectionTitle,
+    @required String nextSubSectionLink,
+  }) =>
+      TutorialPage(
+        previousSubSectionTitle: previousSubSectionTitle,
+        previousSubSectionLink: previousSubSectionLink,
+        selectedSubSection: selectedSubSection,
+        nextSubSectionTitle: nextSubSectionTitle,
+        nextSubSectionLink: nextSubSectionLink,
+      );
+}
+
+class MainExampleSection extends MainSection {
+  @override
+  final String title;
+
+  @override
+  List<SubSection> get subSections => subExampleSections;
+
+  final List<SubExampleSection> subExampleSections;
+
+  MainExampleSection({
+    @required this.title,
+    @required this.subExampleSections,
+  });
+
+  @override
+  TutorialPage buildPage({
+    Key key,
+    @required String previousSubSectionTitle,
+    @required String previousSubSectionLink,
+    @required SubSection selectedSubSection,
+    @required String nextSubSectionTitle,
+    @required String nextSubSectionLink,
+  }) =>
+      TutorialExamplePage(
+        previousSubSectionTitle: previousSubSectionTitle,
+        previousSubSectionLink: previousSubSectionLink,
+        selectedSubSection: selectedSubSection,
+        nextSubSectionTitle: nextSubSectionTitle,
+        nextSubSectionLink: nextSubSectionLink,
+      );
 }
 
 class MainSectionData extends InheritedWidget {
@@ -133,8 +181,8 @@ class SubSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = (VRouteData.of(context).pathParameters['subSection'] != null)
-        ? (VRouteData.of(context).pathParameters['subSection'] == Uri.encodeComponent(title))
+    final isSelected = (context.vRouter.pathParameters['subSection'] != null)
+        ? (context.vRouter.pathParameters['subSection'] == title)
         : (MainSection.of(context).isSelected &&
             MainSection.of(context).subSections.first == this);
 
@@ -146,8 +194,10 @@ class SubSection extends StatelessWidget {
         children: [
           LinkButton(
             onPressed: () {
-              VRouterData.of(context).push(
-                  '/guide/${Uri.encodeComponent(MainSection.of(context).title)}/${Uri.encodeComponent(title)}');
+              context.vRouter.pushNamed('guide', pathParameters: {
+                'mainSection': MainSection.of(context).title,
+                'subSection': title,
+              });
             },
             child: Container(
               decoration: BoxDecoration(
@@ -183,6 +233,26 @@ class SubSection extends StatelessWidget {
   }
 }
 
+class SubExampleSection extends SubSection {
+  @override
+  final String title;
+
+  @override
+  List<PageSection> get pageSections => [];
+  @override
+  final Widget description;
+  @override
+  final GlobalKey titleKey;
+  final String codePath;
+
+  SubExampleSection({
+    @required this.title,
+    this.titleKey,
+    @required this.description,
+    @required this.codePath,
+  });
+}
+
 class SubSectionData extends InheritedWidget {
   final String title;
 
@@ -210,13 +280,15 @@ class PageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSelected =
-        VRouteData.of(context).pathParameters['pageSection'] == Uri.encodeComponent(title);
+    final isSelected = context.vRouter.pathParameters['pageSection'] == title;
 
     return LinkButton(
       onPressed: () {
-        VRouterData.of(context).push(
-            '/guide/${Uri.encodeComponent(MainSection.of(context).title)}/${Uri.encodeComponent(SubSection.of(context).title)}/${Uri.encodeComponent(title)}');
+        context.vRouter.pushNamed('guide', pathParameters: {
+          'mainSection': MainSection.of(context).title,
+          'subSection': SubSection.of(context).title,
+          'pageSection': title
+        });
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 46, top: 4, bottom: 4),

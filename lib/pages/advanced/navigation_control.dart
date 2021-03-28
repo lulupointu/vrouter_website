@@ -9,20 +9,20 @@ class NavigationControlDescription extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: '''
-The idea of the navigation cycle is to give you as much control as possible over what happens when a route changes. To achieve such control, four functions can be used in various places: beforeLeave, beforeEnter, afterEnter, afterUpdate.
+Giving you as much control as possible over what happens when a route changes is a core principle of VRouter.
+
+To achieve such control, five functions can be used in various places: beforeLeave, beforeEnter, beforeUpdate, afterEnter, afterUpdate.
 These function have different scope depending on where they are specified: 
     • Global if specified if the VRouter (i.e. they will always be called)
-    • Route specific if specified in a VRouteElement (For each route, if the last VRouteElement of the list specifies beforeLeave, beforeEnter or afterEnter, then these functions will be called when appropriate)
-    • Element specific by using VNavigationGuard
-
-Be careful, specifying beforeLeave, beforeEnter or afterEnter in a VRouteElement participate in a route specific scope, not a Element specific scope. This is because element specific scope is easier to handle in a widget directly, i.e. using a VNavigationGuard.''',
+    • Route specific if specified in a VGuard
+    • Widget specific by using VWidgetGuard''',
         style: textStyle,
       ),
     );
   }
 }
 
-class VNavigationGuardPageSection extends StatelessWidget {
+class VGuardPageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,24 +31,96 @@ class VNavigationGuardPageSection extends StatelessWidget {
       children: [
         SelectableText.rich(
           TextSpan(
-            text: '''
-VNavigationGuard is a widget that can be used like any other. It is useful to handle navigation (with beforeLeave, afterEnter and afterUpdate) locally.''',
+            text: '''VGuard is a VRouteElement which can be used to guard some routes, use it as any VRouteElement and specify beforeLeave, beforeEnter, beforeUpdate, afterEnter or afterUpdate.''',
             style: textStyle,
           ),
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-VNavigationGuard(
-  // This is called before leaving the route
-  beforeLeave: (vRedirector, __) async => (!isLoggedIn) ? vRedirector.stopRedirection() : null,
-  // This is called if this widget is in the old route and in the new route
-  afterUpdate: (_, __, ___) => (isLoggedIn) ? VRouterData.of(context).push('/profile') : null,
-  // This is called the first time this widget is displayed in the route
-  afterEnter: (_, __, ___) => (isLoggedIn) ? VRouterData.of(context).push('/profile') : null,
-  child: ...,
+VRouter(
+  routes: [
+    // This VRouteElement is not guarded
+    VWidget(path: '/login', widget: LoginScreen()),
+
+    // All VRouteElement in VGuard are guarded
+    VGuard(
+      beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.push('/login'),
+      stackedRoutes: [
+        VWidget(path: '/profile', widget: ProfileScreen()),
+        VWidget(path: '/settings', widget: SettingsScreen()),
+      ],
+    ),
+  ],
 )
           ''',
+        ),
+      ],
+    );
+  }
+}
+
+
+class VWidgetGuardPageSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SelectableText.rich(
+          TextSpan(
+            text: '''VWidgetGuard is a widget. You can place this widget where you want in your widget tree, and have access to beforeLeave, beforeUpdate, afterEnter, afterUpdate.''',
+            style: textStyle,
+          ),
+        ),
+        SizedBox(height: 10),
+        Text('Router configuration:', style: textStyle.copyWith(fontWeight: FontWeight.bold),),
+        MyDartCodeViewer(
+          code: r'''
+VRouter(
+  routes: [
+    VWidget(path: '/', widget: LoginScreen()),
+    VWidget(path: '/profile', widget: ProfileScreen()),
+  ],
+)
+          ''',
+        ),
+        SizedBox(height: 10),
+        Text('LoginScreen:', style: textStyle.copyWith(fontWeight: FontWeight.bold),),
+        MyDartCodeViewer(
+          code: r'''
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<Login> {
+  bool isLoggedIn = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: VWidgetGuard(
+        // This is called before leaving the route
+        beforeLeave: (vRedirector, __) async => (!isLoggedIn) ? vRedirector.stopRedirection() : null,
+        // This is called if this widget is in the old route and in the new route
+        afterUpdate: (_, __, ___) => (isLoggedIn) ? context.vRouter.push('/profile') : null,
+        // This is called the first time this widget is displayed in the route
+        afterEnter: (_, __, ___) => (isLoggedIn) ? context.vRouter.push('/profile') : null,
+        child: ...,
+      ),
+    );
+  }
+}
+          ''',
+        ),
+        SizedBox(height: 20),
+        SelectableText.rich(
+          TextSpan(
+            text: '''Note that you don’t have access to beforeEnter in a VWidgetGuard, this is a limitation of Flutter. Use VGuard if you want to have access to beforeEnter.''',
+            style: textStyle,
+          ),
         ),
       ],
     );
@@ -61,25 +133,33 @@ class NavigationCyclePageSection extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: '''
-The navigation cycle is the list of events which happen when a user navigates from a route to another. The cycle is important to understand as it allows you to better manage your navigation system in a declarative way.
+The navigation cycle is the list of events which happen when a user navigates from a route to another. The cycle is important to understand as it allows you to better manage your navigation control.
 
-When you try to navigate, here is when will happen:
-     1. Call beforeLeave in all deactivated [VNavigationGuard]
-     2. Call beforeLeave in the nest-most [VRouteElement] of the current route
-     3. Call beforeLeave in the [VRouter]
-     4. Call beforeEnter in the [VRouter]
-     5. Call beforeEnter in the nest-most [VRouteElement] of the new route
-     ## The history state got in beforeLeave are stored   
-     ## The state of the VRouter changes            
-     6. Call afterEnter in the [VRouter]
-     7. Call afterEnter in the nest-most [VRouteElement] of the new route
-     8. Call afterUpdate in all reused [VNavigationGuard]
-     9. Call afterEnter in all initialized [VNavigationGuard]
+When you try to navigate, here is what will happen:    
+  1. Call beforeLeave in all deactivated [VWidgetGuard]
+  2. Call beforeLeave in all deactivated [VRouteElement]
+  3. Call beforeLeave in the [VRouter]
+  4. Call beforeEnter in the [VRouter]
+  5. Call beforeEnter in all initialized [VRouteElement] of the new route
+  6. Call beforeUpdate in all reused [VRouteElement]
 
-Deactivated VNavigationGuard are those attached to widgets which were in the previousRoute but not in the new one.
-Reused VNavigationGuard are those attached to widgets which were in the previousRoute and in the new one.
-Initialized VNavigationGuard are those attached to widgets which were not in the previousRoute but are in the new one.
-Any beforeLeave or beforeEnter function returns a future which will be awaited. In those functions, you can use vRedirector to get information about the previous and the new route. You can also you vRedirector to stop the redirection (vRedirector.stopRedirection()) or to redirect using vRedirector.push, vRedirector.pushNamed, etc. However note that in beforeLeave or beforeEnter you should NOT use VRouterData to redirect.''',
+  ## The history state got in beforeLeave are stored
+  ## The state is updated
+
+  7. Call afterEnter in all initialized [VWidgetGuard]
+  8. Call afterEnter all initialized [VRouteElement]
+  9. Call afterEnter in the [VRouter]
+  10. Call afterUpdate in all reused [VWidgetGuard]
+  11. Call afterUpdate in all reused [VRouteElement]
+
+
+Deactivated are those which were in the previousRoute but not in the new one.
+Reused are those which were in the previousRoute and in the new one.
+Initialized are those which were not in the previousRoute but are in the new one.
+
+beforeLeave, beforeEnter and beforeUpdate function return a future which will be awaited. 
+
+In beforeLeave, beforeEnter and beforeUpdate, you can stop the navigation cycle by using VRedirector. However do NOT use context.vRouter to redirect in those functions.''',
         style: textStyle,
       ),
     );
@@ -92,9 +172,9 @@ class WebCaveatPageSection extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: '''
-When a user tries to access an external url by clicking on a button where you use VRouterData.of(context).pushExternal, everything works as expected.
+When a user tries to access an external url by clicking on a button where you use context.vRouter.pushExternal, everything works as expected.
 
-When a user tries to access an external url either by typing it, or using the forward/backward button to navigate to them, you can’t prevent the user from navigating. This means that if any you use vRedirector to redirect elsewhere, this will be ignored. 
+When a user tries to access an external url either by typing it, or using the forward/backward button to navigate to an external url, you can’t prevent the user from navigating. This means that trying to use vRedirector.stopRedirection, vRedirector.push, ... in beforeLeave will be ignored. 
 
 Reloading the page cannot be stopped as well.
 

@@ -64,7 +64,7 @@ class VersionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'v0',
+      'v1.1',
       style: GoogleFonts.ubuntu(textStyle: TextStyle(fontSize: 20, color: Color(0xFF015292))),
     );
   }
@@ -91,11 +91,11 @@ class CallToActionWidgets extends StatelessWidget {
       children: [
         LightButton(
           title: 'GitHub',
-          onPressed: () => VRouterData.of(context).pushExternal('https://github.com/lulupointu/vrouter'),
+          onPressed: () => context.vRouter.pushExternal('https://github.com/lulupointu/vrouter'),
         ),
         LightButton(
           title: 'Pub.dev',
-          onPressed: () => VRouterData.of(context).pushExternal('https://pub.dev/packages/vrouter'),
+          onPressed: () => context.vRouter.pushExternal('https://pub.dev/packages/vrouter'),
         ),
         GetStartedButton(),
       ],
@@ -181,7 +181,7 @@ class _GetStartedButtonState extends State<GetStartedButton> {
         });
       },
       child: GestureDetector(
-        onTap: () => VRouterData.of(context).push('/guide'),
+        onTap: () => context.vRouter.push('/guide'),
         child: TweenAnimationBuilder(
           duration: Duration(milliseconds: 300),
           tween: ColorTween(

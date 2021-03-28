@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/main.dart';
 
-class PathParametersPageSection extends StatelessWidget {
+class PathParametersBasicsPageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -13,8 +13,7 @@ class PathParametersPageSection extends StatelessWidget {
         SelectableText.rich(
           TextSpan(
             text: '''
-You will often need to match with a certain path pattern to the same route. To easily achieve this, you can use path parameters. To use them you just need to insert :parameterName in the url.
-To access them, use VRouteElementData or VRouteData.''',
+You will often need to match a path with a certain pattern. To easily achieve this, you can use path parameters. To use them you just need to insert ':parameterName' in the url, and you will have access to them using context.vRouter.pathParameters''',
             style: textStyle,
           ),
         ),
@@ -27,19 +26,16 @@ To access them, use VRouteElementData or VRouteData.''',
           code: r'''
 VRouter(
   routes: [
-    VStacked(
+    VWidget(
       path: '/user/:id',
       widget: UserWidget(),
-      subroutes: [
-        VStacked(path: 'other', widget: OtherWidget()),
-      ],
     ),
   ],
 )
           ''',
         ),
         Text(
-          'Widgets:',
+          'Access:',
           style: textStyle.copyWith(fontWeight: FontWeight.bold),
         ),
         MyDartCodeViewer(
@@ -47,34 +43,12 @@ VRouter(
 class UserWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // DO use VRouteElement to access general information about the route
-    print('The current id is: ${VRouteData.of(context).pathParameters['id']}');
-    
-    // DO use VRouteElementData to data which belong to this VRouteElement
-    return Text('User id is ${VRouteElementData.of(context).pathParameters['id']}');
-  }
-}
-
-class OtherWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // DO use VRouteElement to access general information about the route
-    print('The current id is: ${VRouteData.of(context).pathParameters['id']}');
-
-    // DON'T use VRouteElementData to access data which belong to another VRouteElement
-    return Text('User id is ${VRouteElementData.of(context).pathParameters['id']}');
+    return Text('User id is ${context.vRouter.pathParameters['id']}');
   }
 }
           ''',
         ),
         SizedBox(height: 20),
-        SelectableText.rich(
-          TextSpan(
-            text: '''You can also have several path parameters in the same path:''',
-            style: textStyle,
-          ),
-        ),
-        SizedBox(height: 10),
         Table(
           border: TableBorder.all(color: Colors.black, width: 0.5),
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -84,8 +58,9 @@ class OtherWidget extends StatelessWidget {
                 TableCell(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child:
-                        Center(child: Text('pattern', style: textStyle.copyWith(fontWeight: FontWeight.bold))),
+                    child: Center(
+                        child: Text('pattern',
+                            style: textStyle.copyWith(fontWeight: FontWeight.bold))),
                   ),
                 ),
                 TableCell(
@@ -101,7 +76,7 @@ class OtherWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
-                      child: Text('VRouteData\n.of(context)\n.pathParameters',
+                      child: Text('context\n.vRouter\n.pathParameters',
                           style: textStyle.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ),
@@ -176,8 +151,9 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      VRouterData.of(context)
-                          .pushExternal('https://pub.dev/packages/path_to_regexp', openNewTab: true);
+                      context.vRouter.pushExternal(
+                          'https://pub.dev/packages/path_to_regexp',
+                          openNewTab: true);
                     }),
               TextSpan(
                 text: ' package to do url matching so you can use do thing like this:',
@@ -192,11 +168,12 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
             TableRow(
               children: [
                 TableCell(
-                  child:
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(child: Text('pattern', style: textStyle.copyWith(fontWeight: FontWeight.bold))),
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                        child: Text('pattern',
+                            style: textStyle.copyWith(fontWeight: FontWeight.bold))),
+                  ),
                 ),
                 TableCell(
                   child: Padding(
@@ -242,6 +219,14 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
             ),
           ],
         ),
+        SizedBox(height: 20),
+        SelectableText.rich(
+          TextSpan(
+            text: '''
+Note that it is better to use raw string ( r’string’ ) when specifying path parameters.''',
+            style: textStyle,
+          ),
+        ),
       ],
     );
   }
@@ -253,8 +238,7 @@ class MatchingPriorityPageSection extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text:
-            '''It might happen that several urls match multiple paths, in this case the priority is to the path which is the highest in the routes list.
-If you have aliases, they have the priority over nested routes.''',
+        '''It might happen that several urls match multiple paths, in this case the priority is to the path which is the highest in the routes list.''',
         style: textStyle,
       ),
     );

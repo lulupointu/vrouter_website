@@ -24,7 +24,7 @@ class FetchingDataBeforeNavigationPageSection extends StatelessWidget {
         SelectableText.rich(
           TextSpan(
             text: '''
-When the user presses a button, you will be able to use the beforeEnter method (of the VRouter of a VRouteElement) to fetch data.''',
+When the user presses a button, you will be able to use the beforeEnter method (of VRouter or VGuard) to fetch data.''',
             style: textStyle,
           ),
         ),
@@ -32,30 +32,28 @@ When the user presses a button, you will be able to use the beforeEnter method (
         MyDartCodeViewer(
           code: r'''
 VRouter(
-  beforeEnter: (context, from, to) async {
+  beforeEnter: (vRedirector) async {
     final isUserConnected = await database.isUserConnected();
-    if (!isUserConnected) {
-      VRouterData.of(context).push('/login');
-      // If we redirect, we return false
-      return false;
+    if (!isUserConnected && vRedirector.to != 'login') {
+      vRedirector.push('/login'); // Use VRedirector to redirect
     }
-    return true;
   },
   routes: [
-    VStacked(
+    VWidget(
       // The path /login has no data fetching
       path: '/login',
-      widget: LoginWidget(),
-      subroutes: [
-        VStacked(
-          path: 'profile',
-          // The path /login/profile fetches data
-          beforeEnter: (context, from, to) async {
-            await database.getUserInfo();
-            return true;
-          },
-          widget: ProfileWidget(),
-        )
+      widget: LoginScreen(),
+      stackedRoutes: [
+        VGuard(
+          // The sub paths (here /login/profile) fetches data before being displayed
+          beforeEnter: (vRedirector) async => await database.getUserInfo(),
+          stackedRoutes: [
+            VWidget(
+              path: 'profile',
+              widget: ProfileScreen(),
+            ),
+          ],
+        ),
       ],
     ),
   ],
@@ -65,8 +63,7 @@ VRouter(
         SizedBox(height: 10),
         SelectableText.rich(
           TextSpan(
-            text: '''
-This will have the effect of staying on the actual page until you have the data before navigating. Therefore you might want to display a progress bar of some sort, and also an error message in case the data fetch fails.''',
+            text: '''This will have the effect of staying on the actual page until you have the data before navigating. Therefore you might want to display a progress bar of some sort, and also an error message in case the data fetch fails. ''',
             style: textStyle,
           ),
         ),
@@ -84,8 +81,7 @@ class FetchingDataAfterNavigationPageSection extends StatelessWidget {
       children: [
         SelectableText.rich(
           TextSpan(
-            text: '''
-This approach first loads the widgets of the tree, then fetches the data you need. You can use the afterEnter or the afterUpdate method, either in the VRouter, a VRouteElement, or a VNavigationGuard.''',
+            text: '''This approach first loads the widgets of the tree, then fetches the data you need. You can use the afterEnter or the afterUpdate method, either in the VRouter, a VGuard, or a VWidgetGuard.''',
             style: textStyle,
           ),
         ),
@@ -99,19 +95,24 @@ VRouter(
     database.increaseLoadCount();
   },
   routes: [
-    VStacked(
+    VWidget(
       // The path /login has no data fetching
       path: '/login',
-      widget: LoginWidget(),
-      subroutes: [
-        VStacked(
-          path: 'profile/:userId',
-          // The path /login/profile fetches data after loading
+      widget: LoginScreen(),
+
+      // The sub paths (here /login/profile) fetches data after being displayed
+      stackedRoutes: [
+        VGuard(
           afterEnter: (context, from, to) {
             // You have access to the new queryParameters and pathParameters
-            database.getUserInfo(userId: VRouteData.of(context).pathParameters['userId']);
+            database.getUserInfo(userId: context.vRouter.pathParameters['userId']);
           },
-          widget: ProfileWidget(),
+          stackedRoutes: [
+            VWidget(
+              path: 'profile/:userId',
+              widget: ProfileScreen(),
+            )
+          ],
         )
       ],
     ),
@@ -120,24 +121,24 @@ VRouter(
           ''',
         ),
         SizedBox(height: 10),
-        Text('ProfileWidget:', style: textStyle.copyWith(fontWeight: FontWeight.bold),),
+        Text('ProfileScreen:', style: textStyle.copyWith(fontWeight: FontWeight.bold),),
         MyDartCodeViewer(
           code: r'''
-class ProfileWidget extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   @override
   _ProfileWidgetState createState() => _ProfileWidgetState();
 }
+
 class _ProfileWidgetState extends State<ProfileWidget> {
   int userId;
 
   @override
   Widget build(BuildContext context) {
-    return VNavigationGuard(
-      // You can access local information from VRouteElementData
+    return VWidgetGuard(
       afterUpdate: (context, from, to) => setState(
-          () => userId = int.parse(VRouteElementData.of(context).pathParameters['userId'])),
+          () => userId = int.parse(context.vRouter.pathParameters['userId'])),
       afterEnter: (context, from, to) => setState(
-          () => userId = int.parse(VRouteElementData.of(context).pathParameters['userId'])),
+          () => userId = int.parse(context.vRouter.pathParameters['userId'])),
       child: Text('Profile of user $userId'),
     );
   }
@@ -147,8 +148,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         SizedBox(height: 10),
         SelectableText.rich(
           TextSpan(
-            text: '''
-Note that with this approach, some of your widget will have missing data while loading so you might want to take that into account.''',
+            text: '''Note that with this approach, some of your widget will have missing data when being first displayed so you might want to take that into account.''',
             style: textStyle,
           ),
         ),

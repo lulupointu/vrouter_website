@@ -20,12 +20,12 @@ void main() {
         );
       },
       routes: [
-        VStacked(widget: HomePage(), path: '/'),
-        VStacked(
+        VWidget(widget: HomePage(), path: '/'),
+        VWidget(
             path: '/guide/:mainSection/:subSection/:pageSection',
             name: 'guide',
             widget: InAppPage(),
-            aliases: ['/guide', '/guide/:mainSection', '/guide/:mainSection/:subSection']),
+            aliases: ['/guide', '/guide/:mainSection/:subSection', '/guide/:mainSection']),
         VRouteRedirector(path: ':_(.*)', redirectTo: '/'),
       ],
     ),

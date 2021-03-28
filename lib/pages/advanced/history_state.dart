@@ -6,8 +6,8 @@ class HistoryStateDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     return SelectableText.rich(
       TextSpan(
-        text: '''
-The history state is a String that you can pass when going to a new route, and then change once in that route. 
+        text:
+            '''The history state is a Map<String, String> that you can pass when going to a new route, and then change once in that route. 
 While this might be useful to pass data around, the real power of the history states is on the web: This state is tight to an history entry. Meaning that if the user uses the back or forward button (or clicks in their web history), the state will be the same as when you left!''',
         style: textStyle,
       ),
@@ -24,8 +24,8 @@ class PushingAHistoryStatePageSection extends StatelessWidget {
       children: [
         SelectableText.rich(
           TextSpan(
-            text: '''
-When pushing a route, you can pass a state as a String argument. This argument will be stored in the next VRoute history state.''',
+            text:
+                '''When pushing a route, you can pass a historyState argument which will be associated with the new route.''',
             style: textStyle,
           ),
         ),
@@ -33,14 +33,14 @@ When pushing a route, you can pass a state as a String argument. This argument w
         MyDartCodeViewer(
           code: r'''
 // You can push the state alongside a new url
-VRouterData.of(context).push('/profile', routerState: 'bob');
+context.vRouter.push('/profile', historyState: {'name': 'bob'});
           ''',
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
 // In /profile, you can access what you just passed
-VRouterData.of(context).historyState;
+context.vRouter.historyState;
           ''',
         ),
       ],
@@ -57,51 +57,16 @@ class ReplaceAHistoryStatePageSection extends StatelessWidget {
       children: [
         SelectableText.rich(
           TextSpan(
-            text: '''
-Sometimes you are on a route and you want to replace the history state with a current state. You can replace the state at three levels: VRouterData, VRouteData or VRouteElementData.''',
+            text:
+                '''Sometimes you are on a route and you want to replace the history state.''',
             style: textStyle,
           ),
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-// Replace the state of VRouterData
-VRouterData.of(context).replaceHistoryState('anyRouterInformation');
-
-// Replace the state of VRouteData
-VRouteData.of(context).replaceHistoryState('anyRouteInformation');
-
-// Replace the state of VRouteElementData
-VRouteElementData.of(context).replaceHistoryState('anyRouteInformation');
+context.vRouter.replaceHistoryState({'name': 'alice'});
           ''',
-        ),
-        SizedBox(height: 10),
-        MyDartCodeViewer(
-          code: r'''
-// You can access what you just passed, in different scopes
-  
-// Globally
-VRouterData.of(context).historyState;
-VRouteData.of(context).historyState;
-
-// Locally
-VRouteElementData.of(context).historyState;
-          ''',
-        ),
-        SizedBox(height: 20),
-        SelectableText.rich(
-          TextSpan(
-              text: 'Warning:',
-              style: textStyle.copyWith(fontWeight: FontWeight.bold),
-              children: [
-                TextSpan(
-                  text: '''
- do not use the replaceState! This will not work when the user uses any browser functionality.
- 
- Note that, as always, VRouteElementData is a local information specific to where in the route your widget is.''',
-                  style: textStyle.copyWith(fontWeight: FontWeight.normal),
-                )
-              ]),
         ),
       ],
     );
@@ -117,8 +82,8 @@ class SavingBeforeLeavePageSection extends StatelessWidget {
       children: [
         SelectableText.rich(
           TextSpan(
-            text: '''
-Sometimes you are on a route and you want to replace the history state with a current state. You can replace the state at three levels: VRouterData, VRouteData or VRouteElementData.''',
+            text: '''Something really useful is to save the state right before you leave. 
+You can do this be in the beforeLeave method, by using saveHistoryState''',
             style: textStyle,
           ),
         ),
@@ -129,62 +94,44 @@ Sometimes you are on a route and you want to replace the history state with a cu
         ),
         MyDartCodeViewer(
           code: r'''
-VRouter(
-  beforeLeave: (context, from, to, saveHistoryState) async {
-    saveHistoryState('anyRouterInformation');
-    return true;
-  },
-  routes: [
-    VStacked(
-      path: '/',
-      widget: Profile(),
-      // Remember that this is only called for the route '/'
-      // Not any subroute. This is a global event.
-      beforeLeave: (context, from, to, saveHistoryState) async {
-        saveHistoryState('anyRouteInformation');
+    VRouter(
+      beforeLeave: (vRedirector, saveHistoryState) async {
+        saveHistoryState({'name': 'Charlie'});
         return true;
       },
-    ),
-  ],
-)
+      routes: [
+        VGuard(
+          beforeLeave: (vRedirector, saveHistoryState) async {
+            saveHistoryState({'name': 'Charlie'});
+            return true;
+          },
+          stackedRoutes: [...],
+        ),
+      ],
+    )
           ''',
         ),
         SizedBox(height: 10),
         Text(
-          'Usage in VNavigationGuard:',
+          'Usage in VWidgetGuard:',
           style: textStyle.copyWith(fontWeight: FontWeight.bold),
         ),
         MyDartCodeViewer(
           code: r'''
-VNavigationGuard(
-  beforeLeave: (context, from, to, saveHistoryState) async {
-    // This will be later accessible using VRouteElementData.of(context).historyState
-    saveHistoryState('local state');
-    return true;
+VWidgetGuard(
+  beforeLeave: (vRedirector, saveHistoryState) async {
+    saveHistoryState({'name': 'Charlie'});
   },
   child: ...,
-);
+)
           ''',
         ),
         SizedBox(height: 10),
         SelectableText.rich(
           TextSpan(
             text: '''     
-This can be really useful on the web, so that if the user uses the back button, you can restore the state (using afterEnter for example).
-
-''',
+This can be really useful on the web, so that if the user uses the back button, you can restore the state (using afterEnter or afterUpdate for example).''',
             style: textStyle,
-            children: [
-              TextSpan(
-                text: '''Warning:''',
-                style: textStyle.copyWith(fontWeight: FontWeight.bold),
-              ),
-              TextSpan(
-                text: '''
- when using saveHistoryState in VNavigationGuard, the state is saved in VRouteElementData. So if you have multiple VNavigationGuards for the same VRouteElement, only one should use saveHistoryState.''',
-                style: textStyle.copyWith(fontWeight: FontWeight.normal),
-              ),
-            ],
           ),
         ),
       ],

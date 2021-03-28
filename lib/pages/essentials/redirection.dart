@@ -1,59 +1,17 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:vrouter_website/main.dart';
 
 class RedirectionDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SelectableText.rich(
-          TextSpan(
-            text: '''
-Redirection often happens when the user lands on a page and you want him to go to a new one seemingly.
-To achieve such an effect, using the beforeLeave or beforeEnter (either in VRouter, VRouteElement or VNavigationGuard) can be very effective. 
-All you need to do is to use vRedirector, which is a parameter of this methods, to redirect the user.''',
-            style: textStyle,
-          ),
-        ),
-        SizedBox(height: 10),
-        MyDartCodeViewer(
-          code: r'''
-beforeLeave: (vRedirector, ____) async {
-  // shouldRedirect is your variable
-  if (shouldRedirect)
-    // You must use vRedirector to redirect
-    vRedirector.pushReplacement('newUrl');
-},
-          ''',
-        ),
-        SizedBox(height: 10),
-        SelectableText.rich(
-          TextSpan(
-            text: '''
-Note that vRedirector also holds information about the previous and the next route
-            
-Also note that you should always consider the ''',
-            style: textStyle,
-            children: [
-              TextSpan(
-                  text: 'navigation cycle',
-                  style: linkStyle,
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      VRouterData.of(context).push('/guide/Advanced/Navigation Control/The Navigation Cycle');
-                    }),
-              TextSpan(
-                text:
-                ' to know the order in which the functions are called.',
-              ),
-            ],
-          ),
-        )
-      ],
+    return SelectableText.rich(
+      TextSpan(
+        text: '''
+Redirection is an important aspect of your routing system. There are two typical scenarios:
+    • You might want to redirect to “/404” if the user types an unknown url: You can use VRouteRedirector
+    • You might want to redirect based on a condition, for example if the user is not logged in: You can use VRedirector.''',
+        style: textStyle,
+      ),
     );
   }
 }
@@ -67,8 +25,7 @@ class VRouteRedirectorPageSection extends StatelessWidget {
       children: [
         SelectableText.rich(
           TextSpan(
-            text: '''
-More often than not, you need a route which only redirects. You might want such a route at the bottom of your route to match any mistyped url and redirect to /unknown. The VRouteElement VRouteRedirector is here to make this easy:''',
+            text: '''VRouteRedirector is a VRouteElement that can be placed anywhere in your routes. You will often use it with the path “.+” at the end of your routes to catch an unknown route.''',
             style: textStyle,
           ),
         ),
@@ -76,24 +33,57 @@ More often than not, you need a route which only redirects. You might want such 
         MyDartCodeViewer(
           code: r'''
 VRouter(
- routes: [
-   VStacked(path: '/', widget: Login()),
-   VStacked(path: '/unknown', widget: UnknownPathWidget()),
-   VRouteRedirector(path: ':_(.*)', redirectTo: '/unknown'),
- ],
-),
+  routes: [
+    VWidget(path: '/login', widget: LoginScreen()),
+    VWidget(path: '/404', widget: UnknowScreen()),
+    VRouteRedirector(
+      path: r':_(.+)', 
+      redirectTo: '/404',
+    ),
+  ],
+)
           ''',
-        ),
-        SizedBox(height: 10),
-        SelectableText.rich(
-          TextSpan(
-            text: '''
-In VRouteRedirector, you can either use beforeLeave or redirectTo.''',
-            style: textStyle,
-          ),
         ),
       ],
     );
   }
 }
 
+class VRedirectorPageSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SelectableText.rich(
+          TextSpan(
+            text: '''A VRedirector is given to you in VGuard.beforeLeave, VGuard.beforeEnter or VGuard.beforeUpdate. 
+
+You can (and should) use VRedirector to redirect in those methods:''',
+            style: textStyle,
+          ),
+        ),
+        SizedBox(height: 10),
+        MyDartCodeViewer(
+          code: r'''
+VRouter(
+  routes: [
+    VWidget(path: '/login', widget: LoginScreen()),
+
+    VGuard(
+      // We use VRedirector.push to redirect to '/login' if the user is not authenticated
+      beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.push('/login'),
+      stackedRoutes: [
+        VWidget(path: '/profile', widget: ProfileScreen()),
+        VWidget(path: '/settings', widget: SettingsScreen()),
+      ],
+    ),
+  ],
+)
+          ''',
+        ),
+      ],
+    );
+  }
+}

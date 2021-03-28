@@ -3,19 +3,22 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "index.html": "a577ec11e3d6b9299a34b112a1e3f7cb",
-"/": "a577ec11e3d6b9299a34b112a1e3f7cb",
+  "index.html": "3cd94bdb81df86454551356a72ad215a",
+"/": "3cd94bdb81df86454551356a72ad215a",
 "manifest.json": "c40d42e0baf354a03b8ecab89436ee84",
 "icons/Icon-192.png": "1a527d149182cdaf4209bc714a73bd32",
 "icons/Icon-512.png": "d4f07c1e9bcd06b420137e127e507f4d",
-"main.dart.js": "6849aa97b5451bf3741e422feefa334d",
+"main.dart.js": "269ba5a3f033ee20dd8a8fc44924ffb0",
+"assets/examples/example.dart": "0234ddbd0201d0067bffa148ec116910",
 "assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
 "assets/assets/v_logo.svg": "8a15ef50f2bf67596da1f365eba5a4b3",
-"assets/assets/default_pop.png": "dd66041886eb16ec71aadcb2f53ab798",
+"assets/assets/default_pop.png": "6269b0861344dc0e87be09db26880b67",
+"assets/assets/default_pop_with_vnester.png": "bafdd6f0dc8ca02d9f60a0937c32f6f8",
 "assets/assets/logo_whole.svg": "cc5c6e7a351257a3ce6c2e1124bd70ba",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
-"assets/AssetManifest.json": "e4d5348d46a3dad28496f982e9ff8680",
-"assets/NOTICES": "4c683cae18b2e7e5ade42ddb8237f789",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
+"assets/fonts/MaterialIcons-Regular.otf": "27206588da6d3d24f71ec64067b75eb0",
+"assets/AssetManifest.json": "319a2d3d835cbe1140b0ee77090415d8",
+"assets/NOTICES": "d41bfd670f8f2f92353eed7a91db37ba",
 "version.json": "e8c2c5571dbf220b6c474ce8f8ee16ee",
 "favicon.png": "c9dc0b2efec0630c7f58e72083bf86ef"
 };
@@ -35,7 +38,7 @@ self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
-        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
+        CORE.map((value) => new Request(value, {'cache': 'reload'})));
     })
   );
 });

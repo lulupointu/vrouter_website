@@ -14,7 +14,7 @@ class PopEventsDescription extends StatelessWidget {
 Handling back buttons is always important. While you often seek the default behaviour, you sometimes want to have a custom one. 
 VRouter provides you with a default behaviour close to the one in Flutter but also enables you to customize it.
 
-The default behaviour is to pop all VRouteElement until a VStacked is popped.''',
+The default behaviour is to pop the latest VRouteElement containing a widget.''',
             style: textStyle,
           ),
         ),
@@ -28,17 +28,28 @@ The default behaviour is to pop all VRouteElement until a VStacked is popped.'''
         SizedBox(height: 30),
         SelectableText.rich(
           TextSpan(
-            text: 'If we are on the last VStacked:\n',
+            text: '''If you pop the VRouteElement on top of a VNester, VNester will be popped as well:''',
             style: textStyle,
-            children: [
-              TextSpan(
-                text: '''   
-• On mobile: the application closes 
-• On the web: nothing happens
+          ),
+        ),
+        SizedBox(height: 30),
+        Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 300),
+            child: Image.asset('assets/default_pop_with_vnester.png'),
+          ),
+        ),
+        SizedBox(height: 30),
+        SelectableText.rich(
+          TextSpan(
+            text: '''Note that when a default pop happens, a new url corresponding to the new route will be pushed, causing the navigation cycle to start.
 
-Also note that when a default pop happens, a new url corresponding to the new route will be pushed, causing the navigation cycle to start.''',
-              ),
-            ],
+Also note that if we are on the last VRouteElement:
+  • On mobile: the application closes 
+  • On the web: nothing happens
+
+If you want to customize your pop events, you can use onPop or onSystemPop.''',
+            style: textStyle,
           ),
         ),
       ],
@@ -56,43 +67,57 @@ class OnPopPageSection extends StatelessWidget {
         SelectableText.rich(
           TextSpan(
             text: '''
-This allows you to handle what happens during a programmatic pop. This happens automatically with an app bar back button, or you can activate it manually with VRouterData.of(context).pop(context).
-To handle this event, consider the following pop cycle:
-    1. onPop is called in all VNavigationGuards
-    2. onPop is called in the nested-most VRouteElement of the current route
-    3. onPop is called in VRouter
-    4. Default behaviour of pop is called
+This allows you to handle what happens during a programmatic pop. This happens automatically with an app bar back button, or you can activate it manually with context.vRouter.pop().
 
-For each of the calls, if onPop returns false, the pop event stops.
-Note that in VNavigationGuard, onPop is called starting from the most nested one.''',
+To handle this event, consider the following pop cycle:
+  1. onPop is called in all VWidgetGuard
+  2. onPop is called in all VPopHandler of the current route
+  3. onPop is called in VRouter
+  4. Default behaviour of pop is called
+
+You get a VRedirector in onPop, which can be used to stop the pop event.''',
             style: textStyle,
           ),
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-VStacked(
-  // popping while the path is '/profile' will call this
-  onPop: (context) async {
-    VRouterData.of(context).push('/other'); // You can use VRouterData to redirect
-    return false; // returning false stops the pop event
-  },
-  path: 'profile',
-  widget: ProfileWidget(),
+VRouter(
+  // Every pop event will call this
+  onPop: (vRedirector) async {},
+  routes: [
+    // popping while the path is '/profile' will call this
+    VPopHandler(
+      onPop: (vRedirector) async {
+        vRedirector.push('/other'); // You can use VRedirector to redirect
+      },
+      stackedRoutes: [
+        VWidget(
+          path: 'profile',
+          widget: ProfileScreen(),
+        ),
+      ],
+    ),
+  ],
 )
           ''',
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-VNavigationGuard(
-  // If this VNavigationGuard is in the path and a pop
-  // event occurs, this will be called
-  onPop: (context) async {
-    ...
-  },
-  child: ...,
-)
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    VWidgetGuard(
+      // If this VWidgetGuard is in the widget tree and a pop
+      // event occurs, this will be called
+      onPop: (vRedirector) async {
+        ...
+      },
+      child: ...,
+    );
+  }
+}
           ''',
         ),
       ],
@@ -110,37 +135,63 @@ class OnSystemPopPageSection extends StatelessWidget {
         SelectableText.rich(
           TextSpan(
             text: '''
-This allows you to handle what happens during a system pop. This happens on android when the back button is pressed, or you can activate it manually with VRouterData.of(context).systemPop(context).
-To handle this event, consider the following systemPop cycle:
-    1. onSystemPop is called in all VNavigationGuards
-    2. onSystemPop is called in the nested-most VRouteElement of the current route
-    3. onSystemPop is called in VRouter
-    4. pop is called, see the pop cycle above 
+This allows you to handle what happens during a system pop. This happens on android when the back button is pressed, or you can activate it manually with context.vRouter.systemPop(context).
 
-For each of the calls, if onSystemPop returns false, the systemPop event stops.
-Note that in VNavigationGuard, onSystemPop is called starting from the most nested one.''',
+To handle this event, consider the following systemPop cycle:
+  1. onSystemPop is called in all VWidgetGuards
+  2. onSystemPop is called in all VPopHandler of the current route
+  3. onSystemPop is called in VRouter
+  4. pop is called, see the pop cycle above 
+
+You get a VRedirector in onSystemPop, which can be used to stop the pop event.''',
             style: textStyle,
           ),
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-VStacked(
-  // pressing the android back button while the path is '/profile' will call this
-  onSystemPop: (context) async {
-    VRouterData.of(context).push('/other'); // You can use VRouterData to redirect
-    return false; // returning false stops the pop event
-  },
-  path: '/profile',
-  widget: ProfileWidget(),
+VRouter(
+  // Every systemPop event will call this
+  onSystemPop: (vRedirector) async {},
+  routes: [
+    VPopHandler(
+      onSystemPop: (vRedirector) async {
+        vRedirector.push('/other'); // You can use VRedirector to redirect
+      },
+      stackedRoutes: [
+        VWidget(
+          path: 'profile',
+          widget: ProfileScreen(),
+        ),
+      ],
+    ),
+  ],
 )
+          ''',
+        ),
+        SizedBox(height: 10),
+        MyDartCodeViewer(
+          code: r'''
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    VWidgetGuard(
+      // If this VWidgetGuard is in the widget tree and a systemPop
+      // event occurs, this will be called
+      onSystemPop: (vRedirector) async {
+        ...
+      },
+      child: ...,
+    );
+  }
+}
           ''',
         ),
         SizedBox(height: 10),
         SelectableText.rich(
           TextSpan(
             text: '''
-Note that is no systemPop methods are implemented, the pop cycle will start instead.''',
+Note that, at each step of the systepPop cycle, if onSystemPop is not implemented, onPop will be called instead.''',
             style: textStyle,
           ),
         ),
