@@ -13,7 +13,7 @@ Giving you as much control as possible over what happens when a route changes is
 
 To achieve such control, five functions can be used in various places: beforeLeave, beforeEnter, beforeUpdate, afterEnter, afterUpdate.
 These function have different scope depending on where they are specified: 
-    • Global if specified if the VRouter (i.e. they will always be called)
+    • Global if specified in the VRouter (i.e. they will always be called)
     • Route specific if specified in a VGuard
     • Widget specific by using VWidgetGuard''',
         style: textStyle,
