@@ -34,7 +34,7 @@ VRouter(
   routes: [
     VPage(
       path: '/login',
-      pageBuilder: (child) => LoginPage(child),
+      pageBuilder: (key, child) => LoginPage(key, child),
       widget: LoginScren(),
     ),
   ],
@@ -46,9 +46,12 @@ VRouter(
         MyDartCodeViewer(
           code: r'''
 class LoginPage extends Page {
+  @override
+  final LocalKey key;
+
   final Widget child;
 
-  LoginPage(this.child);
+  LoginPage(this.key, this.child) : super(key: key);
 
   @override
   Route createRoute(BuildContext context) {
@@ -83,7 +86,7 @@ VRouter(
   routes: [
     VNesterPage(
       path: null,
-      pageBuilder: (child) => LoginPage(child),
+      pageBuilder: (key, child) => LoginPage(key, child),
       widgetBuilder: (child) => MyScaffold(body: child),
       nestedRoutes: [
         VWidget(path: '/home', widget: HomeScreen()),
@@ -99,9 +102,12 @@ VRouter(
         MyDartCodeViewer(
           code: r'''
 class LoginPage extends Page {
+  @override
+  final LocalKey key;
+
   final Widget child;
 
-  LoginPage(this.child);
+  LoginPage(this.key, this.child) : super(key: key);
 
   @override
   Route createRoute(BuildContext context) {
