@@ -6,7 +6,13 @@ void main() {
     VRouter(
       debugShowCheckedModeBanner: false,
       initialUrl: '/user/bob',
-      routes: [VWidget(path: '/user/:userId', widget: UserScreen())],
+      routes: [
+        VWidget(path: '/user/:userId', widget: UserScreen()),
+
+        // :_ designate a path parameter named "_"
+        // In parentheses you can put any regexp, here .+ matches everything
+        VRouteRedirector(path: ':_(.+)', redirectTo: '/user/bob'),
+      ],
     ),
   );
 }
@@ -16,7 +22,7 @@ class UserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String name = context.vRouter.pathParameters['userId'];
+    final name = context.vRouter.pathParameters['userId'];
 
     return Material(
       child: Center(

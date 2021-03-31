@@ -36,8 +36,15 @@ class MyScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Nesting example')),
       body: child,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: context.vRouter.url.contains('settings') ? 1 : 0,
+        onTap: (value) => context.vRouter.push((value==0) ? '/examples/nesting/' : '/examples/nesting/settings'),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        ],
+      ),
     );
   }
 }

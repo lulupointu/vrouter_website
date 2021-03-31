@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:clipboard/clipboard.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:dart_code_viewer/dart_code_viewer.dart';
@@ -9,11 +11,15 @@ import 'package:vrouter_website/pages/examples/navigator_wrapper.dart';
 import 'home_page.dart';
 import 'in_app_page.dart';
 
-import 'package:vrouter_website/pages/examples/executable/basic_example_executable.dart' as basic_example;
-import 'package:vrouter_website/pages/examples/executable/history_state_executable.dart' as history_state;
+import 'package:vrouter_website/pages/examples/executable/basic_example_executable.dart'
+    as basic_example;
+import 'package:vrouter_website/pages/examples/executable/history_state_executable.dart'
+    as history_state;
 import 'package:vrouter_website/pages/examples/executable/nesting_executable.dart' as nesting;
-import 'package:vrouter_website/pages/examples/executable/redirection_executable.dart' as redirection;
-import 'package:vrouter_website/pages/examples/executable/transitions_executable.dart' as transitions;
+import 'package:vrouter_website/pages/examples/executable/redirection_executable.dart'
+    as redirection;
+import 'package:vrouter_website/pages/examples/executable/transitions_executable.dart'
+    as transitions;
 import 'package:vrouter_website/pages/examples/executable/path_parameters_executable.dart'
     as path_parameters;
 
@@ -71,8 +77,15 @@ final examplesRoutes = [
   VRouteRedirector(path: r'history_state:_(.*)', redirectTo: '/examples/history_state/'),
 
   // Nesting
-  VWidget(path: 'nesting/', widget: nesting.HomeScreen()),
-  VWidget(path: 'nesting/settings', widget: nesting.SettingsScreen()),
+  VNester(
+    path: 'nesting/',
+    widgetBuilder: (child) => nesting.MyScaffold(child),
+    // Child is the widget from nestedRoutes
+    nestedRoutes: [
+      VWidget(path: null, widget: nesting.HomeScreen()), // null path matches parent
+      VWidget(path: 'settings', widget: nesting.SettingsScreen()),
+    ],
+  ),
   VRouteRedirector(path: r'nesting:_(.*)', redirectTo: '/examples/nesting/'),
 
   // Redirection
@@ -121,10 +134,10 @@ Size getTextSize(String text, TextStyle style, {double maxWidth = double.infinit
 
 class MyDartCodeViewer extends StatelessWidget {
   final String code;
-  final backgroundColor = const Color(0xFF282C34);
-  final fontSize = 16.0;
+  static final backgroundColor = const Color(0xFF282C34);
+  final bool roundedEdges;
 
-  MyDartCodeViewer({Key key, @required String code})
+  MyDartCodeViewer({Key key, @required String code, this.roundedEdges = false})
       : code = code.replaceAll('  ', '      '),
         super(key: key);
 
@@ -133,10 +146,12 @@ class MyDartCodeViewer extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 16.0, bottom: 0.0, left: 8.0, right: 16.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        borderRadius: roundedEdges ? BorderRadius.all(Radius.circular(8.0)) : null,
         color: backgroundColor,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
+        final fontSize = min(16, max(8, constraints.maxWidth / 25));
+
         return Stack(
           children: [
             DartCodeViewer(
@@ -194,7 +209,8 @@ class MyDartCodeViewer extends StatelessWidget {
               height: getTextSize(
                 code,
                 GoogleFonts.ubuntu(textStyle: TextStyle(fontSize: fontSize, height: 1.4)),
-                maxWidth: constraints.maxWidth - 40, // 40 is DartCodeViewer internal padding
+                maxWidth:
+                    max(1, constraints.maxWidth - 60), // 60 is DartCodeViewer internal padding
               ).height,
             ),
             Align(

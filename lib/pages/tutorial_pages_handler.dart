@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:easy_web_view/easy_web_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,15 +33,19 @@ class TutorialPagesHandler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (selectedPageSection != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        Scrollable.ensureVisible(selectedPageSection.titleKey.currentContext,
-            duration: Duration(milliseconds: 300));
-      });
+      if (selectedPageSection.titleKey != null) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          Scrollable.ensureVisible(selectedPageSection.titleKey.currentContext,
+              duration: Duration(milliseconds: 300));
+        });
+      }
     } else if (selectedSubSection != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        Scrollable.ensureVisible(selectedSubSection.titleKey.currentContext,
-            duration: Duration(milliseconds: 300));
-      });
+      if (selectedSubSection.titleKey != null) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          Scrollable.ensureVisible(selectedSubSection.titleKey.currentContext,
+              duration: Duration(milliseconds: 300));
+        });
+      }
     }
 
     return Center(
@@ -259,27 +264,7 @@ class TutorialExamplePage extends TutorialPage {
                   ),
                 ],
                 Expanded(
-                  child: LayoutBuilder(
-                    builder: (_, constraints) => Row(
-                      children: [
-                        Flexible(
-                          flex: 500,
-                          child: FutureBuilder(
-                            future: rootBundle.loadString('examples/${selectedSubSection.codeName}.dart'),
-                            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                              return MyDartCodeViewer(
-                                code: snapshot.data ?? '',
-                              );
-                            },
-                          ),
-                        ),
-                        Flexible(
-                          flex: 500,
-                          child: EasyWebView(src: 'https://flutter.dev',),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: ExampleContainer(codeName: selectedSubSection.codeName),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height / 30),
                 Container(color: Colors.grey.shade400, height: 0.5),
@@ -339,17 +324,214 @@ class TutorialExamplePage extends TutorialPage {
   }
 }
 
-class RectClipper extends CustomClipper<Rect> {
-  final double clipMargin;
+class ExampleContainer extends StatefulWidget {
+  final String codeName;
+  @override
+  final GlobalKey<_ExampleContainerState> key;
 
-  RectClipper({@required this.clipMargin});
+  ExampleContainer({@required this.codeName}) : key = GlobalKey<_ExampleContainerState>();
 
   @override
-  Rect getClip(Size size) {
-    return Rect.fromLTRB(
-        clipMargin, clipMargin, size.width - clipMargin, size.height - clipMargin);
+  _ExampleContainerState createState() => _ExampleContainerState();
+}
+
+class _ExampleContainerState extends State<ExampleContainer> {
+  final maxFlex = 1000;
+  double offsetFraction = 0.5;
+
+  @override
+  Widget build(BuildContext context) {
+    final offsetFlex = min(maxFlex - 1, max(1, (offsetFraction * maxFlex).toInt()));
+    final inverseOffsetFlex = maxFlex - offsetFlex;
+
+    return Container(
+      color: MyDartCodeViewer.backgroundColor,
+      padding: EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Column(
+            children: [
+              Container(
+                height: 25,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: min(constraints.maxWidth - 28,
+                          max(-20, offsetFraction * (constraints.maxWidth - 4) + 2 - 19)),
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onHorizontalDragUpdate: (DragUpdateDetails dragUpdateDetails) {
+                          RenderBox box = widget.key.currentContext.findRenderObject();
+                          final localX =
+                              box.globalToLocal(dragUpdateDetails.globalPosition).dx;
+
+                          setState(() => offsetFraction = localX / constraints.maxWidth);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 5.0),
+                          child: HandleWidget(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Flexible(
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: offsetFlex,
+                      child: FutureBuilder(
+                        future: rootBundle.loadString('examples/${widget.codeName}.dart'),
+                        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                          return MyDartCodeViewer(
+                            code: snapshot.data ?? '',
+                            roundedEdges: false,
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: HandleWidget.color),
+                        color: HandleWidget.color,
+                      ),
+                      width: 4,
+                    ),
+                    Flexible(
+                      flex: inverseOffsetFlex,
+                      child: EasyWebView(
+                        src:
+                            'https://vrouter.dev/examples/${Uri.encodeComponent(widget.codeName)}/',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class HandleWidget extends StatelessWidget {
+  static final color = Colors.lightBlueAccent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RotatedBox(
+              quarterTurns: 3,
+              child: CustomPaint(
+                size: Size(10, 6),
+                painter: TrianglePainter(
+                  strokeColor: color,
+                  strokeWidth: 0,
+                  paintingStyle: PaintingStyle.fill,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: color),
+                color: color,
+              ),
+              height: 15,
+              width: 3,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: color),
+                color: color,
+              ),
+              height: 15,
+              width: 4,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: color),
+                color: color,
+              ),
+              height: 15,
+              width: 3,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            RotatedBox(
+              quarterTurns: 1,
+              child: CustomPaint(
+                size: Size(10, 6),
+                painter: TrianglePainter(
+                  strokeColor: color,
+                  strokeWidth: 0,
+                  paintingStyle: PaintingStyle.fill,
+                ),
+              ),
+            )
+          ],
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: color),
+            color: color,
+          ),
+          height: 5,
+          width: 4,
+        ),
+      ],
+    );
+  }
+}
+
+class TrianglePainter extends CustomPainter {
+  final Color strokeColor;
+  final PaintingStyle paintingStyle;
+  final double strokeWidth;
+
+  TrianglePainter(
+      {this.strokeColor = Colors.black,
+      this.strokeWidth = 3,
+      this.paintingStyle = PaintingStyle.stroke});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = strokeColor
+      ..strokeWidth = strokeWidth
+      ..style = paintingStyle;
+
+    canvas.drawPath(getTrianglePath(size.width, size.height), paint);
+  }
+
+  Path getTrianglePath(double x, double y) {
+    return Path()
+      ..moveTo(0, y)
+      ..lineTo(x / 2, 0)
+      ..lineTo(x, y)
+      ..lineTo(0, y);
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper oldClipper) => true;
+  bool shouldRepaint(TrianglePainter oldDelegate) {
+    return oldDelegate.strokeColor != strokeColor ||
+        oldDelegate.paintingStyle != paintingStyle ||
+        oldDelegate.strokeWidth != strokeWidth;
+  }
 }

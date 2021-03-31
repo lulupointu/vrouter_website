@@ -12,6 +12,7 @@ import 'package:vrouter_website/pages/essentials/getting_started.dart';
 import 'package:vrouter_website/pages/advanced/navigation_control.dart';
 import 'package:vrouter_website/pages/essentials/programmatic_navigation.dart';
 import 'package:vrouter_website/pages/essentials/redirection.dart';
+import 'package:vrouter_website/pages/examples/basic_example.dart';
 
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
@@ -51,16 +52,41 @@ class InAppPage extends StatelessWidget {
         ],
       ),
     ]),
-    // MainExampleSection(
-    //   title: 'Examples',
-    //   subExampleSections: [
-    //     SubExampleSection(
-    //       title: 'Basic example',
-    //       description: Text('This is a small example'),
-    //       codeName: 'basic_example',
-    //     ),
-    //   ],
-    // ),
+    MainExampleSection(
+      title: 'Examples',
+      subExampleSections: [
+        SubExampleSection(
+          title: 'Basic example',
+          description: BasicExampleDescription(),
+          codeName: 'basic_example',
+        ),
+        SubExampleSection(
+          title: 'Nesting',
+          description: BasicExampleDescription(),
+          codeName: 'nesting',
+        ),
+        SubExampleSection(
+          title: 'Path parameters',
+          description: BasicExampleDescription(),
+          codeName: 'path_parameters',
+        ),
+        SubExampleSection(
+          title: 'Redirection',
+          description: BasicExampleDescription(),
+          codeName: 'redirection',
+        ),
+        SubExampleSection(
+          title: 'Transitions',
+          description: BasicExampleDescription(),
+          codeName: 'transitions',
+        ),
+        SubExampleSection(
+          title: 'History State',
+          description: BasicExampleDescription(),
+          codeName: 'history_state',
+        ),
+      ],
+    ),
     MainSection(title: 'Essentials', subSections: [
       SubSection(
         title: 'Getting Started',
@@ -236,13 +262,13 @@ class InAppPage extends StatelessWidget {
                 previousSubSectionTitle =
                     selectedMainSection.subSections[subSectionIndex - 1].title;
                 previousSubSectionLink =
-                    '/guide/${selectedMainSection.title}/${previousSubSectionTitle}';
+                    '/guide/${selectedMainSection.title}/$previousSubSectionTitle';
               } else {
                 if (selectedMainSectionIndex != 0) {
                   previousSubSectionTitle =
                       sections[selectedMainSectionIndex - 1].subSections.last.title;
                   previousSubSectionLink =
-                      '/guide/${sections[selectedMainSectionIndex - 1].title}/${previousSubSectionTitle}';
+                      '/guide/${sections[selectedMainSectionIndex - 1].title}/$previousSubSectionTitle';
                 }
               }
 
@@ -251,13 +277,13 @@ class InAppPage extends StatelessWidget {
                 nextSubSectionTitle =
                     selectedMainSection.subSections[subSectionIndex + 1].title;
                 nextSubSectionLink =
-                    '/guide/${selectedMainSection.title}/${nextSubSectionTitle}';
+                    '/guide/${selectedMainSection.title}/$nextSubSectionTitle';
               } else {
                 if (selectedMainSectionIndex != sections.length - 1) {
                   nextSubSectionTitle =
                       sections[selectedMainSectionIndex + 1].subSections.first.title;
                   nextSubSectionLink =
-                      '/guide/${sections[selectedMainSectionIndex + 1].title}/${nextSubSectionTitle}';
+                      '/guide/${sections[selectedMainSectionIndex + 1].title}/$nextSubSectionTitle';
                 }
               }
 
@@ -305,25 +331,25 @@ class InAppPage extends StatelessWidget {
       if (subSectionIndex != 0) {
         previousSubSectionTitle = selectedMainSection.subSections[subSectionIndex - 1].title;
         previousSubSectionLink =
-            '/guide/${selectedMainSection.title}/${previousSubSectionTitle}';
+            '/guide/${selectedMainSection.title}/$previousSubSectionTitle';
       } else {
         if (selectedMainSectionIndex != 0) {
           previousSubSectionTitle =
               sections[selectedMainSectionIndex - 1].subSections.last.title;
           previousSubSectionLink =
-              '/guide/${sections[selectedMainSectionIndex - 1].title}/${previousSubSectionTitle}';
+              '/guide/${sections[selectedMainSectionIndex - 1].title}/$previousSubSectionTitle';
         }
       }
 
       // Try to get the next subSection
       if (subSectionIndex != selectedMainSection.subSections.length - 1) {
         nextSubSectionTitle = selectedMainSection.subSections[subSectionIndex + 1].title;
-        nextSubSectionLink = '/guide/${selectedMainSection.title}/${nextSubSectionTitle}';
+        nextSubSectionLink = '/guide/${selectedMainSection.title}/$nextSubSectionTitle';
       } else {
         if (selectedMainSectionIndex != sections.length - 1) {
           nextSubSectionTitle = sections[selectedMainSectionIndex + 1].subSections.first.title;
           nextSubSectionLink =
-              '/guide/${sections[selectedMainSectionIndex + 1].title}/${nextSubSectionTitle}';
+              '/guide/${sections[selectedMainSectionIndex + 1].title}/$nextSubSectionTitle';
         }
       }
     }
