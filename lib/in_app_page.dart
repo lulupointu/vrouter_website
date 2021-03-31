@@ -13,6 +13,11 @@ import 'package:vrouter_website/pages/advanced/navigation_control.dart';
 import 'package:vrouter_website/pages/essentials/programmatic_navigation.dart';
 import 'package:vrouter_website/pages/essentials/redirection.dart';
 import 'package:vrouter_website/pages/examples/basic_example.dart';
+import 'package:vrouter_website/pages/examples/history_state.dart';
+import 'package:vrouter_website/pages/examples/nesting.dart';
+import 'package:vrouter_website/pages/examples/path_parameters.dart';
+import 'package:vrouter_website/pages/examples/redirection.dart';
+import 'package:vrouter_website/pages/examples/transitions.dart';
 
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
@@ -62,27 +67,27 @@ class InAppPage extends StatelessWidget {
         ),
         SubExampleSection(
           title: 'Nesting',
-          description: BasicExampleDescription(),
+          description: NestingExampleDescription(),
           codeName: 'nesting',
         ),
         SubExampleSection(
           title: 'Path parameters',
-          description: BasicExampleDescription(),
+          description: PathParametersExampleDescription(),
           codeName: 'path_parameters',
         ),
         SubExampleSection(
           title: 'Redirection',
-          description: BasicExampleDescription(),
+          description: RedirectionExampleDescription(),
           codeName: 'redirection',
         ),
         SubExampleSection(
           title: 'Transitions',
-          description: BasicExampleDescription(),
+          description: TransitionsExampleDescription(),
           codeName: 'transitions',
         ),
         SubExampleSection(
           title: 'History State',
-          description: BasicExampleDescription(),
+          description: HistoryStateExampleDescription(),
           codeName: 'history_state',
         ),
       ],
@@ -149,7 +154,7 @@ class InAppPage extends StatelessWidget {
         title: 'Path parameters',
         pageSections: [
           PageSection(
-              title: 'Path parameters basics', description: PathParametersBasicsPageSection()),
+              title: 'Path parameters basics', description: PathParametersPageSection()),
           PageSection(
               title: 'Advanced Pattern Matching',
               description: AdvancedPatternMatchingPageSection()),

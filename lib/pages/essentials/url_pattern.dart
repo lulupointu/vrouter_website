@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/main.dart';
 
-class PathParametersBasicsPageSection extends StatelessWidget {
+class PathParametersPageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
