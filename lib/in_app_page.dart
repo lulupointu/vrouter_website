@@ -27,7 +27,6 @@ import 'pages/essentials/name_and_aliases.dart';
 import 'pages/essentials/nesting_widgets.dart';
 import 'pages/essentials/route_formation.dart';
 import 'pages/essentials/url_pattern.dart';
-import 'pages/examples/examples.dart';
 
 class InAppPage extends StatelessWidget {
   final List<MainSection> sections = [
@@ -56,9 +55,9 @@ class InAppPage extends StatelessWidget {
     //   title: 'Examples',
     //   subExampleSections: [
     //     SubExampleSection(
-    //       title: 'Example1',
+    //       title: 'Basic example',
     //       description: Text('This is a small example'),
-    //       codePath: 'examples/example.dart',
+    //       codeName: 'basic_example',
     //     ),
     //   ],
     // ),

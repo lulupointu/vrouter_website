@@ -23,19 +23,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#  vrouter: ^0.0.11+2
+  vrouter: ^1.1.0+11
   flutter_svg: ^0.20.0-0
   google_fonts:
   provider: ^4.3.3
-  dart_code_viewer: ^0.0.1
+  dart_code_viewer:
   clipboard: ^0.1.2+8
-  dart_pad_widget: ^2.0.0-nullsafety.0
+  easy_web_view:
 
 
-  vrouter:
-    git:
-      url: https://github.com/lulupointu/vrouter.git
-      ref: dev
+#  vrouter:
+#    git:
+#      url: https://github.com/lulupointu/vrouter.git
+#      ref: dev
 
 dev_dependencies:
   flutter_test:

@@ -1,12 +1,11 @@
 import 'dart:math';
 
-import 'package:dart_pad_widget/dart_pad_widget.dart';
+import 'package:easy_web_view/easy_web_view.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter_website/main.dart';
 import 'package:flutter/services.dart' show rootBundle;
-
 
 import '../left_navigation_bar.dart';
 
@@ -261,22 +260,24 @@ class TutorialExamplePage extends TutorialPage {
                 ],
                 Expanded(
                   child: LayoutBuilder(
-                    builder: (_, constraints) => ClipRect(
-                      // removes te red bars around DartPad on firefox
-                      clipper: RectClipper(clipMargin: 2),
-                      child: FutureBuilder(
-                        future: rootBundle.loadString(selectedSubSection.codePath),
-                        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                          return DartPad(
-                            key: ValueKey(selectedSubSection.title),
-                            width: constraints.maxWidth,
-                            height: constraints.maxHeight,
-                            code: snapshot.data,
-                            flutter: true,
-                            runImmediately: true,
-                          );
-                        },
-                      ),
+                    builder: (_, constraints) => Row(
+                      children: [
+                        Flexible(
+                          flex: 500,
+                          child: FutureBuilder(
+                            future: rootBundle.loadString('examples/${selectedSubSection.codeName}.dart'),
+                            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                              return MyDartCodeViewer(
+                                code: snapshot.data ?? '',
+                              );
+                            },
+                          ),
+                        ),
+                        Flexible(
+                          flex: 500,
+                          child: EasyWebView(src: 'https://flutter.dev',),
+                        ),
+                      ],
                     ),
                   ),
                 ),

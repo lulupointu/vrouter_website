@@ -1,4 +1,3 @@
-import 'package:dart_pad_widget/dart_pad_widget.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -243,13 +242,13 @@ class SubExampleSection extends SubSection {
   final Widget description;
   @override
   final GlobalKey titleKey;
-  final String codePath;
+  final String codeName;
 
   SubExampleSection({
     @required this.title,
     this.titleKey,
     @required this.description,
-    @required this.codePath,
+    @required this.codeName,
   });
 }
 
