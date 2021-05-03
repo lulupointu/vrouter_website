@@ -79,10 +79,13 @@ class GuideRoute extends VRouteElementBuilder {
   }) {
     SubSection subSection;
     for (var mainSection in InAppPage.sections) {
-      subSection = mainSection.subSections.firstWhere(
-          (subSections) => subSections.pageSections.contains(pageSection),
-          orElse: null);
-      if (subSection != null) break;
+      final subSectionIndex = mainSection.subSections.indexWhere(
+        (subSections) => subSections.pageSections.contains(pageSection),
+      );
+      if (subSectionIndex != -1) {
+        subSection = mainSection.subSections[subSectionIndex];
+        break;
+      }
     }
     final mainSection = InAppPage.sections
         .firstWhere((mainSection) => mainSection.subSections.contains(subSection));
