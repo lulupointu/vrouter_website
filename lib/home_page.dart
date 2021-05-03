@@ -133,7 +133,7 @@ class _LightButtonState extends State<LightButton> {
       },
       child: GestureDetector(
         onTap: widget.onPressed,
-        child: TweenAnimationBuilder(
+        child: TweenAnimationBuilder<Color>(
           duration: Duration(milliseconds: 300),
           tween: ColorTween(
               begin: Color(0xFF9ce0ff),

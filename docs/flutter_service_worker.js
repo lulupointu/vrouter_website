@@ -3,17 +3,17 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "index.html": "f0d1ae150622ce99650fe7fffb40619f",
-"/": "f0d1ae150622ce99650fe7fffb40619f",
+  "index.html": "83502325b59e2b56b0f5e39e8776d5d2",
+"/": "83502325b59e2b56b0f5e39e8776d5d2",
 "manifest.json": "c40d42e0baf354a03b8ecab89436ee84",
 "icons/Icon-192.png": "1a527d149182cdaf4209bc714a73bd32",
 "icons/Icon-512.png": "d4f07c1e9bcd06b420137e127e507f4d",
-"main.dart.js": "8beeca4c2684699ee6d404b80fb39e33",
+"main.dart.js": "276850e88cc5edba27d964ca91af4721",
 "assets/examples/basic_example.dart": "16f6492e8aaff9217bd7953bc2bfa1fa",
-"assets/examples/transitions.dart": "707416740ac4e93ff6def638b978db88",
+"assets/examples/transitions.dart": "a4573e4352d664286d62fcd83186cbb3",
 "assets/examples/redirection.dart": "7f627971e84ae8511d5be2170c451fe7",
-"assets/examples/nesting.dart": "cb67c4b4c7d503c59d1f649c6cd2214e",
-"assets/examples/history_state.dart": "108beec3389be4d9f9eedafb7eb7ad18",
+"assets/examples/nesting.dart": "11ae5d376f1b76d73cc44451a42e6bd8",
+"assets/examples/history_state.dart": "fcd65eab035b0ae61ffb0c77890dac7f",
 "assets/examples/path_parameters.dart": "87ece6dbdbef9f64378d00435a2b9da7",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/assets/v_logo.svg": "8a15ef50f2bf67596da1f365eba5a4b3",
@@ -22,9 +22,9 @@ const RESOURCES = {
 "assets/assets/handle.svg": "b0241e1535335ec1c7c813589b3f7a97",
 "assets/assets/logo_whole.svg": "cc5c6e7a351257a3ce6c2e1124bd70ba",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
-"assets/fonts/MaterialIcons-Regular.otf": "27206588da6d3d24f71ec64067b75eb0",
+"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
 "assets/AssetManifest.json": "f1c8509429cc384f01d2883d7e978202",
-"assets/NOTICES": "45d2ca3e5efc1ec505968a0e19c0f95a",
+"assets/NOTICES": "8989e805561b7aefb1e21a071e869aac",
 "version.json": "e8c2c5571dbf220b6c474ce8f8ee16ee",
 "favicon.png": "c9dc0b2efec0630c7f58e72083bf86ef"
 };
@@ -44,7 +44,7 @@ self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
-        CORE.map((value) => new Request(value, {'cache': 'reload'})));
+        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
     })
   );
 });

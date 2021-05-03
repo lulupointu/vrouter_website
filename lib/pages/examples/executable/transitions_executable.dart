@@ -4,7 +4,7 @@ import 'package:vrouter/vrouter.dart';
 class AnimatedPage extends Page {
   final Widget child;
 
-  AnimatedPage(this.child, LocalKey key) : super(key: key);
+  AnimatedPage(this.child, LocalKey key, String name) : super(key: key, name: name);
 
   @override
   Route createRoute(BuildContext context) {

@@ -2,6 +2,8 @@ import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrouter_website/in_app_page.dart';
+import 'package:vrouter_website/main.dart';
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 class LeftNavigationBar extends StatelessWidget {
@@ -46,8 +48,7 @@ class LeftNavigationBarData extends InheritedWidget {
     Key key,
     @required Widget child,
     @required this.sections,
-  })  : assert(child != null),
-        super(key: key, child: child);
+  }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(LeftNavigationBarData old) {
@@ -55,23 +56,18 @@ class LeftNavigationBarData extends InheritedWidget {
   }
 }
 
-class MainSection extends StatelessWidget {
-  final String title;
-  final List<SubSection> subSections;
+abstract class MainSection extends StatelessWidget {
+  String get title;
 
-  const MainSection({Key key, @required this.title, @required this.subSections})
-      : super(key: key);
+  List<SubSection> get subSections;
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = (context.vRouter.pathParameters['mainSection'] != null)
-        ? (context.vRouter.pathParameters['mainSection'] == title)
-        : LeftNavigationBar.of(context).sections.first == this;
+    final isSelected = InAppPage.of(context).mainSection == this;
 
     return MainSectionData(
-      title: title,
+      mainSection: this,
       isSelected: isSelected,
-      subSections: subSections,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,24 +87,37 @@ class MainSection extends StatelessWidget {
     );
   }
 
+  TutorialPage buildPage({
+    Key key,
+    @required SubSection previousSubSection,
+    @required SubSection selectedSubSection,
+    @required SubSection nextSubSection,
+  });
+
   static MainSectionData of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MainSectionData>();
   }
+}
+
+class MainSectionText extends MainSection {
+  @override
+  final String title;
+
+  @override
+  final List<SubSectionText> subSections;
+
+  MainSectionText({Key key, @required this.title, @required this.subSections});
 
   TutorialPage buildPage({
     Key key,
-    @required String previousSubSectionTitle,
-    @required String previousSubSectionLink,
+    @required SubSection previousSubSection,
     @required SubSection selectedSubSection,
-    @required String nextSubSectionTitle,
-    @required String nextSubSectionLink,
+    @required SubSection nextSubSection,
   }) =>
-      TutorialPage(
-        previousSubSectionTitle: previousSubSectionTitle,
-        previousSubSectionLink: previousSubSectionLink,
+      TutorialPageText(
+        previousSubSection: previousSubSection,
         selectedSubSection: selectedSubSection,
-        nextSubSectionTitle: nextSubSectionTitle,
-        nextSubSectionLink: nextSubSectionLink,
+        nextSubSection: nextSubSection,
       );
 }
 
@@ -119,7 +128,7 @@ class MainExampleSection extends MainSection {
   @override
   List<SubSection> get subSections => subExampleSections;
 
-  final List<SubExampleSection> subExampleSections;
+  final List<SubSectionExample> subExampleSections;
 
   MainExampleSection({
     @required this.title,
@@ -129,34 +138,31 @@ class MainExampleSection extends MainSection {
   @override
   TutorialPage buildPage({
     Key key,
-    @required String previousSubSectionTitle,
-    @required String previousSubSectionLink,
+    @required SubSection previousSubSection,
     @required SubSection selectedSubSection,
-    @required String nextSubSectionTitle,
-    @required String nextSubSectionLink,
+    @required SubSection nextSubSection,
   }) =>
-      TutorialExamplePage(
-        previousSubSectionTitle: previousSubSectionTitle,
-        previousSubSectionLink: previousSubSectionLink,
-        selectedSubSection: selectedSubSection,
-        nextSubSectionTitle: nextSubSectionTitle,
-        nextSubSectionLink: nextSubSectionLink,
+      TutorialPageExample(
+        previousSubSection: previousSubSection,
+        selectedSubSection: selectedSubSection as SubSectionExample,
+        nextSubSection: nextSubSection,
       );
 }
 
 class MainSectionData extends InheritedWidget {
-  final String title;
+  final MainSection mainSection;
+
+  String get title => mainSection.title;
   final bool isSelected;
-  final List<SubSection> subSections;
+
+  List<SubSection> get subSections => mainSection.subSections;
 
   const MainSectionData({
     Key key,
     @required Widget child,
-    @required this.title,
+    @required this.mainSection,
     @required this.isSelected,
-    @required this.subSections,
-  })  : assert(child != null),
-        super(key: key, child: child);
+  }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(MainSectionData old) {
@@ -164,39 +170,35 @@ class MainSectionData extends InheritedWidget {
   }
 }
 
-class SubSection extends StatelessWidget {
-  final String title;
-  final List<PageSection> pageSections;
-  final Widget description;
-  final GlobalKey titleKey;
+abstract class SubSection extends StatelessWidget {
+  String get title;
 
-  SubSection({
-    Key key,
-    @required this.title,
-    @required this.pageSections,
-    this.description,
-  })  : titleKey = GlobalKey(),
-        super(key: key);
+  List<PageSection> get pageSections;
+
+  Widget get description;
+
+  final GlobalKey titleKey = GlobalKey();
+
+  static SubSectionData of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<SubSectionData>();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = (context.vRouter.pathParameters['subSection'] != null)
-        ? (context.vRouter.pathParameters['subSection'] == title)
-        : (MainSection.of(context).isSelected &&
-            MainSection.of(context).subSections.first == this);
+    final isSelected = InAppPage.of(context).subSection == this;
 
     return SubSectionData(
-      title: title,
+      subSection: this,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LinkButton(
             onPressed: () {
-              context.vRouter.pushNamed('guide', pathParameters: {
-                'mainSection': MainSection.of(context).title,
-                'subSection': title,
-              });
+              GuideRoute.toSubSection(
+                context,
+                subSection: this,
+              );
             },
             child: Container(
               decoration: BoxDecoration(
@@ -226,13 +228,22 @@ class SubSection extends StatelessWidget {
       ),
     );
   }
-
-  static SubSectionData of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<SubSectionData>();
-  }
 }
 
-class SubExampleSection extends SubSection {
+class SubSectionText extends SubSection {
+  final String title;
+  final List<PageSection> pageSections;
+  final Widget description;
+
+  SubSectionText({
+    Key key,
+    @required this.title,
+    @required this.pageSections,
+    this.description,
+  });
+}
+
+class SubSectionExample extends SubSection {
   @override
   final String title;
 
@@ -240,27 +251,24 @@ class SubExampleSection extends SubSection {
   List<PageSection> get pageSections => [];
   @override
   final Widget description;
-  @override
-  final GlobalKey titleKey;
   final String codeName;
 
-  SubExampleSection({
+  SubSectionExample({
     @required this.title,
-    this.titleKey,
     @required this.description,
     @required this.codeName,
   });
 }
 
 class SubSectionData extends InheritedWidget {
-  final String title;
+  String get title => subSection.title;
+  final SubSection subSection;
 
   const SubSectionData({
     Key key,
     @required Widget child,
-    @required this.title,
-  })  : assert(child != null),
-        super(key: key, child: child);
+    @required this.subSection,
+  }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(SubSectionData old) {
@@ -279,15 +287,14 @@ class PageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = context.vRouter.pathParameters['pageSection'] == title;
+    final isSelected = InAppPage.of(context).pageSection == this;
 
     return LinkButton(
       onPressed: () {
-        context.vRouter.pushNamed('guide', pathParameters: {
-          'mainSection': MainSection.of(context).title,
-          'subSection': SubSection.of(context).title,
-          'pageSection': title
-        });
+        GuideRoute.toPageSection(
+          context,
+          pageSection: this,
+        );
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 46, top: 4, bottom: 4),

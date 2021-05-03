@@ -103,10 +103,7 @@ You can also create your own Page and set your transitions there, you can then u
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      context.vRouter.pushNamed('guide', pathParameters: {
-                        'mainSection': 'Advanced',
-                        'subSection': 'Custom Pages',
-                      });
+                    GuideRoute.toSectionFromTitle(context, mainSectionTitle: 'Advanced', subSectionTitle: 'Custom Pages');
                     }),
               TextSpan(text: '.'),
             ],

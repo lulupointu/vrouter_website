@@ -103,7 +103,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.20.0-nullsafety.3"
+    version: "0.22.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -183,14 +183,14 @@ packages:
       name: path_drawing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0-nullsafety.0"
+    version: "0.5.0"
   path_parsing:
     dependency: transitive
     description:
       name: path_parsing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0-nullsafety.0"
+    version: "0.2.0"
   path_provider:
     dependency: transitive
     description:
@@ -239,14 +239,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.3"
-  simple_url_handler:
-    dependency: transitive
-    description:
-      name: simple_url_handler
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
+    version: "5.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -258,7 +251,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.1"
+    version: "1.8.0"
   stack_trace:
     dependency: transitive
     description:
@@ -360,10 +353,10 @@ packages:
   vrouter:
     dependency: "direct main"
     description:
-      name: vrouter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0+11"
+      path: "../vrouter"
+      relative: true
+    source: path
+    version: "1.1.1+7"
   webview_flutter:
     dependency: transitive
     description:

@@ -21,7 +21,8 @@ void main() {
         VPage(
           path: '/settings',
           widget: SettingsScreen(),
-          pageBuilder: (LocalKey key, Widget child) => AnimatedPage(child, key),
+          pageBuilder: (LocalKey key, Widget child, String name) =>
+              AnimatedPage(child, key, name),
         ),
       ],
     ),
@@ -31,7 +32,7 @@ void main() {
 class AnimatedPage extends Page {
   final Widget child;
 
-  AnimatedPage(this.child, LocalKey key) : super(key: key);
+  AnimatedPage(this.child, LocalKey key, String name) : super(key: key, name: name);
 
   @override
   Route createRoute(BuildContext context) {

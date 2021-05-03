@@ -5,6 +5,7 @@ import 'package:vrouter/vrouter.dart';
 import 'package:dart_code_viewer/dart_code_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrouter_website/left_navigation_bar.dart';
 import 'package:vrouter_website/pages/examples/examples_screen.dart';
 import 'package:vrouter_website/pages/examples/navigator_wrapper.dart';
 
@@ -23,7 +24,8 @@ import 'package:vrouter_website/pages/examples/executable/transitions_executable
 import 'package:vrouter_website/pages/examples/executable/path_parameters_executable.dart'
     as path_parameters;
 
-final Widget Function(Animation, Animation, Widget) fadeTransition = (animation, __, child) {
+final Widget Function(Animation<double>, Animation<double>, Widget) fadeTransition =
+    (animation, __, child) {
   return FadeTransition(
     opacity: animation,
     child: child,
@@ -41,28 +43,139 @@ void main() {
         VWidget(widget: HomePage(), path: '/', buildTransition: fadeTransition),
 
         // Guide
-        VWidget(
-          path: '/guide/:mainSection/:subSection/:pageSection',
-          name: 'guide',
-          widget: InAppPage(),
-          aliases: ['/guide', '/guide/:mainSection/:subSection', '/guide/:mainSection'],
-          buildTransition: fadeTransition,
-        ),
+        GuideRoute(),
 
         // Examples
-        VWidget(path: '/examples/all', widget: ExamplesScreen(), stackedRoutes: [
-          VNester(
-            path: '/examples',
-            widgetBuilder: (child) => NavigatorWrapper(child: child),
-            nestedRoutes: examplesRoutes,
-          ),
-        ]),
+        ExampleRoute(),
 
         // Redirection
         VRouteRedirector(path: ':_(.*)', redirectTo: '/'),
       ],
     ),
   );
+}
+
+class GuideRoute extends VRouteElementBuilder {
+  static void toMainSection(
+    BuildContext context, {
+    @required MainSection mainSection,
+  }) =>
+      context.vRouter.push('/guide/${Uri.encodeComponent(mainSection.title)}');
+
+  static void toSubSection(
+    BuildContext context, {
+    @required SubSection subSection,
+  }) {
+    final mainSection = InAppPage.sections
+        .firstWhere((mainSection) => mainSection.subSections.contains(subSection));
+    context.vRouter.push(
+      '/guide/${mainSection.title}/${Uri.encodeComponent(subSection.title)}',
+    );
+  }
+
+  static void toPageSection(
+    BuildContext context, {
+    @required PageSection pageSection,
+  }) {
+    SubSection subSection;
+    for (var mainSection in InAppPage.sections) {
+      subSection = mainSection.subSections.firstWhere(
+          (subSections) => subSections.pageSections.contains(pageSection),
+          orElse: null);
+      if (subSection != null) break;
+    }
+    final mainSection = InAppPage.sections
+        .firstWhere((mainSection) => mainSection.subSections.contains(subSection));
+    context.vRouter.push(
+        '/guide/${mainSection.title}/${subSection.title}/${Uri.encodeComponent(pageSection.title)}');
+  }
+
+  static void toSectionFromTitle(
+    BuildContext context, {
+    @required String mainSectionTitle,
+    String subSectionTitle,
+    String pageSectionTitle,
+  }) =>
+      context.vRouter.push(
+          '/guide/${Uri.encodeComponent(mainSectionTitle)}${subSectionTitle != null ? '/${Uri.encodeComponent(subSectionTitle)}${pageSectionTitle != null ? '/${Uri.encodeComponent(pageSectionTitle)}' : ''}' : ''}');
+
+  @override
+  List<VRouteElement> buildRoutes() {
+    return [
+      VWidget(
+        path: '/guide',
+        widget: InAppPage.fromMainSection(mainSection: InAppPage.sections.first),
+      ),
+      for (var mainSection in InAppPage.sections) ...[
+        VWidget(
+          path: '/guide/${Uri.encodeComponent(mainSection.title)}',
+          name: 'guide',
+          widget: InAppPage.fromMainSection(mainSection: mainSection),
+          buildTransition: fadeTransition,
+        ),
+        for (var subSection in mainSection.subSections) ...[
+          VGuard(
+            afterEnter: (_, __, ___) => Scrollable.ensureVisible(
+              subSection.titleKey.currentContext,
+              duration: Duration(milliseconds: 300),
+            ),
+            stackedRoutes: [
+              VWidget(
+                path:
+                    '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}',
+                name: 'guide',
+                key: ValueKey(subSection.title),
+                widget:
+                    InAppPage.fromSubSection(mainSection: mainSection, subSection: subSection),
+                buildTransition: fadeTransition,
+              )
+            ],
+          ),
+          for (var pageSection in subSection.pageSections) ...[
+            VGuard(
+              afterEnter: (_, __, ___) => Scrollable.ensureVisible(
+                pageSection.titleKey.currentContext,
+                duration: Duration(milliseconds: 300),
+              ),
+              stackedRoutes: [
+                VWidget(
+                  path:
+                      '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}/${Uri.encodeComponent(pageSection.title)}',
+                  name: 'guide',
+                  key: ValueKey(subSection.title),
+                  widget: InAppPage(
+                    mainSection: mainSection,
+                    subSection: subSection,
+                    pageSection: pageSection,
+                  ),
+                  buildTransition: fadeTransition,
+                )
+              ],
+            )
+          ]
+        ]
+      ],
+    ];
+  }
+}
+
+class ExampleRoute extends VRouteElementBuilder {
+  @override
+  List<VRouteElement> buildRoutes() {
+    return [
+      VWidget(
+        path: '/examples/all',
+        widget: ExamplesScreen(),
+        stackedRoutes: [
+          VNester(
+            path: '/examples',
+            widgetBuilder: (child) => NavigatorWrapper(child: child),
+            nestedRoutes: examplesRoutes,
+          ),
+        ],
+      )
+    ];
+  }
 }
 
 final examplesRoutes = [
@@ -112,7 +225,8 @@ final examplesRoutes = [
   VPage(
     path: 'transitions/settings',
     widget: transitions.SettingsScreen(),
-    pageBuilder: (LocalKey key, Widget child) => transitions.AnimatedPage(child, key),
+    pageBuilder: (LocalKey key, Widget child, String name) =>
+        transitions.AnimatedPage(child, key, name),
   ),
   VRouteRedirector(path: r'transitions:_(.*)', redirectTo: '/examples/transitions/'),
 
@@ -150,7 +264,7 @@ class MyDartCodeViewer extends StatelessWidget {
         color: backgroundColor,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
-        final fontSize = min(16, max(8, constraints.maxWidth / 25));
+        final fontSize = min(16, max(8, constraints.maxWidth / 25)).toDouble();
 
         return Stack(
           children: [

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter_website/main.dart';
 import 'package:vrouter_website/pages/Introduction/installation.dart';
 import 'package:vrouter_website/pages/Introduction/what_is_vrouter.dart';
+import 'package:vrouter_website/pages/advanced/scaling_and_custom_vroute_element.dart';
 import 'package:vrouter_website/pages/essentials/getting_started.dart';
 import 'package:vrouter_website/pages/advanced/navigation_control.dart';
 import 'package:vrouter_website/pages/essentials/programmatic_navigation.dart';
@@ -35,9 +36,64 @@ import 'pages/essentials/route_formation.dart';
 import 'pages/essentials/url_pattern.dart';
 
 class InAppPage extends StatelessWidget {
-  final List<MainSection> sections = [
-    MainSection(title: 'Introduction', subSections: [
-      SubSection(
+  final MainSection mainSection;
+  final SubSection subSection;
+  final PageSection pageSection;
+
+  final SubSection previousSubSection;
+  final SubSection nextSubSection;
+
+  InAppPage({
+    @required this.mainSection,
+    @required this.subSection,
+    @required this.pageSection,
+  })  : previousSubSection = mainSection.subSections.indexOf(subSection) == 0
+            ? sections.indexOf(mainSection) == 0
+      ? null
+      : sections[sections.indexOf(mainSection) - 1].subSections.last
+            : mainSection.subSections[mainSection.subSections.indexOf(subSection) - 1],
+        nextSubSection =
+            mainSection.subSections.indexOf(subSection) == mainSection.subSections.length - 1
+                ? sections.indexOf(mainSection) == sections.length - 1
+                    ? null
+                    : sections[sections.indexOf(mainSection) + 1].subSections.first
+                : mainSection.subSections[mainSection.subSections.indexOf(subSection) + 1];
+
+  InAppPage.fromMainSection({@required this.mainSection})
+      : subSection = mainSection.subSections.first,
+        pageSection = mainSection.subSections.first.pageSections.isNotEmpty
+            ? mainSection.subSections.first.pageSections.first
+            : null,
+        previousSubSection = mainSection.subSections.indexOf(mainSection.subSections.first) == 0
+            ? sections.indexOf(mainSection) == 0
+            ? null
+            : sections[sections.indexOf(mainSection) - 1].subSections.last
+            : mainSection.subSections[mainSection.subSections.indexOf(mainSection.subSections.first) - 1],
+        nextSubSection =
+        mainSection.subSections.indexOf(mainSection.subSections.first) == mainSection.subSections.length - 1
+            ? sections.indexOf(mainSection) == sections.length - 1
+            ? null
+            : sections[sections.indexOf(mainSection) + 1].subSections.first
+            : mainSection.subSections[mainSection.subSections.indexOf(mainSection.subSections.first) + 1];
+
+  InAppPage.fromSubSection({@required this.mainSection, @required this.subSection})
+      : pageSection =
+            subSection.pageSections.isNotEmpty ? subSection.pageSections.first : null,
+        previousSubSection = mainSection.subSections.indexOf(subSection) == 0
+            ? sections.indexOf(mainSection) == 0
+            ? null
+            : sections[sections.indexOf(mainSection) - 1].subSections.last
+            : mainSection.subSections[mainSection.subSections.indexOf(subSection) - 1],
+        nextSubSection =
+        mainSection.subSections.indexOf(subSection) == mainSection.subSections.length - 1
+            ? sections.indexOf(mainSection) == sections.length - 1
+            ? null
+            : sections[sections.indexOf(mainSection) + 1].subSections.first
+            : mainSection.subSections[mainSection.subSections.indexOf(subSection) + 1];
+
+  static final List<MainSection> sections = [
+    MainSectionText(title: 'Introduction', subSections: [
+      SubSectionText(
         title: 'What Is VRouter?',
         description: WhatIsVRouterDescription(),
         pageSections: [
@@ -47,7 +103,7 @@ class InAppPage extends StatelessWidget {
           ),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Installation',
         description: InstallationDescription(),
         pageSections: [
@@ -60,40 +116,40 @@ class InAppPage extends StatelessWidget {
     MainExampleSection(
       title: 'Examples',
       subExampleSections: [
-        SubExampleSection(
+        SubSectionExample(
           title: 'Basic example',
           description: BasicExampleDescription(),
           codeName: 'basic_example',
         ),
-        SubExampleSection(
+        SubSectionExample(
           title: 'Nesting',
           description: NestingExampleDescription(),
           codeName: 'nesting',
         ),
-        SubExampleSection(
+        SubSectionExample(
           title: 'Path parameters',
           description: PathParametersExampleDescription(),
           codeName: 'path_parameters',
         ),
-        SubExampleSection(
+        SubSectionExample(
           title: 'Redirection',
           description: RedirectionExampleDescription(),
           codeName: 'redirection',
         ),
-        SubExampleSection(
+        SubSectionExample(
           title: 'Transitions',
           description: TransitionsExampleDescription(),
           codeName: 'transitions',
         ),
-        SubExampleSection(
+        SubSectionExample(
           title: 'History State',
           description: HistoryStateExampleDescription(),
           codeName: 'history_state',
         ),
       ],
     ),
-    MainSection(title: 'Essentials', subSections: [
-      SubSection(
+    MainSectionText(title: 'Essentials', subSections: [
+      SubSectionText(
         title: 'Getting Started',
         description: GettingStartedDescription(),
         pageSections: [
@@ -102,7 +158,7 @@ class InAppPage extends StatelessWidget {
           PageSection(title: 'VRouter Magic', description: VRouterMagicPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Programmatic Navigation',
         description: ProgrammaticNavigationDescription(),
         pageSections: [
@@ -110,7 +166,7 @@ class InAppPage extends StatelessWidget {
           PageSection(title: 'Replace A Route', description: ReplaceARoutePageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Route formation',
         description: RouteFormationDescription(),
         pageSections: [
@@ -118,19 +174,19 @@ class InAppPage extends StatelessWidget {
           PageSection(title: 'Path formation', description: PathFormationPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Widget nesting',
         description: WidgetNestingDescription(),
         pageSections: [],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Name And Aliases',
         pageSections: [
           PageSection(title: 'Named Route', description: NamedRoutePageSection()),
           PageSection(title: 'Aliases', description: AliasesPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Redirection',
         description: RedirectionDescription(),
         pageSections: [
@@ -138,19 +194,19 @@ class InAppPage extends StatelessWidget {
           PageSection(title: 'VRedirector', description: VRedirectorPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'HTML5 History Mode',
         description: HistoryModeDescription(),
         pageSections: [],
       ),
-      SubSection(
+      SubSectionText(
         description: AboutMaterialAppDescription(),
         title: 'About MaterialApp',
         pageSections: [],
       ),
     ]),
-    MainSection(title: 'Advanced', subSections: [
-      SubSection(
+    MainSectionText(title: 'Advanced', subSections: [
+      SubSectionText(
         title: 'Path parameters',
         pageSections: [
           PageSection(
@@ -161,7 +217,7 @@ class InAppPage extends StatelessWidget {
           PageSection(title: 'Matching Priority', description: MatchingPriorityPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Navigation Control',
         description: NavigationControlDescription(),
         pageSections: [
@@ -172,7 +228,7 @@ class InAppPage extends StatelessWidget {
           PageSection(title: 'Web Caveat', description: WebCaveatPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Transitions',
         description: TransitionDescription(),
         pageSections: [
@@ -183,7 +239,7 @@ class InAppPage extends StatelessWidget {
               description: LocalRouteTransitionPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Data Fetching',
         description: DataFetchingDescription(),
         pageSections: [
@@ -195,7 +251,17 @@ class InAppPage extends StatelessWidget {
               description: FetchingDataAfterNavigationPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
+        title: 'Custom VRouteElement And Scaling',
+        description: CustomVRouteElementAndScalingDescription(),
+        pageSections: [
+          PageSection(
+              title: 'Custom VRouteElement',
+              description: CustomVRouteElementDescriptionPageSection()),
+          PageSection(title: 'Scaling', description: ScalingDescriptionPageSection()),
+        ],
+      ),
+      SubSectionText(
         title: 'Pop Events',
         description: PopEventsDescription(),
         pageSections: [
@@ -203,7 +269,7 @@ class InAppPage extends StatelessWidget {
           PageSection(title: 'onSystemPop', description: OnSystemPopPageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'History State',
         description: HistoryStateDescription(),
         pageSections: [
@@ -217,7 +283,7 @@ class InAppPage extends StatelessWidget {
               title: 'Saving Before Leave', description: SavingBeforeLeavePageSection()),
         ],
       ),
-      SubSection(
+      SubSectionText(
         title: 'Custom Pages',
         description: CustomPagesDescription(),
         pageSections: [
@@ -228,161 +294,62 @@ class InAppPage extends StatelessWidget {
     ]),
   ];
 
+  static InAppPageData of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<InAppPageData>();
+  }
+
   @override
   Widget build(BuildContext context) {
-    MainSection selectedMainSection;
-    String previousSubSectionLink;
-    String previousSubSectionTitle;
-    SubSection selectedSubSection;
-    String nextSubSectionLink;
-    String nextSubSectionTitle;
-    PageSection selectedPageSection;
-
-    final mainSectionTitle = context.vRouter.pathParameters['mainSection'];
-    if (mainSectionTitle != null) {
-      // Check the validity of the main section
-      try {
-        selectedMainSection =
-            sections.firstWhere((section) => section.title == mainSectionTitle);
-      } on StateError {
-        selectedMainSection = null;
-      }
-      if (selectedMainSection == null) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          context.vRouter.pushNamed('guide');
-        });
-      } else {
-        final subSectionTitle = context.vRouter.pathParameters['subSection'];
-        if (subSectionTitle != null) {
-          // Check the validity of the sub section
-          for (var subSectionIndex = 0;
-              subSectionIndex < selectedMainSection.subSections.length;
-              subSectionIndex++) {
-            if (selectedMainSection.subSections[subSectionIndex].title == subSectionTitle) {
-              selectedSubSection = selectedMainSection.subSections[subSectionIndex];
-
-              // Try to get the previous subSection
-              final selectedMainSectionIndex = sections.indexOf(selectedMainSection);
-              if (subSectionIndex != 0) {
-                previousSubSectionTitle =
-                    selectedMainSection.subSections[subSectionIndex - 1].title;
-                previousSubSectionLink =
-                    '/guide/${selectedMainSection.title}/$previousSubSectionTitle';
-              } else {
-                if (selectedMainSectionIndex != 0) {
-                  previousSubSectionTitle =
-                      sections[selectedMainSectionIndex - 1].subSections.last.title;
-                  previousSubSectionLink =
-                      '/guide/${sections[selectedMainSectionIndex - 1].title}/$previousSubSectionTitle';
-                }
-              }
-
-              // Try to get the next subSection
-              if (subSectionIndex != selectedMainSection.subSections.length - 1) {
-                nextSubSectionTitle =
-                    selectedMainSection.subSections[subSectionIndex + 1].title;
-                nextSubSectionLink =
-                    '/guide/${selectedMainSection.title}/$nextSubSectionTitle';
-              } else {
-                if (selectedMainSectionIndex != sections.length - 1) {
-                  nextSubSectionTitle =
-                      sections[selectedMainSectionIndex + 1].subSections.first.title;
-                  nextSubSectionLink =
-                      '/guide/${sections[selectedMainSectionIndex + 1].title}/$nextSubSectionTitle';
-                }
-              }
-
-              break;
-            }
-          }
-
-          if (selectedSubSection == null) {
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              context.vRouter.pushNamed('guide', pathParameters: {
-                'mainSection': selectedMainSection.title,
-              });
-            });
-          } else {
-            final pageSectionTitle = context.vRouter.pathParameters['pageSection'];
-            if (pageSectionTitle != null) {
-              // Check the validity of the page section
-              try {
-                selectedPageSection = selectedSubSection.pageSections
-                    ?.firstWhere((section) => section.title == pageSectionTitle);
-              } on StateError {
-                selectedPageSection = null;
-              }
-              if (selectedPageSection == null) {
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  context.vRouter.pushNamed('guide', pathParameters: {
-                    'mainSection': selectedMainSection.title,
-                    'subSection': selectedSubSection.title,
-                  });
-                });
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // Put default value if needed
-    selectedMainSection ??= sections.first;
-    if (selectedSubSection == null) {
-      selectedSubSection ??= selectedMainSection.subSections.first;
-      // Try to get the previous subSection
-      final selectedMainSectionIndex = sections.indexOf(selectedMainSection);
-      final subSectionIndex = selectedMainSection.subSections.indexOf(selectedSubSection);
-      if (subSectionIndex != 0) {
-        previousSubSectionTitle = selectedMainSection.subSections[subSectionIndex - 1].title;
-        previousSubSectionLink =
-            '/guide/${selectedMainSection.title}/$previousSubSectionTitle';
-      } else {
-        if (selectedMainSectionIndex != 0) {
-          previousSubSectionTitle =
-              sections[selectedMainSectionIndex - 1].subSections.last.title;
-          previousSubSectionLink =
-              '/guide/${sections[selectedMainSectionIndex - 1].title}/$previousSubSectionTitle';
-        }
-      }
-
-      // Try to get the next subSection
-      if (subSectionIndex != selectedMainSection.subSections.length - 1) {
-        nextSubSectionTitle = selectedMainSection.subSections[subSectionIndex + 1].title;
-        nextSubSectionLink = '/guide/${selectedMainSection.title}/$nextSubSectionTitle';
-      } else {
-        if (selectedMainSectionIndex != sections.length - 1) {
-          nextSubSectionTitle = sections[selectedMainSectionIndex + 1].subSections.first.title;
-          nextSubSectionLink =
-              '/guide/${sections[selectedMainSectionIndex + 1].title}/$nextSubSectionTitle';
-        }
-      }
-    }
-
-    final tutorialPageHandler = TutorialPagesHandler(
-      selectedMainSection: selectedMainSection,
-      previousSubSectionTitle: previousSubSectionTitle,
-      previousSubSectionLink: previousSubSectionLink,
-      selectedSubSection: selectedSubSection,
-      nextSubSectionTitle: nextSubSectionTitle,
-      nextSubSectionLink: nextSubSectionLink,
-      selectedPageSection: selectedPageSection,
-    );
-
     return ScrollConfiguration(
       behavior: MyScrollBehavior(),
-      child: LayoutBuilder(builder: (context, constraints) {
-        return (constraints.maxWidth > 1000)
-            ? ComputerInApp(
-                tutorialPageHandler: tutorialPageHandler,
-                leftNavigationBar: LeftNavigationBar(sections: sections),
-              )
-            : MobileInApp(
-                tutorialPageHandler: tutorialPageHandler,
-                leftNavigationBar: LeftNavigationBar(sections: sections),
-              );
-      }),
+      child: InAppPageData(
+        mainSection: mainSection,
+        subSection: subSection,
+        pageSection: pageSection,
+        previousSubSection: previousSubSection,
+        nextSubSection: nextSubSection,
+        child: LayoutBuilder(builder: (context, constraints) {
+          return (constraints.maxWidth > 1000)
+              ? ComputerInApp(
+                  tutorialPageHandler: TutorialPagesHandler(),
+                  leftNavigationBar: LeftNavigationBar(sections: sections),
+                )
+              : MobileInApp(
+                  tutorialPageHandler: TutorialPagesHandler(),
+                  leftNavigationBar: LeftNavigationBar(sections: sections),
+                );
+        }),
+      ),
     );
+  }
+}
+
+class InAppPageData extends InheritedWidget {
+  final MainSection mainSection;
+  final SubSection subSection;
+  final PageSection pageSection;
+
+  final SubSection previousSubSection;
+  final SubSection nextSubSection;
+
+  const InAppPageData({
+    Key key,
+    @required Widget child,
+    @required this.mainSection,
+    @required this.subSection,
+    @required this.pageSection,
+    @required this.previousSubSection,
+    @required this.nextSubSection,
+  })  : assert(child != null),
+        super(key: key, child: child);
+
+  @override
+  bool updateShouldNotify(InAppPageData old) {
+    return old.mainSection != mainSection ||
+        old.subSection != subSection ||
+        old.pageSection != pageSection ||
+        old.previousSubSection != previousSubSection ||
+        old.nextSubSection != nextSubSection;
   }
 }
 
@@ -498,7 +465,7 @@ class _MobileInAppState extends State<MobileInApp> {
   @override
   Widget build(BuildContext context) {
     return VWidgetGuard(
-      afterUpdate: (_, __, ___) {
+      beforeLeave: (_, __) async {
         if (showLeftNavigationBar) {
           setState(() {
             showLeftNavigationBar = false;
@@ -506,15 +473,14 @@ class _MobileInAppState extends State<MobileInApp> {
           });
         }
       },
-      onPop: (_) async {
+      onPop: (vRedirector) async {
         if (showLeftNavigationBar) {
           setState(() {
             showLeftNavigationBar = false;
             isAnimating = true;
           });
-          return false;
+          return vRedirector.stopRedirection();
         }
-        return true;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -587,100 +553,99 @@ class _MobileInAppState extends State<MobileInApp> {
   }
 }
 
-class MobileBody extends StatefulWidget {
-  final LeftNavigationBar leftNavigationBar;
-  final TutorialPagesHandler tutorialPagesHandler;
-
-  const MobileBody({
-    Key key,
-    @required this.leftNavigationBar,
-    @required this.tutorialPagesHandler,
-  }) : super(key: key);
-
-  @override
-  _MobileBodyState createState() => _MobileBodyState();
-}
-
-class _MobileBodyState extends State<MobileBody> {
-  bool showLeftNavigationBar = false;
-  bool isAnimating = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return VWidgetGuard(
-      afterUpdate: (_, __, ___) {
-        if (showLeftNavigationBar) {
-          setState(() {
-            showLeftNavigationBar = false;
-            isAnimating = true;
-          });
-        }
-      },
-      onPop: (_) async {
-        if (showLeftNavigationBar) {
-          setState(() {
-            showLeftNavigationBar = false;
-            isAnimating = true;
-          });
-          return false;
-        }
-        return true;
-      },
-      child: Stack(
-        children: [
-          widget.tutorialPagesHandler,
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () => setState(() => showLeftNavigationBar = true),
-                icon: Icon(Icons.menu),
-              ),
-            ),
-          ),
-          if (showLeftNavigationBar || isAnimating)
-            TweenAnimationBuilder<double>(
-              duration: Duration(milliseconds: 300),
-              tween: Tween<double>(begin: 0, end: (showLeftNavigationBar) ? 1 : 0),
-              builder: (context, value, _) {
-                final newIsAnimating = (showLeftNavigationBar) ? !(value == 1) : !(value == 0);
-                if (newIsAnimating != isAnimating) {
-                  WidgetsBinding.instance.addPostFrameCallback(
-                      (_) => setState(() => isAnimating = newIsAnimating));
-                }
-                return GestureDetector(
-                  onTap: () {
-                    isAnimating = true;
-                    setState(() => showLeftNavigationBar = false);
-                  },
-                  child: Container(
-                    color: Colors.black.withAlpha((50 * value).ceil()),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: GestureDetector(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return SlideTransition(
-                              position:
-                                  Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(0, 0))
-                                      .animate(AlwaysStoppedAnimation<double>(value)),
-                              child: Container(
-                                color: Colors.white,
-                                height: constraints.maxHeight,
-                                child: widget.leftNavigationBar,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-        ],
-      ),
-    );
-  }
-}
+// class MobileBody extends StatefulWidget {
+//   final LeftNavigationBar leftNavigationBar;
+//   final TutorialPagesHandler tutorialPagesHandler;
+//
+//   const MobileBody({
+//     Key key,
+//     @required this.leftNavigationBar,
+//     @required this.tutorialPagesHandler,
+//   }) : super(key: key);
+//
+//   @override
+//   _MobileBodyState createState() => _MobileBodyState();
+// }
+//
+// class _MobileBodyState extends State<MobileBody> {
+//   bool showLeftNavigationBar = false;
+//   bool isAnimating = false;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return VWidgetGuard(
+//       afterUpdate: (_, __, ___) {
+//         if (showLeftNavigationBar) {
+//           setState(() {
+//             showLeftNavigationBar = false;
+//             isAnimating = true;
+//           });
+//         }
+//       },
+//       onPop: (vRediretor) async {
+//         if (showLeftNavigationBar) {
+//           setState(() {
+//             showLeftNavigationBar = false;
+//             isAnimating = true;
+//           });
+//           return vRediretor.stopRedirection();
+//         }
+//       },
+//       child: Stack(
+//         children: [
+//           widget.tutorialPagesHandler,
+//           Align(
+//             alignment: Alignment.topLeft,
+//             child: Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: IconButton(
+//                 onPressed: () => setState(() => showLeftNavigationBar = true),
+//                 icon: Icon(Icons.menu),
+//               ),
+//             ),
+//           ),
+//           if (showLeftNavigationBar || isAnimating)
+//             TweenAnimationBuilder<double>(
+//               duration: Duration(milliseconds: 300),
+//               tween: Tween<double>(begin: 0, end: (showLeftNavigationBar) ? 1 : 0),
+//               builder: (context, value, _) {
+//                 final newIsAnimating = (showLeftNavigationBar) ? !(value == 1) : !(value == 0);
+//                 if (newIsAnimating != isAnimating) {
+//                   WidgetsBinding.instance.addPostFrameCallback(
+//                       (_) => setState(() => isAnimating = newIsAnimating));
+//                 }
+//                 return GestureDetector(
+//                   onTap: () {
+//                     isAnimating = true;
+//                     setState(() => showLeftNavigationBar = false);
+//                   },
+//                   child: Container(
+//                     color: Colors.black.withAlpha((50 * value).ceil()),
+//                     child: Align(
+//                       alignment: Alignment.topLeft,
+//                       child: GestureDetector(
+//                         child: LayoutBuilder(
+//                           builder: (context, constraints) {
+//                             return SlideTransition(
+//                               position:
+//                                   Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(0, 0))
+//                                       .animate(AlwaysStoppedAnimation<double>(value)),
+//                               child: Container(
+//                                 color: Colors.white,
+//                                 height: constraints.maxHeight,
+//                                 child: widget.leftNavigationBar,
+//                               ),
+//                             );
+//                           },
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 );
+//               },
+//             ),
+//         ],
+//       ),
+//     );
+//   }
+// }

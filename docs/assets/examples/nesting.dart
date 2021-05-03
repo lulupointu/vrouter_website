@@ -56,7 +56,7 @@ class MyScaffold extends StatelessWidget {
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: context.vRouter.url!.contains('settings') ? 1 : 0,
+        currentIndex: context.vRouter.url.contains('settings') ? 1 : 0,
         onTap: (value) => context.vRouter.push((value==0) ? '/' : '/settings'),
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),

@@ -16,7 +16,7 @@ void main() {
 class CounterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final int count = int.tryParse(context.vRouter.historyState['count'] ?? '0');
+    final int count = int.parse(context.vRouter.historyState['count'] ?? '0');
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

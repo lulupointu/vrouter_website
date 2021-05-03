@@ -4,7 +4,7 @@ import 'package:vrouter/vrouter.dart';
 class CounterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final count = int.tryParse(context.vRouter.historyState['count'] ?? '0');
+    final count = int.parse(context.vRouter.historyState['count'] ?? '0');
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

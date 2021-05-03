@@ -5,81 +5,48 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrouter_website/in_app_page.dart';
 import 'package:vrouter_website/main.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../left_navigation_bar.dart';
 
 class TutorialPagesHandler extends StatelessWidget {
-  final MainSection selectedMainSection;
-  final String previousSubSectionLink;
-  final String previousSubSectionTitle;
-  final SubSection selectedSubSection;
-  final String nextSubSectionLink;
-  final String nextSubSectionTitle;
-  final PageSection selectedPageSection;
-
-  const TutorialPagesHandler({
-    Key key,
-    @required this.selectedMainSection,
-    @required this.previousSubSectionLink,
-    @required this.previousSubSectionTitle,
-    @required this.selectedSubSection,
-    @required this.nextSubSectionLink,
-    @required this.nextSubSectionTitle,
-    @required this.selectedPageSection,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    if (selectedPageSection != null) {
-      if (selectedPageSection.titleKey != null) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          Scrollable.ensureVisible(selectedPageSection.titleKey.currentContext,
-              duration: Duration(milliseconds: 300));
-        });
-      }
-    } else if (selectedSubSection != null) {
-      if (selectedSubSection.titleKey != null) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          Scrollable.ensureVisible(selectedSubSection.titleKey.currentContext,
-              duration: Duration(milliseconds: 300));
-        });
-      }
-    }
-
     return Center(
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: selectedMainSection.buildPage(
-          key: ValueKey(selectedSubSection),
-          previousSubSectionTitle: previousSubSectionTitle,
-          previousSubSectionLink: previousSubSectionLink,
-          selectedSubSection: selectedSubSection,
-          nextSubSectionTitle: nextSubSectionTitle,
-          nextSubSectionLink: nextSubSectionLink,
-        ),
-      ),
+      child: InAppPage.of(context).mainSection.buildPage(
+            key: ValueKey(InAppPage.of(context).subSection),
+            previousSubSection: InAppPage.of(context).previousSubSection,
+            selectedSubSection: InAppPage.of(context).subSection,
+            nextSubSection: InAppPage.of(context).nextSubSection,
+          ),
     );
+  }
+
+  void scrollToSection(BuildContext context) {
+    if (InAppPage.of(context).pageSection != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Scrollable.ensureVisible(InAppPage.of(context).pageSection.titleKey.currentContext,
+            duration: Duration(milliseconds: 300));
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Scrollable.ensureVisible(InAppPage.of(context).subSection.titleKey.currentContext,
+            duration: Duration(milliseconds: 300));
+      });
+    }
   }
 }
 
-class TutorialPage extends StatelessWidget {
-  final String previousSubSectionTitle;
-  final String previousSubSectionLink;
-  final SubSection selectedSubSection;
-  final String nextSubSectionTitle;
-  final String nextSubSectionLink;
-  final ScrollController _scrollController = ScrollController();
+abstract class TutorialPage extends StatelessWidget {
+  SubSection get previousSubSection;
 
-  TutorialPage({
-    Key key,
-    @required this.previousSubSectionTitle,
-    @required this.previousSubSectionLink,
-    @required this.selectedSubSection,
-    @required this.nextSubSectionTitle,
-    @required this.nextSubSectionLink,
-  }) : super(key: key);
+  SubSection get selectedSubSection;
+
+  SubSection get nextSubSection;
+
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -123,27 +90,25 @@ class TutorialPage extends StatelessWidget {
                           SizedBox(height: MediaQuery.of(context).size.height / 30),
                           selectedSubSection.description,
                         ],
-                        if (selectedSubSection.pageSections != null)
-                          for (var i = 0; i < selectedSubSection.pageSections.length; i++) ...[
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 30,
-                            ),
-                            Text(
-                              selectedSubSection.pageSections[i].title,
-                              key: selectedSubSection.pageSections[i].titleKey,
-                              style: GoogleFonts.ubuntu(
-                                textStyle: TextStyle(
-                                  fontSize:
-                                      max(20, MediaQuery.of(context).size.height * 0.025),
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        for (var i = 0; i < selectedSubSection.pageSections.length; i++) ...[
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 30,
+                          ),
+                          Text(
+                            selectedSubSection.pageSections[i].title,
+                            key: selectedSubSection.pageSections[i].titleKey,
+                            style: GoogleFonts.ubuntu(
+                              textStyle: TextStyle(
+                                fontSize: max(20, MediaQuery.of(context).size.height * 0.025),
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 4),
-                            Container(color: Colors.grey.shade400, height: 0.5),
-                            SizedBox(height: MediaQuery.of(context).size.height / 50),
-                            selectedSubSection.pageSections[i].description,
-                          ],
+                          ),
+                          SizedBox(height: 4),
+                          Container(color: Colors.grey.shade400, height: 0.5),
+                          SizedBox(height: MediaQuery.of(context).size.height / 50),
+                          selectedSubSection.pageSections[i].description,
+                        ],
                         SizedBox(height: MediaQuery.of(context).size.height / 30),
                         Container(color: Colors.grey.shade400, height: 0.5),
                         SizedBox(height: MediaQuery.of(context).size.height / 50),
@@ -151,10 +116,13 @@ class TutorialPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            (previousSubSectionTitle != null)
+                            (previousSubSection != null)
                                 ? LinkButton(
                                     onPressed: () {
-                                      context.vRouter.push(previousSubSectionLink);
+                                      GuideRoute.toSubSection(
+                                        context,
+                                        subSection: previousSubSection,
+                                      );
                                     },
                                     child: Row(
                                       children: [
@@ -163,7 +131,7 @@ class TutorialPage extends StatelessWidget {
                                             child: Icon(Icons.arrow_right_alt,
                                                 color: linkStyle.color)),
                                         Text(
-                                          '$previousSubSectionTitle',
+                                          '${previousSubSection.title}',
                                           style: linkStyle.copyWith(
                                               decoration: TextDecoration.none,
                                               fontWeight: FontWeight.bold),
@@ -172,16 +140,19 @@ class TutorialPage extends StatelessWidget {
                                     ),
                                   )
                                 : Container(),
-                            (nextSubSectionTitle != null)
+                            (nextSubSection != null)
                                 ? LinkButton(
                                     onPressed: () {
-                                      context.vRouter.push(nextSubSectionLink);
+                                      GuideRoute.toSubSection(
+                                        context,
+                                        subSection: nextSubSection,
+                                      );
                                     },
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          '$nextSubSectionTitle',
+                                          '${nextSubSection.title}',
                                           style: linkStyle.copyWith(
                                               decoration: TextDecoration.none,
                                               fontWeight: FontWeight.bold),
@@ -206,27 +177,163 @@ class TutorialPage extends StatelessWidget {
   }
 }
 
-class TutorialExamplePage extends TutorialPage {
+class TutorialPageText extends TutorialPage {
+  final SubSection previousSubSection;
+  final SubSection selectedSubSection;
+  final SubSection nextSubSection;
+  final ScrollController _scrollController = ScrollController();
+
+  TutorialPageText({
+    Key key,
+    @required this.previousSubSection,
+    @required this.selectedSubSection,
+    @required this.nextSubSection,
+  });
+
   @override
-  final String previousSubSectionTitle;
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Scrollbar(
+        controller: _scrollController,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 800,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      bottom: max(20, MediaQuery.of(context).size.height / 10)),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          key: selectedSubSection.titleKey,
+                          padding: const EdgeInsets.only(top: 40.0),
+                          child: Text(
+                            selectedSubSection.title,
+                            style: GoogleFonts.ubuntu(
+                              textStyle: TextStyle(
+                                fontSize: max(24, MediaQuery.of(context).size.height * 0.035),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (selectedSubSection.description != null) ...[
+                          SizedBox(height: MediaQuery.of(context).size.height / 30),
+                          selectedSubSection.description,
+                        ],
+                        for (var i = 0; i < selectedSubSection.pageSections.length; i++) ...[
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 30,
+                          ),
+                          Text(
+                            selectedSubSection.pageSections[i].title,
+                            key: selectedSubSection.pageSections[i].titleKey,
+                            style: GoogleFonts.ubuntu(
+                              textStyle: TextStyle(
+                                fontSize: max(20, MediaQuery.of(context).size.height * 0.025),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Container(color: Colors.grey.shade400, height: 0.5),
+                          SizedBox(height: MediaQuery.of(context).size.height / 50),
+                          selectedSubSection.pageSections[i].description,
+                        ],
+                        SizedBox(height: MediaQuery.of(context).size.height / 30),
+                        Container(color: Colors.grey.shade400, height: 0.5),
+                        SizedBox(height: MediaQuery.of(context).size.height / 50),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            (previousSubSection != null)
+                                ? LinkButton(
+                                    onPressed: () {
+                                      GuideRoute.toSubSection(
+                                        context,
+                                        subSection: previousSubSection,
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        RotatedBox(
+                                            quarterTurns: 2,
+                                            child: Icon(Icons.arrow_right_alt,
+                                                color: linkStyle.color)),
+                                        Text(
+                                          '${previousSubSection.title}',
+                                          style: linkStyle.copyWith(
+                                              decoration: TextDecoration.none,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                            (nextSubSection != null)
+                                ? LinkButton(
+                                    onPressed: () {
+                                      GuideRoute.toSubSection(
+                                        context,
+                                        subSection: nextSubSection,
+                                      );
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          '${nextSubSection.title}',
+                                          style: linkStyle.copyWith(
+                                              decoration: TextDecoration.none,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Icon(Icons.arrow_right_alt, color: linkStyle.color),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TutorialPageExample extends TutorialPage {
   @override
-  final String previousSubSectionLink;
+  final SubSection previousSubSection;
   @override
-  final SubExampleSection selectedSubSection;
+  final SubSectionExample selectedSubSection;
   @override
-  final String nextSubSectionTitle;
-  @override
-  final String nextSubSectionLink;
+  final SubSection nextSubSection;
   @override
   final ScrollController _scrollController = ScrollController();
 
-  TutorialExamplePage({
+  TutorialPageExample({
     Key key,
-    @required this.previousSubSectionTitle,
-    @required this.previousSubSectionLink,
+    @required this.previousSubSection,
     @required this.selectedSubSection,
-    @required this.nextSubSectionTitle,
-    @required this.nextSubSectionLink,
+    @required this.nextSubSection,
   });
 
   @override
@@ -256,7 +363,7 @@ class TutorialExamplePage extends TutorialPage {
                     ),
                   ),
                 ),
-                if (selectedSubSection.description != null) ...[
+                ...[
                   SizedBox(height: MediaQuery.of(context).size.height / 30),
                   selectedSubSection.description,
                   SizedBox(
@@ -273,10 +380,13 @@ class TutorialExamplePage extends TutorialPage {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    (previousSubSectionTitle != null)
+                    (previousSubSection != null)
                         ? LinkButton(
                             onPressed: () {
-                              context.vRouter.push(previousSubSectionLink);
+                              GuideRoute.toSubSection(
+                                context,
+                                subSection: previousSubSection,
+                              );
                             },
                             child: Row(
                               children: [
@@ -285,7 +395,7 @@ class TutorialExamplePage extends TutorialPage {
                                     child:
                                         Icon(Icons.arrow_right_alt, color: linkStyle.color)),
                                 Text(
-                                  '$previousSubSectionTitle',
+                                  '${previousSubSection.title}',
                                   style: linkStyle.copyWith(
                                       decoration: TextDecoration.none,
                                       fontWeight: FontWeight.bold),
@@ -294,16 +404,19 @@ class TutorialExamplePage extends TutorialPage {
                             ),
                           )
                         : Container(),
-                    (nextSubSectionTitle != null)
+                    (nextSubSection != null)
                         ? LinkButton(
                             onPressed: () {
-                              context.vRouter.push(nextSubSectionLink);
+                              GuideRoute.toSubSection(
+                                context,
+                                subSection: nextSubSection,
+                              );
                             },
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  '$nextSubSectionTitle',
+                                  '${nextSubSection.title}',
                                   style: linkStyle.copyWith(
                                       decoration: TextDecoration.none,
                                       fontWeight: FontWeight.bold),
@@ -361,7 +474,8 @@ class _ExampleContainerState extends State<ExampleContainer> {
                       child: GestureDetector(
                         behavior: HitTestBehavior.translucent,
                         onHorizontalDragUpdate: (DragUpdateDetails dragUpdateDetails) {
-                          RenderBox box = widget.key.currentContext.findRenderObject();
+                          RenderBox box =
+                              widget.key.currentContext.findRenderObject() as RenderBox;
                           final localX =
                               box.globalToLocal(dragUpdateDetails.globalPosition).dx;
 

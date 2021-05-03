@@ -121,15 +121,15 @@ For now however, the only way to navigate is by typing a new url. Not very pract
             style: textStyle,
             children: [
               TextSpan(
-                  text: 'Programmatic Navigation',
-                  style: linkStyle,
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      context.vRouter.pushNamed('guide', pathParameters: {
-                        'mainSection': 'Essentials',
-                        'subSection': 'Programmatic Navigation',
-                      });
-                    }),
+                text: 'Programmatic Navigation',
+                style: linkStyle,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => GuideRoute.toSectionFromTitle(
+                        context,
+                        mainSectionTitle: 'Essentials',
+                        subSectionTitle: 'Programmatic Navigation',
+                      ),
+              ),
               TextSpan(
                 text: ', we will see how to navigate with a button press.',
               ),
