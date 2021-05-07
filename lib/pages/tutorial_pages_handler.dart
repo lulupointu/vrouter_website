@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter_website/in_app_page.dart';
 import 'package:vrouter_website/main.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:vrouter_website/routes/guide_routes.dart';
 
 import '../left_navigation_bar.dart';
 
