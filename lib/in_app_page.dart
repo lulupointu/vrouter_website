@@ -49,8 +49,8 @@ class InAppPage extends StatelessWidget {
     @required this.pageSection,
   })  : previousSubSection = mainSection.subSections.indexOf(subSection) == 0
             ? sections.indexOf(mainSection) == 0
-      ? null
-      : sections[sections.indexOf(mainSection) - 1].subSections.last
+                ? null
+                : sections[sections.indexOf(mainSection) - 1].subSections.last
             : mainSection.subSections[mainSection.subSections.indexOf(subSection) - 1],
         nextSubSection =
             mainSection.subSections.indexOf(subSection) == mainSection.subSections.length - 1
@@ -64,32 +64,35 @@ class InAppPage extends StatelessWidget {
         pageSection = mainSection.subSections.first.pageSections.isNotEmpty
             ? mainSection.subSections.first.pageSections.first
             : null,
-        previousSubSection = mainSection.subSections.indexOf(mainSection.subSections.first) == 0
-            ? sections.indexOf(mainSection) == 0
-            ? null
-            : sections[sections.indexOf(mainSection) - 1].subSections.last
-            : mainSection.subSections[mainSection.subSections.indexOf(mainSection.subSections.first) - 1],
-        nextSubSection =
-        mainSection.subSections.indexOf(mainSection.subSections.first) == mainSection.subSections.length - 1
+        previousSubSection =
+            mainSection.subSections.indexOf(mainSection.subSections.first) == 0
+                ? sections.indexOf(mainSection) == 0
+                    ? null
+                    : sections[sections.indexOf(mainSection) - 1].subSections.last
+                : mainSection.subSections[
+                    mainSection.subSections.indexOf(mainSection.subSections.first) - 1],
+        nextSubSection = mainSection.subSections.indexOf(mainSection.subSections.first) ==
+                mainSection.subSections.length - 1
             ? sections.indexOf(mainSection) == sections.length - 1
-            ? null
-            : sections[sections.indexOf(mainSection) + 1].subSections.first
-            : mainSection.subSections[mainSection.subSections.indexOf(mainSection.subSections.first) + 1];
+                ? null
+                : sections[sections.indexOf(mainSection) + 1].subSections.first
+            : mainSection.subSections[
+                mainSection.subSections.indexOf(mainSection.subSections.first) + 1];
 
   InAppPage.fromSubSection({@required this.mainSection, @required this.subSection})
       : pageSection =
             subSection.pageSections.isNotEmpty ? subSection.pageSections.first : null,
         previousSubSection = mainSection.subSections.indexOf(subSection) == 0
             ? sections.indexOf(mainSection) == 0
-            ? null
-            : sections[sections.indexOf(mainSection) - 1].subSections.last
+                ? null
+                : sections[sections.indexOf(mainSection) - 1].subSections.last
             : mainSection.subSections[mainSection.subSections.indexOf(subSection) - 1],
         nextSubSection =
-        mainSection.subSections.indexOf(subSection) == mainSection.subSections.length - 1
-            ? sections.indexOf(mainSection) == sections.length - 1
-            ? null
-            : sections[sections.indexOf(mainSection) + 1].subSections.first
-            : mainSection.subSections[mainSection.subSections.indexOf(subSection) + 1];
+            mainSection.subSections.indexOf(subSection) == mainSection.subSections.length - 1
+                ? sections.indexOf(mainSection) == sections.length - 1
+                    ? null
+                    : sections[sections.indexOf(mainSection) + 1].subSections.first
+                : mainSection.subSections[mainSection.subSections.indexOf(subSection) + 1];
 
   static final List<MainSection> sections = [
     MainSectionText(title: 'Introduction', subSections: [
@@ -367,13 +370,20 @@ class ComputerInApp extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          VRouterLogo(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              VRouterLogo(),
+              VRouterShields(),
+            ],
+          ),
           Container(height: 1, color: separatorColor),
           Expanded(
-              child: ComputerBodyWidget(
-            tutorialPagesHandler: tutorialPageHandler,
-            leftNavigationBar: leftNavigationBar,
-          )),
+            child: ComputerBodyWidget(
+              tutorialPagesHandler: tutorialPageHandler,
+              leftNavigationBar: leftNavigationBar,
+            ),
+          ),
         ],
       ),
     );
@@ -389,26 +399,40 @@ class VRouterLogo extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: LayoutBuilder(builder: (context, constraints) {
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                'assets/v_logo.svg',
-                height: min(50, kToolbarHeight - 20),
-              ),
-              Text(
-                'Router',
-                style: GoogleFonts.ubuntu(
-                    textStyle: TextStyle(fontSize: 30, color: Color(0xFF015292))),
-              ),
-            ],
-          );
-        }),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  'assets/v_logo.svg',
+                  height: min(50, kToolbarHeight - 20),
+                ),
+                Text(
+                  'Router',
+                  style: GoogleFonts.ubuntu(
+                      textStyle: TextStyle(fontSize: 30, color: Color(0xFF015292))),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 }
+
+class VRouterShields extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+
+      ],
+    );
+  }
+}
+
 
 class ComputerBodyWidget extends StatelessWidget {
   final LeftNavigationBar leftNavigationBar;
@@ -498,7 +522,7 @@ class _MobileInAppState extends State<MobileInApp> {
                   showLeftNavigationBar = !showLeftNavigationBar;
                 }),
                 icon: Icon(Icons.menu),
-              )
+              ),
             ],
           ),
         ),

@@ -38,6 +38,7 @@ void main() {
       title: 'Router',
       debugShowCheckedModeBanner: false,
       mode: VRouterModes.history,
+      beforeEnter: (vRedirector) async => print(vRedirector.to),
       routes: [
         // Home
         VWidget(widget: HomePage(), path: '/', buildTransition: fadeTransition),
@@ -60,7 +61,7 @@ class GuideRoute extends VRouteElementBuilder {
     BuildContext context, {
     @required MainSection mainSection,
   }) =>
-      context.vRouter.push('/guide/${Uri.encodeComponent(mainSection.title)}');
+      context.vRouter.pushSegments(['guide', mainSection.title]);
 
   static void toSubSection(
     BuildContext context, {
@@ -68,9 +69,7 @@ class GuideRoute extends VRouteElementBuilder {
   }) {
     final mainSection = InAppPage.sections
         .firstWhere((mainSection) => mainSection.subSections.contains(subSection));
-    context.vRouter.push(
-      '/guide/${mainSection.title}/${Uri.encodeComponent(subSection.title)}',
-    );
+    context.vRouter.pushSegments(['guide', mainSection.title, subSection.title]);
   }
 
   static void toPageSection(
@@ -87,10 +86,12 @@ class GuideRoute extends VRouteElementBuilder {
         break;
       }
     }
+
     final mainSection = InAppPage.sections
         .firstWhere((mainSection) => mainSection.subSections.contains(subSection));
-    context.vRouter.push(
-        '/guide/${mainSection.title}/${subSection.title}/${Uri.encodeComponent(pageSection.title)}');
+
+    context.vRouter
+        .pushSegments(['guide', mainSection.title, subSection.title, pageSection.title]);
   }
 
   static void toSectionFromTitle(
@@ -98,9 +99,16 @@ class GuideRoute extends VRouteElementBuilder {
     @required String mainSectionTitle,
     String subSectionTitle,
     String pageSectionTitle,
-  }) =>
-      context.vRouter.push(
-          '/guide/${Uri.encodeComponent(mainSectionTitle)}${subSectionTitle != null ? '/${Uri.encodeComponent(subSectionTitle)}${pageSectionTitle != null ? '/${Uri.encodeComponent(pageSectionTitle)}' : ''}' : ''}');
+  }) {
+    context.vRouter.pushSegments([
+      'guide',
+      mainSectionTitle,
+      if (subSectionTitle != null) ...[
+        subSectionTitle,
+        if (pageSectionTitle != null) pageSectionTitle
+      ]
+    ]);
+  }
 
   @override
   List<VRouteElement> buildRoutes() {

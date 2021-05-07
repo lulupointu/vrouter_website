@@ -62146,7 +62146,7 @@ $S:1}
 F.ZW.prototype={
 yr:function(a,b,c){return b}}
 T.FD.prototype={
-u:function(a,b){return O.ak(new Q.Z("Installing VRouter is the some as installing any other Flutter package, with noadditional configuration needed.",null,null,$.aJ()))}}
+u:function(a,b){return O.ak(new Q.Z("Installing VRouter is the some as installing any other Flutter package, with no additional configuration needed.",null,null,$.aJ()))}}
 T.Cb.prototype={
 u:function(a,b){var s=null
 return T.aK(H.b([O.ak(new Q.Z("Add this to your package's pubspec.yaml file:",s,s,$.aJ())),T.a0(s,10,s),F.b0("dependencies:\n  vrouter: ^1.1.0\n          ",!1)],t.t),C.r,C.k,C.n)}}

@@ -7,7 +7,7 @@ class InstallationDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     return SelectableText.rich(
       TextSpan(
-        text: 'Installing VRouter is the some as installing any other Flutter package, with no'
+        text: 'Installing VRouter is the some as installing any other Flutter package, with no '
             'additional configuration needed.',
         style: textStyle,
       ),
