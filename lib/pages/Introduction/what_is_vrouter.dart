@@ -5,7 +5,6 @@ import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter_website/main.dart';
 
-
 class WhatIsVRouterDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,11 +16,13 @@ class WhatIsVRouterDescription extends StatelessWidget {
             style: textStyle,
             children: [
               TextSpan(
+                  mouseCursor: MaterialStateMouseCursor.clickable,
                   text: 'Vue router',
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      context.vRouter.pushExternal('https://router.vuejs.org', openNewTab: true);
+                      context.vRouter.pushExternal('https://router.vuejs.org',
+                          openNewTab: true);
                     }),
               TextSpan(
                 text:
@@ -42,7 +43,8 @@ class FeaturesPageSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SelectableText.rich(
       TextSpan(
-        text: 'Here are some of the things that will be made easy be this package:\n',
+        text:
+            'Here are some of the things that will be made easy be this package:\n',
         style: textStyle,
         children: [
           TextSpan(

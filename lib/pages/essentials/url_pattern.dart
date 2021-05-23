@@ -60,7 +60,8 @@ class UserWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
                         child: Text('pattern',
-                            style: textStyle.copyWith(fontWeight: FontWeight.bold))),
+                            style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold))),
                   ),
                 ),
                 TableCell(
@@ -68,7 +69,8 @@ class UserWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text('matched path',
-                          style: textStyle.copyWith(fontWeight: FontWeight.bold)),
+                          style:
+                              textStyle.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
@@ -77,7 +79,8 @@ class UserWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text('context\n.vRouter\n.pathParameters',
-                          style: textStyle.copyWith(fontWeight: FontWeight.bold)),
+                          style:
+                              textStyle.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
@@ -122,7 +125,8 @@ class UserWidget extends StatelessWidget {
                 TableCell(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('{‘name’: ‘bob’, ‘postId: ‘123’}', style: textStyle),
+                    child: Text('{‘name’: ‘bob’, ‘postId: ‘123’}',
+                        style: textStyle),
                   ),
                 ),
               ],
@@ -147,6 +151,7 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
             style: textStyle,
             children: [
               TextSpan(
+                  mouseCursor: MaterialStateMouseCursor.clickable,
                   text: 'path_to_regexp',
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
@@ -156,7 +161,8 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
                           openNewTab: true);
                     }),
               TextSpan(
-                text: ' package to do url matching so you can use do thing like this:',
+                text:
+                    ' package to do url matching so you can use do thing like this:',
               ),
             ],
           ),
@@ -172,7 +178,8 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
                         child: Text('pattern',
-                            style: textStyle.copyWith(fontWeight: FontWeight.bold))),
+                            style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold))),
                   ),
                 ),
                 TableCell(
@@ -180,7 +187,8 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text('matched path',
-                          style: textStyle.copyWith(fontWeight: FontWeight.bold)),
+                          style:
+                              textStyle.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
@@ -189,7 +197,8 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text('NOT matched path',
-                          style: textStyle.copyWith(fontWeight: FontWeight.bold)),
+                          style:
+                              textStyle.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
@@ -238,7 +247,7 @@ class MatchingPriorityPageSection extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text:
-        '''It might happen that several urls match multiple paths, in this case the priority is to the path which is the highest in the routes list.''',
+            '''It might happen that several urls match multiple paths, in this case the priority is to the path which is the highest in the routes list.''',
         style: textStyle,
       ),
     );

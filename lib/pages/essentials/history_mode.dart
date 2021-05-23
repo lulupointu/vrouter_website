@@ -12,15 +12,18 @@ class HistoryModeDescription extends StatelessWidget {
       children: [
         SelectableText.rich(
           TextSpan(
-            text: 'The default mode of VRouter is hash-mode. However we also include the ',
+            text:
+                'The default mode of VRouter is hash-mode. However we also include the ',
             style: textStyle,
             children: [
               TextSpan(
+                  mouseCursor: MaterialStateMouseCursor.clickable,
                   text: 'url_strategy',
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      context.vRouter.pushExternal('https://pub.dev/packages/url_strategy',
+                      context.vRouter.pushExternal(
+                          'https://pub.dev/packages/url_strategy',
                           openNewTab: true);
                     }),
               TextSpan(
