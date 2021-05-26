@@ -1,11 +1,10 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
 class NavigatorWrapper extends StatelessWidget {
   final Widget child;
   final TextEditingController urlController = TextEditingController();
+  final vLocation = VLocations();
 
   NavigatorWrapper({
     Key key,
@@ -26,19 +25,32 @@ class NavigatorWrapper extends StatelessWidget {
             children: [
               RemoveSplash(
                 child: IconButton(
-                  onPressed: () => window.history.back(),
+                  onPressed: vLocation.serialCount - 1 > 0
+                      ? () => context.vRouter.push(
+                            vLocation.locations[vLocation.serialCount - 1].location,
+                            historyState: vLocation.locations[vLocation.serialCount - 1].state,
+                          )
+                      : null,
                   icon: Icon(Icons.navigate_before),
                 ),
               ),
               RemoveSplash(
                 child: IconButton(
-                  onPressed: () => window.history.forward(),
+                  onPressed: vLocation.serialCount + 1 < vLocation.locations.length
+                      ? () => context.vRouter.push(
+                    vLocation.locations[vLocation.serialCount + 1].location,
+                    historyState: vLocation.locations[vLocation.serialCount - 1].state,
+                  )
+                      : null,
                   icon: Icon(Icons.navigate_next),
                 ),
               ),
               RemoveSplash(
                 child: IconButton(
-                  onPressed: () => window.history.go(0),
+                  onPressed: () => context.vRouter.push(
+                    vLocation.currentLocation.location,
+                    historyState: vLocation.currentLocation.state,
+                  ),
                   icon: Icon(Icons.refresh),
                 ),
               ),
