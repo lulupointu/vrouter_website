@@ -4,7 +4,6 @@ import 'package:vrouter/vrouter.dart';
 class NavigatorWrapper extends StatelessWidget {
   final Widget child;
   final TextEditingController urlController = TextEditingController();
-  final vLocation = VLocations();
 
   NavigatorWrapper({
     Key key,
@@ -17,6 +16,7 @@ class NavigatorWrapper extends StatelessWidget {
         .substring(RegExp('(.*?\/){3}').firstMatch(context.vRouter.url).end - 1);
     final currentExample =
         RegExp('((?<=\/).*?(?=\/))').allMatches(context.vRouter.url).elementAt(1).group(1);
+    final vLocation = VRouterScope.of(context).vLocations;
 
     return Material(
       child: Column(
