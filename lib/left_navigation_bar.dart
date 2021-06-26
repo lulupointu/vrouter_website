@@ -176,10 +176,7 @@ abstract class SubSection extends StatelessWidget {
 
   Widget get description;
 
-  GlobalKey _titleKey;
-
-  GlobalKey get titleKey =>
-      _titleKey ?? (_titleKey = GlobalKey(debugLabel: 'SubSection with title $title'));
+  final GlobalKey titleKey = GlobalKey();
 
   static SubSectionData of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<SubSectionData>();

@@ -40,11 +40,11 @@ class _TutorialPagesHandlerState extends State<TutorialPagesHandler> {
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Center(
         child: mainSection.buildPage(
-              key: mainSectionKey,
-              previousSubSection: previousSubSection,
-              selectedSubSection: selectedSubSection,
-              nextSubSection: nextSubSection,
-            ),
+          key: mainSectionKey,
+          previousSubSection: previousSubSection,
+          selectedSubSection: selectedSubSection,
+          nextSubSection: nextSubSection,
+        ),
       ),
     );
   }
@@ -243,12 +243,19 @@ class TutorialPageText extends TutorialPage {
                         Padding(
                           key: selectedSubSection.titleKey,
                           padding: const EdgeInsets.only(top: 40.0),
-                          child: Text(
-                            selectedSubSection.title,
-                            style: GoogleFonts.ubuntu(
-                              textStyle: TextStyle(
-                                fontSize: max(24, MediaQuery.of(context).size.height * 0.035),
-                                fontWeight: FontWeight.bold,
+                          child: LinkedText(
+                            onTap: () => GuideRoute.toSubSection(
+                              context,
+                              subSection: selectedSubSection,
+                            ),
+                            text: Text(
+                              selectedSubSection.title,
+                              style: GoogleFonts.ubuntu(
+                                textStyle: TextStyle(
+                                  fontSize:
+                                      max(24, MediaQuery.of(context).size.height * 0.035),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -261,13 +268,20 @@ class TutorialPageText extends TutorialPage {
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 30,
                           ),
-                          Text(
-                            selectedSubSection.pageSections[i].title,
-                            key: selectedSubSection.pageSections[i].titleKey,
-                            style: GoogleFonts.ubuntu(
-                              textStyle: TextStyle(
-                                fontSize: max(20, MediaQuery.of(context).size.height * 0.025),
-                                fontWeight: FontWeight.bold,
+                          LinkedText(
+                            onTap: () => GuideRoute.toPageSection(
+                              context,
+                              pageSection: selectedSubSection.pageSections[i],
+                            ),
+                            text: Text(
+                              selectedSubSection.pageSections[i].title,
+                              key: selectedSubSection.pageSections[i].titleKey,
+                              style: GoogleFonts.ubuntu(
+                                textStyle: TextStyle(
+                                  fontSize:
+                                      max(20, MediaQuery.of(context).size.height * 0.025),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -378,12 +392,18 @@ class TutorialPageExample extends TutorialPage {
                 Padding(
                   key: selectedSubSection.titleKey,
                   padding: const EdgeInsets.only(top: 40.0),
-                  child: Text(
-                    selectedSubSection.title,
-                    style: GoogleFonts.ubuntu(
-                      textStyle: TextStyle(
-                        fontSize: max(24, MediaQuery.of(context).size.height * 0.035),
-                        fontWeight: FontWeight.bold,
+                  child: LinkedText(
+                    onTap: () => GuideRoute.toSubSection(
+                      context,
+                      subSection: selectedSubSection,
+                    ),
+                    text: Text(
+                      selectedSubSection.title,
+                      style: GoogleFonts.ubuntu(
+                        textStyle: TextStyle(
+                          fontSize: max(24, MediaQuery.of(context).size.height * 0.035),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -672,5 +692,57 @@ class TrianglePainter extends CustomPainter {
     return oldDelegate.strokeColor != strokeColor ||
         oldDelegate.paintingStyle != paintingStyle ||
         oldDelegate.strokeWidth != strokeWidth;
+  }
+}
+
+class LinkedText extends StatefulWidget {
+  final Text text;
+  final VoidCallback onTap;
+
+  const LinkedText({
+    @required this.text,
+    @required this.onTap,
+  });
+
+  @override
+  _LinkedTextState createState() => _LinkedTextState();
+}
+
+class _LinkedTextState extends State<LinkedText> {
+  bool shouldShowLink = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) {
+        setState(() {
+          shouldShowLink = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          shouldShowLink = false;
+        });
+      },
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            widget.text,
+            if (shouldShowLink)
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Icon(
+                  Icons.link,
+                  size: max(24, (context.findRenderObject() as RenderBox).size.height - 10),
+                  color: Colors.grey[700],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
