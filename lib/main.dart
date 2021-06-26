@@ -68,66 +68,74 @@ class MyDartCodeViewer extends StatelessWidget {
       child: LayoutBuilder(builder: (context, constraints) {
         final fontSize = min(16, max(8, constraints.maxWidth / 25)).toDouble();
 
+        final _dartCodeViewer = DartCodeViewer(
+          code,
+          showCopyButton: false,
+          backgroundColor: backgroundColor,
+          baseStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFFc5c8c6),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          punctuationStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFFc5c8c6),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          constantStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFF81a2be),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          numberStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFF81a2be),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          keywordStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFFb294bb),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          commentStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFF969896),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          stringStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFF618658),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          classStyle: GoogleFonts.ubuntu(
+              textStyle: TextStyle(
+                  fontSize: fontSize,
+                  color: Color(0xFFde935f),
+                  fontWeight: FontWeight.w400,
+                  height: 1.4)),
+          height: getTextSize(
+            code,
+            GoogleFonts.ubuntu(textStyle: TextStyle(fontSize: fontSize, height: 1.4)),
+            maxWidth:
+                max(1, constraints.maxWidth - 60), // 60 is DartCodeViewer internal padding
+          ).height,
+        );
+
         return Stack(
           children: [
-            DartCodeViewer(
-              code,
-              showCopyButton: false,
-              backgroundColor: backgroundColor,
-              baseStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFFc5c8c6),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              punctuationStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFFc5c8c6),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              constantStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFF81a2be),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              numberStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFF81a2be),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              keywordStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFFb294bb),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              commentStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFF969896),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              stringStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFF618658),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              classStyle: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: fontSize,
-                      color: Color(0xFFde935f),
-                      fontWeight: FontWeight.w400,
-                      height: 1.4)),
-              height: getTextSize(
-                code,
-                GoogleFonts.ubuntu(textStyle: TextStyle(fontSize: fontSize, height: 1.4)),
-                maxWidth:
-                    max(1, constraints.maxWidth - 60), // 60 is DartCodeViewer internal padding
-              ).height,
+            SelectableText.rich(
+              _dartCodeViewer.codifyString(
+                _dartCodeViewer.data,
+                (_dartCodeViewer.build(context) as DartCodeViewerTheme).data,
+              ),
+              textDirection: TextDirection.ltr,
             ),
             Align(
               alignment: Alignment.topRight,
