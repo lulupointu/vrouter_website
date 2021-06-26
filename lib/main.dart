@@ -19,7 +19,14 @@ void main() {
       beforeEnter: (vRedirector) async => print(vRedirector.to),
       routes: [
         // Home
-        VWidget(widget: HomePage(), path: '/', buildTransition: fadeTransition),
+        VWidget(
+          widget: HomePage(),
+          path: '/',
+          buildTransition: (animation, __, child) => FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        ),
 
         // Guide
         GuideRoute(),

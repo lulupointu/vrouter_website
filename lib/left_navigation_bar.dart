@@ -17,20 +17,14 @@ class LeftNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return LeftNavigationBarData(
       sections: sections,
-      child: Scrollbar(
+      child: SingleChildScrollView(
         controller: _scrollController,
         child: Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 32.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: sections,
-              ),
-            ),
+          padding: const EdgeInsets.only(bottom: 32.0, right: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: sections,
           ),
         ),
       ),
@@ -78,8 +72,12 @@ abstract class MainSection extends StatelessWidget {
             child: Text(
               title,
               style: GoogleFonts.ubuntu(
-                  textStyle: TextStyle(
-                      fontSize: 17.5, fontWeight: FontWeight.w700, color: Color(0xFF2c3e50))),
+                textStyle: TextStyle(
+                  fontSize: 17.5,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF2c3e50),
+                ),
+              ),
             ),
           ),
           ...subSections,
@@ -178,7 +176,10 @@ abstract class SubSection extends StatelessWidget {
 
   Widget get description;
 
-  final GlobalKey titleKey = GlobalKey();
+  GlobalKey _titleKey;
+
+  GlobalKey get titleKey =>
+      _titleKey ?? (_titleKey = GlobalKey(debugLabel: 'SubSection with title $title'));
 
   static SubSectionData of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<SubSectionData>();
@@ -188,6 +189,22 @@ abstract class SubSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSelected = InAppPage.of(context).subSection == this;
 
+    if (isSelected) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      });
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Scrollable.ensureVisible(
+          context,
+          duration: Duration(milliseconds: 300),
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+        );
+      });
+    }
     return SubSectionData(
       subSection: this,
       child: Column(
@@ -283,7 +300,7 @@ class PageSection extends StatelessWidget {
   final GlobalKey titleKey;
 
   PageSection({Key key, @required this.title, @required this.description})
-      : titleKey = GlobalKey(),
+      : titleKey = GlobalKey(debugLabel: 'PageSection with title $title'),
         super(key: key);
 
   @override
@@ -299,14 +316,19 @@ class PageSection extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 46, top: 4, bottom: 4),
-        child: Text(
-          title,
-          style: GoogleFonts.ubuntu(
-              textStyle: TextStyle(
-            fontSize: 15,
-            color: isSelected ? Color(0xFF00afff) : Color(0xFF2c3e50),
-            height: 1.4,
-          )),
+        child: Builder(
+          builder: (context) {
+            return Text(
+              title,
+              style: GoogleFonts.ubuntu(
+                textStyle: TextStyle(
+                  fontSize: 15,
+                  color: isSelected ? Color(0xFF00afff) : Color(0xFF2c3e50),
+                  height: 1.4,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/in_app_page.dart';
 import 'package:vrouter_website/left_navigation_bar.dart';
+import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 class GuideRoute extends VRouteElementBuilder {
   static void toMainSection(
@@ -57,70 +58,116 @@ class GuideRoute extends VRouteElementBuilder {
     ]);
   }
 
+  final vNesterNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'THE VNESTER NAVIGATOR KEY');
+
+  final noTransition = (Animation<double> _, Animation<double> __, Widget child) => child;
+
   @override
   List<VRouteElement> buildRoutes() {
     return [
-      VWidget(
-        path: '/guide',
-        widget: InAppPage.fromMainSection(mainSection: InAppPage.sections.first),
+      VNesterBase(
+        key: ValueKey('InAppPage'),
+        navigatorKey: vNesterNavigatorKey,
+        widgetBuilder: (child) => InAppPage.fromMainSection(
+          mainSection: InAppPage.sections.first,
+          body: child,
+        ),
+        nestedRoutes: [
+          VWidget(
+            path: '/guide',
+            widget: TutorialPagesHandler(),
+            buildTransition: noTransition,
+          ),
+        ],
       ),
       for (var mainSection in InAppPage.sections) ...[
-        VWidget(
-          path: '/guide/${Uri.encodeComponent(mainSection.title)}',
-          name: 'guide',
-          widget: InAppPage.fromMainSection(mainSection: mainSection),
-          buildTransition: fadeTransition,
+        VGuard(
+          afterEnter: (_, __, ___) {
+            
+          },
+          stackedRoutes: [
+            VNesterBase(
+              key: ValueKey('InAppPage'),
+              navigatorKey: vNesterNavigatorKey,
+              widgetBuilder: (child) => InAppPage.fromMainSection(
+                mainSection: mainSection,
+                body: child,
+              ),
+              nestedRoutes: [
+                VWidget(
+                  path: '/guide/${Uri.encodeComponent(mainSection.title)}',
+                  widget: TutorialPagesHandler(),
+                  buildTransition: noTransition,
+                ),
+              ],
+            ),
+          ],
         ),
         for (var subSection in mainSection.subSections) ...[
           VGuard(
-            afterEnter: (_, __, ___) => Scrollable.ensureVisible(
-              subSection.titleKey.currentContext,
-              duration: Duration(milliseconds: 300),
-            ),
+            afterEnter: (_, __, ___) {
+              // Ensures that the text in the body is at it's right scroll offset
+              return Scrollable.ensureVisible(
+                subSection.titleKey.currentContext,
+                duration: Duration(milliseconds: 300),
+              );
+            },
             stackedRoutes: [
-              VWidget(
-                path:
-                    '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}',
-                name: 'guide',
-                key: ValueKey(subSection.title),
-                widget:
-                    InAppPage.fromSubSection(mainSection: mainSection, subSection: subSection),
-                buildTransition: fadeTransition,
-              )
+              VNesterBase(
+                key: ValueKey('InAppPage'),
+                navigatorKey: vNesterNavigatorKey,
+                widgetBuilder: (child) => InAppPage.fromSubSection(
+                  mainSection: mainSection,
+                  subSection: subSection,
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    key: ValueKey(subSection.title),
+                    path:
+                        '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}',
+                    widget: TutorialPagesHandler(),
+                    buildTransition: noTransition,
+                  ),
+                ],
+              ),
             ],
           ),
           for (var pageSection in subSection.pageSections) ...[
             VGuard(
-              afterEnter: (_, __, ___) => Scrollable.ensureVisible(
-                pageSection.titleKey.currentContext,
-                duration: Duration(milliseconds: 300),
-              ),
+              afterEnter: (_, __, ___) {
+                // Ensures that the text in the body is at it's right scroll offset
+                return Scrollable.ensureVisible(
+                  pageSection.titleKey.currentContext,
+                  duration: Duration(milliseconds: 300),
+                );
+              },
               stackedRoutes: [
-                VWidget(
-                  path:
-                      '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}/${Uri.encodeComponent(pageSection.title)}',
-                  name: 'guide',
-                  key: ValueKey(subSection.title),
-                  widget: InAppPage(
+                VNesterBase(
+                  key: ValueKey('InAppPage'),
+                  navigatorKey: vNesterNavigatorKey,
+                  widgetBuilder: (child) => InAppPage(
                     mainSection: mainSection,
                     subSection: subSection,
                     pageSection: pageSection,
+                    body: child,
                   ),
-                  buildTransition: fadeTransition,
-                )
+                  nestedRoutes: [
+                    VWidget(
+                      key: ValueKey(subSection.title),
+                      path:
+                          '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}/${Uri.encodeComponent(pageSection.title)}',
+                      widget: TutorialPagesHandler(),
+                      buildTransition: noTransition,
+                    ),
+                  ],
+                ),
               ],
-            )
-          ]
-        ]
+            ),
+          ],
+        ],
       ],
     ];
   }
 }
-
-final Widget Function(Animation<double>, Animation<double>, Widget) fadeTransition =
-    (animation, __, child) {
-  return FadeTransition(
-    opacity: animation,
-    child: child,
-  );
-};

@@ -12,16 +12,40 @@ import 'package:vrouter_website/routes/guide_routes.dart';
 
 import '../left_navigation_bar.dart';
 
-class TutorialPagesHandler extends StatelessWidget {
+class TutorialPagesHandler extends StatefulWidget {
+  @override
+  _TutorialPagesHandlerState createState() => _TutorialPagesHandlerState();
+}
+
+class _TutorialPagesHandlerState extends State<TutorialPagesHandler> {
+  Key mainSectionKey;
+  MainSection mainSection;
+  SubSection previousSubSection;
+  SubSection selectedSubSection;
+  SubSection nextSubSection;
+
+  @override
+  void didChangeDependencies() {
+    mainSection ??= InAppPage.of(context).mainSection;
+    mainSectionKey ??= ValueKey(InAppPage.of(context).subSection);
+    previousSubSection ??= InAppPage.of(context).previousSubSection;
+    selectedSubSection ??= InAppPage.of(context).subSection;
+    nextSubSection ??= InAppPage.of(context).nextSubSection;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: InAppPage.of(context).mainSection.buildPage(
-            key: ValueKey(InAppPage.of(context).subSection),
-            previousSubSection: InAppPage.of(context).previousSubSection,
-            selectedSubSection: InAppPage.of(context).subSection,
-            nextSubSection: InAppPage.of(context).nextSubSection,
-          ),
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Center(
+        child: mainSection.buildPage(
+              key: mainSectionKey,
+              previousSubSection: previousSubSection,
+              selectedSubSection: selectedSubSection,
+              nextSubSection: nextSubSection,
+            ),
+      ),
     );
   }
 

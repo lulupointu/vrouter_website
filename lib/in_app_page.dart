@@ -43,10 +43,13 @@ class InAppPage extends StatelessWidget {
   final SubSection previousSubSection;
   final SubSection nextSubSection;
 
+  final Widget body;
+
   InAppPage({
     @required this.mainSection,
     @required this.subSection,
     @required this.pageSection,
+    @required this.body,
   })  : previousSubSection = mainSection.subSections.indexOf(subSection) == 0
             ? sections.indexOf(mainSection) == 0
                 ? null
@@ -59,8 +62,10 @@ class InAppPage extends StatelessWidget {
                     : sections[sections.indexOf(mainSection) + 1].subSections.first
                 : mainSection.subSections[mainSection.subSections.indexOf(subSection) + 1];
 
-  InAppPage.fromMainSection({@required this.mainSection})
-      : subSection = mainSection.subSections.first,
+  InAppPage.fromMainSection({
+    @required this.mainSection,
+    @required this.body,
+  })  : subSection = mainSection.subSections.first,
         pageSection = mainSection.subSections.first.pageSections.isNotEmpty
             ? mainSection.subSections.first.pageSections.first
             : null,
@@ -79,8 +84,11 @@ class InAppPage extends StatelessWidget {
             : mainSection.subSections[
                 mainSection.subSections.indexOf(mainSection.subSections.first) + 1];
 
-  InAppPage.fromSubSection({@required this.mainSection, @required this.subSection})
-      : pageSection =
+  InAppPage.fromSubSection({
+    @required this.mainSection,
+    @required this.subSection,
+    @required this.body,
+  })  : pageSection =
             subSection.pageSections.isNotEmpty ? subSection.pageSections.first : null,
         previousSubSection = mainSection.subSections.indexOf(subSection) == 0
             ? sections.indexOf(mainSection) == 0
@@ -311,17 +319,19 @@ class InAppPage extends StatelessWidget {
         pageSection: pageSection,
         previousSubSection: previousSubSection,
         nextSubSection: nextSubSection,
-        child: LayoutBuilder(builder: (context, constraints) {
-          return (constraints.maxWidth > 1000)
-              ? ComputerInApp(
-                  tutorialPageHandler: TutorialPagesHandler(),
-                  leftNavigationBar: LeftNavigationBar(sections: sections),
-                )
-              : MobileInApp(
-                  tutorialPageHandler: TutorialPagesHandler(),
-                  leftNavigationBar: LeftNavigationBar(sections: sections),
-                );
-        }),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return (constraints.maxWidth > 1000)
+                ? ComputerInApp(
+                    tutorialPageHandler: body,
+                    leftNavigationBar: LeftNavigationBar(sections: sections),
+                  )
+                : MobileInApp(
+                    tutorialPageHandler: body,
+                    leftNavigationBar: LeftNavigationBar(sections: sections),
+                  );
+          },
+        ),
       ),
     );
   }
@@ -358,7 +368,7 @@ class InAppPageData extends InheritedWidget {
 
 class ComputerInApp extends StatelessWidget {
   final LeftNavigationBar leftNavigationBar;
-  final TutorialPagesHandler tutorialPageHandler;
+  final Widget tutorialPageHandler;
 
   const ComputerInApp(
       {Key key, @required this.leftNavigationBar, @required this.tutorialPageHandler})
@@ -426,17 +436,14 @@ class VRouterShields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-
-      ],
+      children: [],
     );
   }
 }
 
-
 class ComputerBodyWidget extends StatelessWidget {
   final LeftNavigationBar leftNavigationBar;
-  final TutorialPagesHandler tutorialPagesHandler;
+  final Widget tutorialPagesHandler;
 
   const ComputerBodyWidget({
     Key key,
@@ -462,7 +469,7 @@ class ComputerBodyWidget extends StatelessWidget {
             ),
             Expanded(
               child: tutorialPagesHandler,
-            )
+            ),
           ],
         );
       },
@@ -472,7 +479,7 @@ class ComputerBodyWidget extends StatelessWidget {
 
 class MobileInApp extends StatefulWidget {
   final LeftNavigationBar leftNavigationBar;
-  final TutorialPagesHandler tutorialPageHandler;
+  final Widget tutorialPageHandler;
 
   const MobileInApp(
       {Key key, @required this.leftNavigationBar, @required this.tutorialPageHandler})
