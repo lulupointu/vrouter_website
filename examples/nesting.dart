@@ -24,7 +24,7 @@ abstract class BaseWidget extends StatelessWidget {
 
   String get buttonText;
 
-  String get pushTo;
+  String get to;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ abstract class BaseWidget extends StatelessWidget {
             Text(title),
             SizedBox(height: 50),
             ElevatedButton(
-              onPressed: () => context.vRouter.push(pushTo),
+              onPressed: () => context.vRouter.to(to),
               child: Text(buttonText),
             ),
           ],
@@ -57,7 +57,7 @@ class MyScaffold extends StatelessWidget {
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: context.vRouter.url.contains('settings') ? 1 : 0,
-        onTap: (value) => context.vRouter.push((value==0) ? '/' : '/settings'),
+        onTap: (value) => context.vRouter.to((value==0) ? '/' : '/settings'),
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
@@ -75,7 +75,7 @@ class HomeScreen extends BaseWidget {
   String get buttonText => 'Go to Settings';
 
   @override
-  String get pushTo => '/settings';
+  String get to => '/settings';
 }
 
 class SettingsScreen extends BaseWidget {
@@ -86,5 +86,5 @@ class SettingsScreen extends BaseWidget {
   String get buttonText => 'Go to Home';
 
   @override
-  String get pushTo => '/';
+  String get to => '/';
 }

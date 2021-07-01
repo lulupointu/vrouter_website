@@ -42,7 +42,7 @@ The default behaviour is to pop the latest VRouteElement containing a widget.'''
         SizedBox(height: 30),
         SelectableText.rich(
           TextSpan(
-            text: '''Note that when a default pop happens, a new url corresponding to the new route will be pushed, causing the navigation cycle to start.
+            text: '''Note that when a default pop happens, a new url corresponding to the new route will be navigated to, causing the navigation cycle to start.
 
 Also note that if we are on the last VRouteElement:
   • On mobile: the application closes 
@@ -89,7 +89,7 @@ VRouter(
     // popping while the path is '/profile' will call this
     VPopHandler(
       onPop: (vRedirector) async {
-        vRedirector.push('/other'); // You can use VRedirector to redirect
+        vRedirector.to('/other'); // You can use VRedirector to redirect
       },
       stackedRoutes: [
         VWidget(
@@ -156,7 +156,7 @@ VRouter(
   routes: [
     VPopHandler(
       onSystemPop: (vRedirector) async {
-        vRedirector.push('/other'); // You can use VRedirector to redirect
+        vRedirector.to('/other'); // You can use VRedirector to redirect
       },
       stackedRoutes: [
         VWidget(

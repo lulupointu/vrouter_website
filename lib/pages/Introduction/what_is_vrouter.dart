@@ -2,7 +2,6 @@ import 'package:vrouter/vrouter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter_website/main.dart';
 
 class WhatIsVRouterDescription extends StatelessWidget {
@@ -21,7 +20,7 @@ class WhatIsVRouterDescription extends StatelessWidget {
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      context.vRouter.pushExternal('https://router.vuejs.org',
+                      context.vRouter.toExternal('https://router.vuejs.org',
                           openNewTab: true);
                     }),
               TextSpan(

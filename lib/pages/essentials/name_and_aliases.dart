@@ -38,14 +38,14 @@ VRouter(
         Text('Navigating:', style: textStyle.copyWith(fontWeight: FontWeight.bold),),
         MyDartCodeViewer(
           code: r'''
-// Navigating with pushNamed
-context.vRouter.pushNamed('nestedRoute');
+// Navigating with toNamed
+context.vRouter.toNamed('nestedRoute');
           ''',
         ),
         SizedBox(height: 20),
         SelectableText.rich(
           TextSpan(
-            text: '''Also note that if the path contains path parameters, you might want to path the path parameters in pushNamed as a map:''',
+            text: '''Also note that if the path contains path parameters, you might want to path the path parameters in toNamed as a map:''',
             style: textStyle,
           ),
         ),
@@ -73,9 +73,9 @@ VRouter(
         Text('Navigating:', style: textStyle.copyWith(fontWeight: FontWeight.bold),),
         MyDartCodeViewer(
           code: r'''
-// Navigating with pushNamed
+// Navigating with toNamed
 // You can pass path parameters in a Map object
-context.vRouter.pushNamed('nestedRoute', pathParameters: {'id': '0'});
+context.vRouter.toNamed('nestedRoute', pathParameters: {'id': '0'});
           ''',
         ),
       ],

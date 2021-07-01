@@ -40,7 +40,7 @@ class UserScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.0),
                       child: ElevatedButton(
-                        onPressed: () => context.vRouter.push('/user/$user'),
+                        onPressed: () => context.vRouter.to('/user/$user'),
                         child: Text('Go to $user'),
                       ),
                     )

@@ -5,12 +5,12 @@ var isLoggedIn = false;
 
 void login(BuildContext context) {
   isLoggedIn = true;
-  context.vRouter.push('/examples/redirection/home');
+  context.vRouter.to('/examples/redirection/home');
 }
 
 void logout(BuildContext context) {
   isLoggedIn = false;
-  context.vRouter.push('/examples/redirection/login');
+  context.vRouter.to('/examples/redirection/login');
 }
 
 abstract class BaseWidget extends StatelessWidget {

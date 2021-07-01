@@ -35,7 +35,7 @@ VRouter(
   beforeEnter: (vRedirector) async {
     final isUserConnected = await database.isUserConnected();
     if (!isUserConnected && vRedirector.to != 'login') {
-      vRedirector.push('/login'); // Use VRedirector to redirect
+      vRedirector.to('/login'); // Use VRedirector to redirect
     }
   },
   routes: [

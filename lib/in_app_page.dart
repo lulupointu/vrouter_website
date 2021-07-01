@@ -18,9 +18,8 @@ import 'package:vrouter_website/pages/examples/history_state.dart';
 import 'package:vrouter_website/pages/examples/nesting.dart';
 import 'package:vrouter_website/pages/examples/path_parameters.dart';
 import 'package:vrouter_website/pages/examples/redirection.dart';
+import 'package:vrouter_website/pages/examples/stacked_routes.dart';
 import 'package:vrouter_website/pages/examples/transitions.dart';
-
-import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 import 'left_navigation_bar.dart';
 import 'pages/advanced/custom_pages.dart';
@@ -28,12 +27,14 @@ import 'pages/advanced/fetching_data.dart';
 import 'pages/advanced/history_state.dart';
 import 'pages/advanced/pop_events.dart';
 import 'pages/advanced/transitions.dart';
+import 'pages/advanced/url_history.dart';
 import 'pages/essentials/about_material_app.dart';
 import 'pages/essentials/history_mode.dart';
 import 'pages/essentials/name_and_aliases.dart';
 import 'pages/essentials/nesting_widgets.dart';
 import 'pages/essentials/route_formation.dart';
 import 'pages/essentials/url_pattern.dart';
+import 'pages/examples/url_history.dart';
 
 class InAppPage extends StatelessWidget {
   final MainSection mainSection;
@@ -138,6 +139,11 @@ class InAppPage extends StatelessWidget {
           codeName: 'nesting',
         ),
         SubSectionExample(
+          title: 'Stacking',
+          description: StackedRoutesDescription(),
+          codeName: 'stacked_routes',
+        ),
+        SubSectionExample(
           title: 'Path parameters',
           description: PathParametersExampleDescription(),
           codeName: 'path_parameters',
@@ -151,6 +157,11 @@ class InAppPage extends StatelessWidget {
           title: 'Transitions',
           description: TransitionsExampleDescription(),
           codeName: 'transitions',
+        ),
+        SubSectionExample(
+          title: 'Url History',
+          description: UrlHistoryExampleDescription(),
+          codeName: 'url_history',
         ),
         SubSectionExample(
           title: 'History State',
@@ -173,8 +184,8 @@ class InAppPage extends StatelessWidget {
         title: 'Programmatic Navigation',
         description: ProgrammaticNavigationDescription(),
         pageSections: [
-          PageSection(title: 'Push A Route', description: PushARoutePageSection()),
-          PageSection(title: 'Replace A Route', description: ReplaceARoutePageSection()),
+          // PageSection(title: 'Navigating To A Route', description: NavigatingToARoutePageSection()),
+          // PageSection(title: 'Replace A Route', description: ReplaceARoutePageSection()),
         ],
       ),
       SubSectionText(
@@ -281,12 +292,20 @@ class InAppPage extends StatelessWidget {
         ],
       ),
       SubSectionText(
+        title: 'Url History',
+        description: UrlHistoryDescription(),
+        pageSections: [
+          PageSection(title: 'Using It To Navigate', description: UsingItToNavigatePageSection()),
+          PageSection(title: 'Replacing An History Entry', description: ReplacingAnHistoryEntryPageSection()),
+        ],
+      ),
+      SubSectionText(
         title: 'History State',
         description: HistoryStateDescription(),
         pageSections: [
           PageSection(
-              title: 'Pushing A History State',
-              description: PushingAHistoryStatePageSection()),
+              title: 'Providing A History State',
+              description: ProvidingAHistoryStatePageSection()),
           PageSection(
               title: 'Replace A History State',
               description: ReplaceAHistoryStatePageSection()),
@@ -405,7 +424,7 @@ class VRouterLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return LinkButton(
       onPressed: () {
-        context.vRouter.push('/');
+        context.vRouter.to('/');
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),

@@ -15,7 +15,7 @@ While this might be useful to pass data around, the real power of the history st
   }
 }
 
-class PushingAHistoryStatePageSection extends StatelessWidget {
+class ProvidingAHistoryStatePageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,15 +25,15 @@ class PushingAHistoryStatePageSection extends StatelessWidget {
         SelectableText.rich(
           TextSpan(
             text:
-                '''When pushing a route, you can pass a historyState argument which will be associated with the new route.''',
+                '''When navigating to a route, you can pass a historyState argument which will be associated with the new route.''',
             style: textStyle,
           ),
         ),
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-// You can push the state alongside a new url
-context.vRouter.push('/profile', historyState: {'name': 'bob'});
+// You can add an history state alongside a new url
+context.vRouter.to('/profile', historyState: {'name': 'bob'});
           ''',
         ),
         SizedBox(height: 10),

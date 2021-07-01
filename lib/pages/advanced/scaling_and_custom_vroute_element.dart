@@ -1,6 +1,4 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:vrouter_website/main.dart';
 
 class CustomVRouteElementAndScalingDescription extends StatelessWidget {
@@ -46,7 +44,7 @@ class HomeRoute extends VRouteElementBuilder {
       VGuard(
         // LoginRoute.login = '/login' for example
         beforeEnter: (vRedirector) async =>
-            !isLoggedIn ? vRedirector.push(LoginRoute.login) : null,
+            !isLoggedIn ? vRedirector.to(LoginRoute.login) : null,
         stackedRoutes: [
           VWidget(path: home, widget: HomeScreen()),
         ],
@@ -83,7 +81,7 @@ VRouter(
         SizedBox(height: 10),
         MyDartCodeViewer(
           code: r'''
-context.vRouter.push(HomeRoute.home);
+context.vRouter.to(HomeRoute.home);
           ''',
         ),
         SizedBox(height: 10),
@@ -146,13 +144,13 @@ VRouter(
       ],
       stackedRoutes: [
         VPopHandler(
-          onPop: (vRedirector) async => vRedirector.push('/shop'),
+          onPop: (vRedirector) async => vRedirector.to('/shop'),
           stackedRoutes: [
             VWidget(path: '/shop/order', widget: ShopScreen()),
           ],
         ),
         VPopHandler(
-          onPop: (vRedirector) async => vRedirector.push('/profile'),
+          onPop: (vRedirector) async => vRedirector.to('/profile'),
           stackedRoutes: [
             VWidget(path: '/profile/settings', widget: SettingsScreen()),
           ],

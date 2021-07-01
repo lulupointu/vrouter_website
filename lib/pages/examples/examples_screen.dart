@@ -26,6 +26,7 @@ class ExamplesScreen extends StatelessWidget {
                   ExampleButton(underscoreName: 'path_parameters'),
                   ExampleButton(underscoreName: 'redirection'),
                   ExampleButton(underscoreName: 'transitions'),
+                  ExampleButton(underscoreName: 'url_history'),
                 ],
               ),
             ),
@@ -57,7 +58,7 @@ class ExampleButton extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 20),
         child: ElevatedButton(
-          onPressed: () => context.vRouter.push('/examples/$underscoreName/'),
+          onPressed: () => context.vRouter.to('/examples/$underscoreName/'),
           child: Text(prettifiedName),
         ),
       ),

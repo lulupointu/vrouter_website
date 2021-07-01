@@ -72,8 +72,8 @@ VRouter(
     VWidget(path: '/login', widget: LoginScreen()),
 
     VGuard(
-      // We use VRedirector.push to redirect to '/login' if the user is not authenticated
-      beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.push('/login'),
+      // We use VRedirector.to to redirect to '/login' if the user is not authenticated
+      beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.to('/login'),
       stackedRoutes: [
         VWidget(path: '/profile', widget: ProfileScreen()),
         VWidget(path: '/settings', widget: SettingsScreen()),

@@ -22,14 +22,18 @@ class CounterScreen extends StatelessWidget {
       children: [
         Flexible(
           child: OutlinedButton(
-            onPressed: () => context.vRouter.replaceHistoryState({'count': '${count + 1}'}),
+            onPressed: () => context.vRouter.to(
+              context.vRouter.url,
+              isReplacement: true,
+              historyState: {'count': '${count + 1}'},
+            ),
             child: Text('You clicked this button $count times'),
           ),
         ),
         SizedBox(height: 20),
         Flexible(
           child: ElevatedButton(
-            onPressed: () => context.vRouter.push('/other'),
+            onPressed: () => context.vRouter.to('/other'),
             child: Text('Go to Other'),
           ),
         )

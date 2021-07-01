@@ -23,13 +23,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  vrouter: ^1.1.4+16
+  vrouter:
+    path: ../vrouter
   flutter_svg: ^0.22.0
   google_fonts:
   provider: ^5.0.0
   dart_code_viewer:
   clipboard: ^0.1.3
   easy_web_view:
+  flutter_highlight: ^0.7.0
 
 
 #  vrouter:

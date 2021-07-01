@@ -16,7 +16,6 @@ class NavigatorWrapper extends StatelessWidget {
         .substring(RegExp('(.*?\/){3}').firstMatch(context.vRouter.url).end - 1);
     final currentExample =
         RegExp('((?<=\/).*?(?=\/))').allMatches(context.vRouter.url).elementAt(1).group(1);
-    final vLocation = VRouterScope.of(context).vLocations;
 
     return Material(
       child: Column(
@@ -25,31 +24,26 @@ class NavigatorWrapper extends StatelessWidget {
             children: [
               RemoveSplash(
                 child: IconButton(
-                  onPressed: vLocation.serialCount - 1 > 0
-                      ? () => context.vRouter.push(
-                            vLocation.locations[vLocation.serialCount - 1].location,
-                            historyState: vLocation.locations[vLocation.serialCount - 1].state,
-                          )
+                  onPressed: context.vRouter.urlHistoryCanBack()
+                      ? () => context.vRouter.urlHistoryBack()
                       : null,
                   icon: Icon(Icons.navigate_before),
                 ),
               ),
               RemoveSplash(
                 child: IconButton(
-                  onPressed: vLocation.serialCount + 1 < vLocation.locations.length
-                      ? () => context.vRouter.push(
-                    vLocation.locations[vLocation.serialCount + 1].location,
-                    historyState: vLocation.locations[vLocation.serialCount - 1].state,
-                  )
+                  onPressed: context.vRouter.urlHistoryCanForward()
+                      ? () => context.vRouter.urlHistoryForward()
                       : null,
                   icon: Icon(Icons.navigate_next),
                 ),
               ),
               RemoveSplash(
                 child: IconButton(
-                  onPressed: () => context.vRouter.push(
-                    vLocation.currentLocation.location,
-                    historyState: vLocation.currentLocation.state,
+                  onPressed: () => context.vRouter.to(
+                    context.vRouter.url,
+                    isReplacement: true,
+                    historyState: context.vRouter.historyState,
                   ),
                   icon: Icon(Icons.refresh),
                 ),
@@ -70,7 +64,7 @@ class NavigatorWrapper extends StatelessWidget {
                     controller: urlController,
                     style: TextStyle(fontSize: 18),
                     onSubmitted: (newUrl) =>
-                        context.vRouter.push('/examples/$currentExample$newUrl'),
+                        context.vRouter.to('/examples/$currentExample$newUrl'),
                   ),
                 ),
               ),

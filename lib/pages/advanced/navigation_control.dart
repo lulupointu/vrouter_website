@@ -1,5 +1,3 @@
-import 'package:vrouter/vrouter.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/main.dart';
 
@@ -45,7 +43,7 @@ VRouter(
 
     // All VRouteElement in VGuard are guarded
     VGuard(
-      beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.push('/login'),
+      beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.to('/login'),
       stackedRoutes: [
         VWidget(path: '/profile', widget: ProfileScreen()),
         VWidget(path: '/settings', widget: SettingsScreen()),
@@ -105,9 +103,9 @@ class _LoginScreenState extends State<Login> {
         // This is called before leaving the route
         beforeLeave: (vRedirector, __) async => (!isLoggedIn) ? vRedirector.stopRedirection() : null,
         // This is called if this widget is in the old route and in the new route
-        afterUpdate: (_, __, ___) => (isLoggedIn) ? context.vRouter.push('/profile') : null,
+        afterUpdate: (_, __, ___) => (isLoggedIn) ? context.vRouter.to('/profile') : null,
         // This is called the first time this widget is displayed in the route
-        afterEnter: (_, __, ___) => (isLoggedIn) ? context.vRouter.push('/profile') : null,
+        afterEnter: (_, __, ___) => (isLoggedIn) ? context.vRouter.to('/profile') : null,
         child: ...,
       ),
     );
@@ -172,9 +170,9 @@ class WebCaveatPageSection extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: '''
-When a user tries to access an external url by clicking on a button where you use context.vRouter.pushExternal, everything works as expected.
+When a user tries to access an external url by clicking on a button where you use context.vRouter.toExternal, everything works as expected.
 
-When a user tries to access an external url either by typing it, or using the forward/backward button to navigate to an external url, you can’t prevent the user from navigating. This means that trying to use vRedirector.stopRedirection, vRedirector.push, ... in beforeLeave will be ignored. 
+When a user tries to access an external url either by typing it, or using the forward/backward button to navigate to an external url, you can’t prevent the user from navigating. This means that trying to use vRedirector.stopRedirection, vRedirector.to, ... in beforeLeave will be ignored. 
 
 Reloading the page cannot be stopped as well.
 

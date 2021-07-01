@@ -15,8 +15,7 @@ void main() {
     VRouter(
       title: 'Router',
       debugShowCheckedModeBanner: false,
-      mode: VRouterModes.history,
-      beforeEnter: (vRedirector) async => print(vRedirector.to),
+      mode: VRouterMode.history,
       routes: [
         // Home
         VWidget(

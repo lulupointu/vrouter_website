@@ -1,6 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
+void main() {
+  runApp(
+    VRouter(
+      debugShowCheckedModeBanner: false,
+      routes: [
+        VWidget(
+          path: '/',
+          widget: HomeScreen(),
+          // Use stackedRoutes to stack
+          stackedRoutes: [
+            // You will be able to pop from Settings on Home
+            // Note that 'settings' does not start with '/', it's a relative path
+            VWidget(path: 'settings', widget: SettingsScreen()),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 abstract class BaseWidget extends StatelessWidget {
   String get title;
 
@@ -10,8 +30,9 @@ abstract class BaseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Center(
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -28,27 +49,6 @@ abstract class BaseWidget extends StatelessWidget {
   }
 }
 
-class MyScaffold extends StatelessWidget {
-  final Widget child;
-
-  const MyScaffold(this.child);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: context.vRouter.url.contains('settings') ? 1 : 0,
-        onTap: (value) => context.vRouter.to((value==0) ? '/examples/nesting/' : '/examples/nesting/settings'),
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-        ],
-      ),
-    );
-  }
-}
-
 class HomeScreen extends BaseWidget {
   @override
   String get title => 'Home';
@@ -57,7 +57,7 @@ class HomeScreen extends BaseWidget {
   String get buttonText => 'Go to Settings';
 
   @override
-  String get to => '/examples/nesting/settings';
+  String get to => '/examples/stacked_routes/settings';
 }
 
 class SettingsScreen extends BaseWidget {
@@ -68,5 +68,5 @@ class SettingsScreen extends BaseWidget {
   String get buttonText => 'Go to Home';
 
   @override
-  String get to => '/examples/nesting/';
+  String get to => '/examples/stacked_routes/';
 }

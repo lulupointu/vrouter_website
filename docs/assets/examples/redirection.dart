@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
 
         // VGuard protects the routes in stackedRoutes
         VGuard(
-          beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.push('/login'),
+          beforeEnter: (vRedirector) async => isLoggedIn ? null : vRedirector.to('/login'),
           stackedRoutes: [VWidget(path: '/home', widget: HomeScreen(logout))],
         ),
 
@@ -35,12 +35,12 @@ class _MyAppState extends State<MyApp> {
 
   void login(BuildContext context) {
     isLoggedIn = true;
-    context.vRouter.push('/home');
+    context.vRouter.to('/home');
   }
 
   void logout(BuildContext context) {
     isLoggedIn = false;
-    context.vRouter.push('/login');
+    context.vRouter.to('/login');
   }
 }
 

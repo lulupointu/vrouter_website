@@ -22,7 +22,7 @@ class HistoryModeDescription extends StatelessWidget {
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      context.vRouter.pushExternal(
+                      context.vRouter.toExternal(
                           'https://pub.dev/packages/url_strategy',
                           openNewTab: true);
                     }),
@@ -56,7 +56,7 @@ VRouter(mode: VRouterMode.history, routes: ...)
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      context.vRouter.pushExternal(
+                      context.vRouter.toExternal(
                           'https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations',
                           openNewTab: true);
                     }),

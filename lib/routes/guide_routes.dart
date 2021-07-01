@@ -5,22 +5,44 @@ import 'package:vrouter_website/left_navigation_bar.dart';
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 
 class GuideRoute extends VRouteElementBuilder {
-  static void toMainSection(
+  static String toMainSection(
     BuildContext context, {
     @required MainSection mainSection,
-  }) =>
-      context.vRouter.pushSegments(['guide', mainSection.title]);
+  }) {
+    final segments = ['guide', mainSection.title];
+    final encodedPath =
+        '/' + segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
-  static void toSubSection(
+    // avoid repeated url history entry
+    final isReplacement = context.vRouter.url == encodedPath;
+
+    context.vRouter.to(encodedPath, isReplacement: isReplacement);
+
+    // Return encoded path
+    return encodedPath;
+  }
+
+  static String toSubSection(
     BuildContext context, {
     @required SubSection subSection,
   }) {
     final mainSection = InAppPage.sections
         .firstWhere((mainSection) => mainSection.subSections.contains(subSection));
-    context.vRouter.pushSegments(['guide', mainSection.title, subSection.title]);
+
+    final segments = ['guide', mainSection.title, subSection.title];
+    final encodedPath =
+        '/' + segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+
+    // avoid repeated url history entry
+    final isReplacement = context.vRouter.url == encodedPath;
+
+    context.vRouter.to(encodedPath, isReplacement: isReplacement);
+
+    // Return encoded path
+    return encodedPath;
   }
 
-  static void toPageSection(
+  static String toPageSection(
     BuildContext context, {
     @required PageSection pageSection,
   }) {
@@ -38,8 +60,17 @@ class GuideRoute extends VRouteElementBuilder {
     final mainSection = InAppPage.sections
         .firstWhere((mainSection) => mainSection.subSections.contains(subSection));
 
-    context.vRouter
-        .pushSegments(['guide', mainSection.title, subSection.title, pageSection.title]);
+    final segments = ['guide', mainSection.title, subSection.title, pageSection.title];
+    final encodedPath =
+        '/' + segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+
+    // avoid repeated url history entry
+    final isReplacement = context.vRouter.url == encodedPath;
+
+    context.vRouter.to(encodedPath, isReplacement: isReplacement);
+
+    // Return encoded path
+    return encodedPath;
   }
 
   static void toSectionFromTitle(
@@ -48,7 +79,7 @@ class GuideRoute extends VRouteElementBuilder {
     String subSectionTitle,
     String pageSectionTitle,
   }) {
-    context.vRouter.pushSegments([
+    context.vRouter.toSegments([
       'guide',
       mainSectionTitle,
       if (subSectionTitle != null) ...[
@@ -83,9 +114,7 @@ class GuideRoute extends VRouteElementBuilder {
       ),
       for (var mainSection in InAppPage.sections) ...[
         VGuard(
-          afterEnter: (_, __, ___) {
-            
-          },
+          afterEnter: (_, __, ___) {},
           stackedRoutes: [
             VNesterBase(
               key: ValueKey('InAppPage'),

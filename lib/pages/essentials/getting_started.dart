@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:vrouter_website/main.dart';
 import 'package:vrouter_website/routes/guide_routes.dart';
 

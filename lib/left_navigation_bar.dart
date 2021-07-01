@@ -1,9 +1,8 @@
-import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter_website/in_app_page.dart';
-import 'package:vrouter_website/main.dart';
 import 'package:vrouter_website/pages/tutorial_pages_handler.dart';
 import 'package:vrouter_website/routes/guide_routes.dart';
 

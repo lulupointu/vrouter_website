@@ -32,7 +32,7 @@ class AddDependencyPageSection extends StatelessWidget {
         MyDartCodeViewer(
           code: r'''
 dependencies:
-  vrouter: ^1.1.0
+  vrouter: ^1.2.0
           ''',
         ),
       ],

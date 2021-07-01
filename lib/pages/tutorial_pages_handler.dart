@@ -1,16 +1,15 @@
 import 'dart:math';
 
 import 'package:easy_web_view/easy_web_view.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter_website/in_app_page.dart';
 import 'package:vrouter_website/main.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show Clipboard, ClipboardData, rootBundle;
 import 'package:vrouter_website/routes/guide_routes.dart';
 
 import '../left_navigation_bar.dart';
+import '../snack_bar_overlay.dart';
 
 class TutorialPagesHandler extends StatefulWidget {
   @override
@@ -244,10 +243,16 @@ class TutorialPageText extends TutorialPage {
                           key: selectedSubSection.titleKey,
                           padding: const EdgeInsets.only(top: 40.0),
                           child: LinkedText(
-                            onTap: () => GuideRoute.toSubSection(
-                              context,
-                              subSection: selectedSubSection,
-                            ),
+                            onTap: () async {
+                              final path = GuideRoute.toSubSection(
+                                context,
+                                subSection: selectedSubSection,
+                              );
+
+                              await Clipboard.setData(
+                                  ClipboardData(text: 'https://vrouter.dev' + path));
+                              showSnackBarOverlay(context);
+                            },
                             text: Text(
                               selectedSubSection.title,
                               style: GoogleFonts.ubuntu(
@@ -269,10 +274,16 @@ class TutorialPageText extends TutorialPage {
                             height: MediaQuery.of(context).size.height / 30,
                           ),
                           LinkedText(
-                            onTap: () => GuideRoute.toPageSection(
-                              context,
-                              pageSection: selectedSubSection.pageSections[i],
-                            ),
+                            onTap: () async {
+                              final path = GuideRoute.toPageSection(
+                                context,
+                                pageSection: selectedSubSection.pageSections[i],
+                              );
+
+                              await Clipboard.setData(
+                                  ClipboardData(text: 'https://vrouter.dev' + path));
+                              showSnackBarOverlay(context);
+                            },
                             text: Text(
                               selectedSubSection.pageSections[i].title,
                               key: selectedSubSection.pageSections[i].titleKey,

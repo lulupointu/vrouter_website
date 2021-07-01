@@ -35,7 +35,7 @@ VRouter(
           ''',
         ),
         Text(
-          'Access:',
+          'Access path parameters:',
           style: textStyle.copyWith(fontWeight: FontWeight.bold),
         ),
         MyDartCodeViewer(
@@ -156,7 +156,7 @@ class AdvancedPatternMatchingPageSection extends StatelessWidget {
                   style: linkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      context.vRouter.pushExternal(
+                      context.vRouter.toExternal(
                           'https://pub.dev/packages/path_to_regexp',
                           openNewTab: true);
                     }),
