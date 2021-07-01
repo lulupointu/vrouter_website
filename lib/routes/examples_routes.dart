@@ -4,9 +4,9 @@ import 'package:vrouter_website/pages/examples/examples_screen.dart';
 import 'package:vrouter_website/pages/examples/navigator_wrapper.dart';
 
 import 'package:vrouter_website/pages/examples/executable/basic_example_executable.dart'
-as basic_example;
+    as basic_example;
 import 'package:vrouter_website/pages/examples/executable/stacked_routes.dart'
-as stack_example;
+    as stacked_routes;
 import 'package:vrouter_website/pages/examples/executable/history_state_executable.dart'
     as history_state;
 import 'package:vrouter_website/pages/examples/executable/nesting_executable.dart' as nesting;
@@ -35,19 +35,26 @@ class ExampleRoute extends VRouteElementBuilder {
               VWidget(path: 'basic_example/', widget: basic_example.HomeScreen()),
               VWidget(path: 'basic_example/settings', widget: basic_example.SettingsScreen()),
               VRouteRedirector(
-                  path: r'basic_example:_(.*)', redirectTo: '/examples/basic_example/'),
+                path: r'basic_example:_(.*)',
+                redirectTo: '/examples/basic_example/',
+              ),
 
               // Stacking example
-              VWidget(path: 'stack_example/', widget: stack_example.HomeScreen()),
-              VWidget(path: 'stack_example/settings', widget: stack_example.SettingsScreen()),
+              VWidget(path: 'stacked_routes/', widget: stacked_routes.HomeScreen()),
+              VWidget(
+                  path: 'stacked_routes/settings', widget: stacked_routes.SettingsScreen()),
               VRouteRedirector(
-                  path: r'stack_example:_(.*)', redirectTo: '/examples/stack_example/'),
+                path: r'stacked_routes:_(.*)',
+                redirectTo: '/examples/stacked_routes/',
+              ),
 
               // History state
               VWidget(path: 'history_state/', widget: history_state.CounterScreen()),
               VWidget(path: 'history_state/other', widget: history_state.OtherScreen()),
               VRouteRedirector(
-                  path: r'history_state:_(.*)', redirectTo: '/examples/history_state/'),
+                path: r'history_state:_(.*)',
+                redirectTo: '/examples/history_state/',
+              ),
 
               // Nesting
               VNester(
@@ -77,7 +84,9 @@ class ExampleRoute extends VRouteElementBuilder {
                 ],
               ),
               VRouteRedirector(
-                  path: r'redirection/:_(.*)', redirectTo: '/examples/redirection/home'),
+                path: r'redirection/:_(.*)',
+                redirectTo: '/examples/redirection/home',
+              ),
 
               // Transitions
               VWidget(
@@ -96,7 +105,9 @@ class ExampleRoute extends VRouteElementBuilder {
                     transitions.AnimatedPage(child, key, name),
               ),
               VRouteRedirector(
-                  path: r'transitions:_(.*)', redirectTo: '/examples/transitions/'),
+                path: r'transitions:_(.*)',
+                redirectTo: '/examples/transitions/',
+              ),
 
               // Url parameters
               VWidget(
@@ -107,7 +118,9 @@ class ExampleRoute extends VRouteElementBuilder {
                 stackedRoutes: [VWidget(path: 'path_parameters', widget: Container())],
               ),
               VRouteRedirector(
-                  path: r'path_parameters:_(.*)', redirectTo: '/examples/path_parameters'),
+                path: r'path_parameters:_(.*)',
+                redirectTo: '/examples/path_parameters',
+              ),
 
               // Url history
               VNester(
@@ -140,7 +153,9 @@ class ExampleRoute extends VRouteElementBuilder {
                 ],
               ),
               VRouteRedirector(
-                  path: r'url_history:_(.*)', redirectTo: '/examples/url_history/'),
+                path: r'url_history:_(.*)',
+                redirectTo: '/examples/url_history/',
+              ),
             ],
           ),
         ],
