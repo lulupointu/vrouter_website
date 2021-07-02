@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -13,20 +15,25 @@ class MyApp extends StatelessWidget {
       routes: [
         VNester(
           path: null,
-          widgetBuilder: (child) => MyScaffold(child: child, baseUrl: ''),
+          widgetBuilder: (child) => MyScaffold(baseUrl: '', child: child),
           nestedRoutes: [
             // Handles the systemPop event
             VPopHandler(
-              onPop: (vRedirector) async {
+              onSystemPop: (vRedirector) async {
                 // DO check if going back is possible
                 if (vRedirector.urlHistoryCanBack()) {
                   vRedirector.urlHistoryBack();
                 }
               },
               stackedRoutes: [
-                VWidget(path: null, widget: BasicScreen(title: 'home')),
-                VWidget(path: 'social', widget: BasicScreen(title: 'social')),
-                VWidget(path: 'settings', widget: BasicScreen(title: 'settings')),
+                VWidget(
+                    path: '/', widget: BasicScreen(title: 'Home', color: Colors.blueAccent)),
+                VWidget(
+                    path: '/social',
+                    widget: BasicScreen(title: 'Social', color: Colors.greenAccent)),
+                VWidget(
+                    path: '/settings',
+                    widget: BasicScreen(title: 'Settings', color: Colors.redAccent)),
               ],
             ),
           ],
@@ -89,15 +96,26 @@ class MyScaffold extends StatelessWidget {
 
 class BasicScreen extends StatelessWidget {
   final String title;
+  final Color color;
 
-  const BasicScreen({@required this.title});
+  const BasicScreen({@required this.title, @required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        leading: context.vRouter.urlHistoryCanBack() ? BackButton() : null,
+        centerTitle: true,
+        leading: context.vRouter.urlHistoryCanBack()
+            ? BackButton(onPressed: context.vRouter.urlHistoryBack)
+            : null,
+        actions: [
+          if (context.vRouter.urlHistoryCanForward())
+            Transform.rotate(
+              angle: pi,
+              child: BackButton(onPressed: context.vRouter.urlHistoryForward),
+            ),
+        ],
       ),
       body: Center(
         child: SizedBox(
@@ -105,10 +123,10 @@ class BasicScreen extends StatelessWidget {
           height: 50,
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.blueAccent, width: 3),
+              border: Border.all(color: color, width: 3),
             ),
             child: Center(
-              child: Text('This is your $title'),
+              child: Text('This is your ${title.toLowerCase()}'),
             ),
           ),
         ),

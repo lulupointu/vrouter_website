@@ -17,6 +17,8 @@ class NavigatorWrapper extends StatelessWidget {
     final currentExample =
         RegExp('((?<=\/).*?(?=\/))').allMatches(context.vRouter.url).elementAt(1).group(1);
 
+    print('context.vRouter.urlHistoryCanForward(): ${context.vRouter.urlHistoryCanForward()}');
+
     return Material(
       child: Column(
         children: [
