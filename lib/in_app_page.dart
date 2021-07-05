@@ -14,7 +14,7 @@ import 'package:vrouter_website/pages/advanced/navigation_control.dart';
 import 'package:vrouter_website/pages/essentials/programmatic_navigation.dart';
 import 'package:vrouter_website/pages/essentials/redirection.dart';
 import 'package:vrouter_website/pages/examples/basic_example.dart';
-import 'package:vrouter_website/pages/examples/history_state.dart';
+// import 'package:vrouter_website/pages/examples/history_state.dart';
 import 'package:vrouter_website/pages/examples/nesting.dart';
 import 'package:vrouter_website/pages/examples/path_parameters.dart';
 import 'package:vrouter_website/pages/examples/redirection.dart';
@@ -27,14 +27,14 @@ import 'pages/advanced/fetching_data.dart';
 import 'pages/advanced/history_state.dart';
 import 'pages/advanced/pop_events.dart';
 import 'pages/advanced/transitions.dart';
-import 'pages/advanced/url_history.dart';
+import 'pages/advanced/history.dart';
 import 'pages/essentials/about_material_app.dart';
 import 'pages/essentials/history_mode.dart';
 import 'pages/essentials/name_and_aliases.dart';
 import 'pages/essentials/nesting_widgets.dart';
 import 'pages/essentials/route_formation.dart';
 import 'pages/essentials/url_pattern.dart';
-import 'pages/examples/url_history.dart';
+import 'pages/examples/history.dart';
 
 class InAppPage extends StatelessWidget {
   final MainSection mainSection;
@@ -159,15 +159,15 @@ class InAppPage extends StatelessWidget {
           codeName: 'transitions',
         ),
         SubSectionExample(
-          title: 'Url History',
+          title: 'History',
           description: HistoryExampleDescription(),
-          codeName: 'url_history',
+          codeName: 'history',
         ),
-        SubSectionExample(
-          title: 'History State',
-          description: HistoryStateExampleDescription(),
-          codeName: 'history_state',
-        ),
+        // SubSectionExample(
+        //   title: 'History State',
+        //   description: HistoryStateExampleDescription(),
+        //   codeName: 'history_state',
+        // ),
       ],
     ),
     MainSectionText(title: 'Essentials', subSections: [
@@ -292,27 +292,28 @@ class InAppPage extends StatelessWidget {
         ],
       ),
       SubSectionText(
-        title: 'Url History',
+        title: 'History',
         description: HistoryDescription(),
         pageSections: [
           PageSection(title: 'Using It To Navigate', description: UsingItToNavigatePageSection()),
           PageSection(title: 'Replacing An History Entry', description: ReplacingAnHistoryEntryPageSection()),
+          PageSection(title: 'History State', description: HistoryStatePageSection()),
         ],
       ),
-      SubSectionText(
-        title: 'History State',
-        description: HistoryStateDescription(),
-        pageSections: [
-          PageSection(
-              title: 'Providing A History State',
-              description: ProvidingAHistoryStatePageSection()),
-          PageSection(
-              title: 'Replace A History State',
-              description: ReplaceAHistoryStatePageSection()),
-          PageSection(
-              title: 'Saving Before Leave', description: SavingBeforeLeavePageSection()),
-        ],
-      ),
+      // SubSectionText(
+      //   title: 'History State',
+      //   description: HistoryStateDescription(),
+      //   pageSections: [
+      //     PageSection(
+      //         title: 'Providing A History State',
+      //         description: ProvidingAHistoryStatePageSection()),
+      //     PageSection(
+      //         title: 'Replace A History State',
+      //         description: ReplaceAHistoryStatePageSection()),
+      //     PageSection(
+      //         title: 'Saving Before Leave', description: SavingBeforeLeavePageSection()),
+      //   ],
+      // ),
       SubSectionText(
         title: 'Custom Pages',
         description: CustomPagesDescription(),

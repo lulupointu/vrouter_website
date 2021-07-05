@@ -26,7 +26,7 @@ class ExamplesScreen extends StatelessWidget {
                   ExampleButton(underscoreName: 'path_parameters'),
                   ExampleButton(underscoreName: 'redirection'),
                   ExampleButton(underscoreName: 'transitions'),
-                  ExampleButton(underscoreName: 'url_history'),
+                  ExampleButton(underscoreName: 'history'),
                   ExampleButton(underscoreName: 'history_state'),
                 ],
               ),

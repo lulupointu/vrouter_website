@@ -7,8 +7,8 @@ import 'package:vrouter_website/pages/examples/executable/basic_example_executab
     as basic_example;
 import 'package:vrouter_website/pages/examples/executable/stacked_routes.dart'
     as stacked_routes;
-import 'package:vrouter_website/pages/examples/executable/history_state_executable.dart'
-    as history_state;
+// import 'package:vrouter_website/pages/examples/executable/history_state_executable.dart'
+//     as history_state;
 import 'package:vrouter_website/pages/examples/executable/nesting_executable.dart' as nesting;
 import 'package:vrouter_website/pages/examples/executable/redirection_executable.dart'
     as redirection;
@@ -16,8 +16,8 @@ import 'package:vrouter_website/pages/examples/executable/transitions_executable
     as transitions;
 import 'package:vrouter_website/pages/examples/executable/path_parameters_executable.dart'
     as path_parameters;
-import 'package:vrouter_website/pages/examples/executable/url_history_example.dart'
-    as url_history;
+import 'package:vrouter_website/pages/examples/executable/history_example.dart'
+    as history;
 
 class ExampleRoute extends VRouteElementBuilder {
   @override
@@ -48,13 +48,13 @@ class ExampleRoute extends VRouteElementBuilder {
                 redirectTo: '/examples/stacked_routes/',
               ),
 
-              // History state
-              VWidget(path: 'history_state/', widget: history_state.CounterScreen()),
-              VWidget(path: 'history_state/other', widget: history_state.OtherScreen()),
-              VRouteRedirector(
-                path: r'history_state:_(.*)',
-                redirectTo: '/examples/history_state/',
-              ),
+              // // History state
+              // VWidget(path: 'history_state/', widget: history_state.CounterScreen()),
+              // VWidget(path: 'history_state/other', widget: history_state.OtherScreen()),
+              // VRouteRedirector(
+              //   path: r'history_state:_(.*)',
+              //   redirectTo: '/examples/history_state/',
+              // ),
 
               // Nesting
               VNester(
@@ -125,14 +125,14 @@ class ExampleRoute extends VRouteElementBuilder {
               // Url history
               VNester(
                 path: null,
-                widgetBuilder: (child) => url_history.MyScaffold(
+                widgetBuilder: (child) => history.MyScaffold(
                   child: child,
-                  baseUrl: '/examples/url_history',
+                  baseUrl: '/examples/history',
                 ),
                 nestedRoutes: [
                   // Handles the systemPop event
                   VPopHandler(
-                    onPop: (vRedirector) async {
+                    onSystemPop: (vRedirector) async {
                       // DO check if going back is possible
                       if (vRedirector.historyCanBack()) {
                         vRedirector.historyBack();
@@ -140,21 +140,20 @@ class ExampleRoute extends VRouteElementBuilder {
                     },
                     stackedRoutes: [
                       VWidget(
-                          path: 'url_history/',
-                          widget: url_history.BasicScreen(title: 'home', color: Colors.blueAccent)),
+                          path: '', widget: history.HomeScreen(title: 'Home', color: Colors.blueAccent)),
                       VWidget(
-                          path: 'url_history/social',
-                          widget: url_history.BasicScreen(title: 'social', color: Colors.greenAccent)),
+                          path: 'social',
+                          widget: history.BasicScreen(title: 'Social', color: Colors.greenAccent)),
                       VWidget(
-                          path: 'url_history/settings',
-                          widget: url_history.BasicScreen(title: 'settings', color: Colors.redAccent)),
+                          path: 'settings',
+                          widget: history.BasicScreen(title: 'Settings', color: Colors.redAccent)),
                     ],
                   ),
                 ],
               ),
               VRouteRedirector(
-                path: r'url_history:_(.*)',
-                redirectTo: '/examples/url_history/',
+                path: r'history:_(.*)',
+                redirectTo: '/examples/history/',
               ),
             ],
           ),

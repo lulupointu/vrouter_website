@@ -153,7 +153,7 @@ class GuideRoute extends VRouteElementBuilder {
                 ),
                 nestedRoutes: [
                   VWidget(
-                    key: ValueKey(subSection.title),
+                    key: ValueKey(mainSection.title + subSection.title),
                     path:
                         '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}',
                     widget: TutorialPagesHandler(),
@@ -184,7 +184,7 @@ class GuideRoute extends VRouteElementBuilder {
                   ),
                   nestedRoutes: [
                     VWidget(
-                      key: ValueKey(subSection.title),
+                      key: ValueKey(mainSection.title + subSection.title),
                       path:
                           '/guide/${Uri.encodeComponent(mainSection.title)}/${Uri.encodeComponent(subSection.title)}/${Uri.encodeComponent(pageSection.title)}',
                       widget: TutorialPagesHandler(),
