@@ -160,7 +160,7 @@ class InAppPage extends StatelessWidget {
         ),
         SubSectionExample(
           title: 'Url History',
-          description: UrlHistoryExampleDescription(),
+          description: HistoryExampleDescription(),
           codeName: 'url_history',
         ),
         SubSectionExample(
@@ -293,7 +293,7 @@ class InAppPage extends StatelessWidget {
       ),
       SubSectionText(
         title: 'Url History',
-        description: UrlHistoryDescription(),
+        description: HistoryDescription(),
         pageSections: [
           PageSection(title: 'Using It To Navigate', description: UsingItToNavigatePageSection()),
           PageSection(title: 'Replacing An History Entry', description: ReplacingAnHistoryEntryPageSection()),

@@ -134,20 +134,20 @@ class ExampleRoute extends VRouteElementBuilder {
                   VPopHandler(
                     onPop: (vRedirector) async {
                       // DO check if going back is possible
-                      if (vRedirector.urlHistoryCanBack()) {
-                        vRedirector.urlHistoryBack();
+                      if (vRedirector.historyCanBack()) {
+                        vRedirector.historyBack();
                       }
                     },
                     stackedRoutes: [
                       VWidget(
                           path: 'url_history/',
-                          widget: url_history.BasicScreen(title: 'home')),
+                          widget: url_history.BasicScreen(title: 'home', color: Colors.blueAccent)),
                       VWidget(
                           path: 'url_history/social',
-                          widget: url_history.BasicScreen(title: 'social')),
+                          widget: url_history.BasicScreen(title: 'social', color: Colors.greenAccent)),
                       VWidget(
                           path: 'url_history/settings',
-                          widget: url_history.BasicScreen(title: 'settings')),
+                          widget: url_history.BasicScreen(title: 'settings', color: Colors.redAccent)),
                     ],
                   ),
                 ],

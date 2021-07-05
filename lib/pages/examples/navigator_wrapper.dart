@@ -17,8 +17,6 @@ class NavigatorWrapper extends StatelessWidget {
     final currentExample =
         RegExp('((?<=\/).*?(?=\/))').allMatches(context.vRouter.url).elementAt(1).group(1);
 
-    print('context.vRouter.urlHistoryCanForward(): ${context.vRouter.urlHistoryCanForward()}');
-
     return Material(
       child: Column(
         children: [
@@ -26,16 +24,16 @@ class NavigatorWrapper extends StatelessWidget {
             children: [
               RemoveSplash(
                 child: IconButton(
-                  onPressed: context.vRouter.urlHistoryCanBack()
-                      ? () => context.vRouter.urlHistoryBack()
+                  onPressed: context.vRouter.historyCanBack()
+                      ? () => context.vRouter.historyBack()
                       : null,
                   icon: Icon(Icons.navigate_before),
                 ),
               ),
               RemoveSplash(
                 child: IconButton(
-                  onPressed: context.vRouter.urlHistoryCanForward()
-                      ? () => context.vRouter.urlHistoryForward()
+                  onPressed: context.vRouter.historyCanForward()
+                      ? () => context.vRouter.historyForward()
                       : null,
                   icon: Icon(Icons.navigate_next),
                 ),

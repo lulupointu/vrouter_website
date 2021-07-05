@@ -3,15 +3,15 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "index.html": "ca5ecf468294857350e50c57c709c2a6",
-"/": "ca5ecf468294857350e50c57c709c2a6",
+  "index.html": "dffd3d5b56d99dc6228eda545c526e93",
+"/": "dffd3d5b56d99dc6228eda545c526e93",
 "manifest.json": "c40d42e0baf354a03b8ecab89436ee84",
 "icons/Icon-192.png": "1a527d149182cdaf4209bc714a73bd32",
 "icons/Icon-512.png": "d4f07c1e9bcd06b420137e127e507f4d",
-"main.dart.js": "234799dbab52c9ed5d6bf3dffb8b5bc4",
+"main.dart.js": "7b62d9167cc7069fd940d6af369e4feb",
 "assets/examples/basic_example.dart": "8ccf18ee6da19cf804cefee87c64f3b0",
 "assets/examples/stacked_routes.dart": "570f24d18379a3bb5a2ffda4d3cdf9ef",
-"assets/examples/url_history.dart": "aa0965ec51dbeba1e66dd7316e8b1cf6",
+"assets/examples/url_history.dart": "3d6c5321fca9b6f4d6ce294181850087",
 "assets/examples/transitions.dart": "48e6176e829aeba98e1a4438dc3724f2",
 "assets/examples/redirection.dart": "3970dd81513dc955a619afca9c398502",
 "assets/examples/nesting.dart": "64600b6f3810d0e5892688e1e6a19843",

@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
             VPopHandler(
               onSystemPop: (vRedirector) async {
                 // DO check if going back is possible
-                if (vRedirector.urlHistoryCanBack()) {
-                  vRedirector.urlHistoryBack();
+                if (vRedirector.historyCanBack()) {
+                  vRedirector.historyBack();
                 }
               },
               stackedRoutes: [
@@ -97,14 +97,14 @@ class BasicScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         centerTitle: true,
-        leading: context.vRouter.urlHistoryCanBack()
-            ? BackButton(onPressed: context.vRouter.urlHistoryBack)
+        leading: context.vRouter.historyCanBack()
+            ? BackButton(onPressed: context.vRouter.historyBack)
             : null,
         actions: [
-          if (context.vRouter.urlHistoryCanForward())
+          if (context.vRouter.historyCanForward())
             Transform.rotate(
               angle: pi,
-              child: BackButton(onPressed: context.vRouter.urlHistoryForward),
+              child: BackButton(onPressed: context.vRouter.historyForward),
             ),
         ],
       ),

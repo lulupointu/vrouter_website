@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/main.dart';
 
-class UrlHistoryDescription extends StatelessWidget {
+class HistoryDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SelectableText.rich(
@@ -34,13 +34,13 @@ class UsingItToNavigatePageSection extends StatelessWidget {
         MyDartCodeViewer(
           code: r'''
 // Navigate by delta
-context.vRouter.urlHistoryGo(delta);
+context.vRouter.historyGo(delta);
 
 // Navigate to the previous url history entry (delta = -1)
-context.vRouter.urlHistoryBack();
+context.vRouter.historyBack();
 
 // Navigate to the next url history entry (delta = +1)
-context.vRouter.urlHistoryForward();
+context.vRouter.historyForward();
           ''',
         ),
         SizedBox(height: 20),
@@ -55,13 +55,13 @@ Trying to navigate in the url history to an unavailable position throws an error
         MyDartCodeViewer(
           code: r'''
 // Check if you can navigate by delta
-context.vRouter.urlHistoryCanGo(delta);
+context.vRouter.historyCanGo(delta);
 
 // Check if you can navigate to the previous url history entry
-context.vRouter.urlHistoryCanBack();
+context.vRouter.historyCanBack();
 
 // Check if you can navigate to the next url history entry (delta = +1)
-context.vRouter.urlHistoryCanForward();
+context.vRouter.historyCanForward();
           ''',
         ),
       ],

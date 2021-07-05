@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter_website/main.dart';
 
-class UrlHistoryExampleDescription extends StatelessWidget {
+class HistoryExampleDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SelectableText.rich(
