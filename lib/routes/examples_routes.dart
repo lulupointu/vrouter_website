@@ -124,7 +124,7 @@ class ExampleRoute extends VRouteElementBuilder {
 
               // Url history
               VNester(
-                path: null,
+                path: 'history/',
                 widgetBuilder: (child) => history.MyScaffold(
                   child: child,
                   baseUrl: '/examples/history',

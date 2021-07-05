@@ -105,7 +105,7 @@ class BasicScreen extends StatelessWidget {
         centerTitle: true,
         leading: context.vRouter.historyCanBack()
             ? BackButton(onPressed: context.vRouter.historyBack)
-            : null,
+            : Container(),
         actions: [
           if (context.vRouter.historyCanForward())
             Transform.rotate(
