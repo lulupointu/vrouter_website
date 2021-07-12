@@ -14,8 +14,7 @@ import 'package:vrouter_website/pages/examples/executable/transitions_executable
     as transitions;
 import 'package:vrouter_website/pages/examples/executable/path_parameters_executable.dart'
     as path_parameters;
-import 'package:vrouter_website/pages/examples/executable/history_example.dart'
-    as history;
+import 'package:vrouter_website/pages/examples/executable/history_example.dart' as history;
 
 class ExampleRoute extends VRouteElementBuilder {
   @override
@@ -38,9 +37,13 @@ class ExampleRoute extends VRouteElementBuilder {
               ),
 
               // Stacking example
-              VWidget(path: 'stacked_routes/', widget: stacked_routes.HomeScreen()),
               VWidget(
-                  path: 'stacked_routes/settings', widget: stacked_routes.SettingsScreen()),
+                path: 'stacked_routes/',
+                widget: stacked_routes.HomeScreen(),
+                stackedRoutes: [
+                  VWidget(path: 'settings', widget: stacked_routes.SettingsScreen()),
+                ],
+              ),
               VRouteRedirector(
                 path: r'stacked_routes:_(.*)',
                 redirectTo: '/examples/stacked_routes/',
@@ -130,13 +133,16 @@ class ExampleRoute extends VRouteElementBuilder {
                     },
                     stackedRoutes: [
                       VWidget(
-                          path: '', widget: history.HomeScreen(title: 'Home', color: Colors.blueAccent)),
+                          path: '',
+                          widget: history.HomeScreen(title: 'Home', color: Colors.blueAccent)),
                       VWidget(
                           path: 'social',
-                          widget: history.BasicScreen(title: 'Social', color: Colors.greenAccent)),
+                          widget:
+                              history.BasicScreen(title: 'Social', color: Colors.greenAccent)),
                       VWidget(
                           path: 'settings',
-                          widget: history.BasicScreen(title: 'Settings', color: Colors.redAccent)),
+                          widget:
+                              history.BasicScreen(title: 'Settings', color: Colors.redAccent)),
                     ],
                   ),
                 ],
