@@ -24,7 +24,6 @@ import 'package:vrouter_website/pages/examples/transitions.dart';
 import 'left_navigation_bar.dart';
 import 'pages/advanced/custom_pages.dart';
 import 'pages/advanced/fetching_data.dart';
-import 'pages/advanced/history_state.dart';
 import 'pages/advanced/pop_events.dart';
 import 'pages/advanced/transitions.dart';
 import 'pages/advanced/history.dart';

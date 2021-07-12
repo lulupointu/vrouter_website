@@ -28,10 +28,12 @@ abstract class BaseWidget extends StatelessWidget {
 
   String get to;
 
+  bool get showBackButton => true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(title), leading: showBackButton ? null : Container()),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -58,6 +60,9 @@ class HomeScreen extends BaseWidget {
 
   @override
   String get to => '/examples/stacked_routes/settings';
+
+  @override
+  bool get showBackButton => false;
 }
 
 class SettingsScreen extends BaseWidget {

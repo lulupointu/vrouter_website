@@ -27,7 +27,6 @@ class ExamplesScreen extends StatelessWidget {
                   ExampleButton(underscoreName: 'redirection'),
                   ExampleButton(underscoreName: 'transitions'),
                   ExampleButton(underscoreName: 'history'),
-                  ExampleButton(underscoreName: 'history_state'),
                 ],
               ),
             ),

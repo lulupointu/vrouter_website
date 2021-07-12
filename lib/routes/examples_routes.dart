@@ -7,8 +7,6 @@ import 'package:vrouter_website/pages/examples/executable/basic_example_executab
     as basic_example;
 import 'package:vrouter_website/pages/examples/executable/stacked_routes.dart'
     as stacked_routes;
-// import 'package:vrouter_website/pages/examples/executable/history_state_executable.dart'
-//     as history_state;
 import 'package:vrouter_website/pages/examples/executable/nesting_executable.dart' as nesting;
 import 'package:vrouter_website/pages/examples/executable/redirection_executable.dart'
     as redirection;
@@ -47,14 +45,6 @@ class ExampleRoute extends VRouteElementBuilder {
                 path: r'stacked_routes:_(.*)',
                 redirectTo: '/examples/stacked_routes/',
               ),
-
-              // // History state
-              // VWidget(path: 'history_state/', widget: history_state.CounterScreen()),
-              // VWidget(path: 'history_state/other', widget: history_state.OtherScreen()),
-              // VRouteRedirector(
-              //   path: r'history_state:_(.*)',
-              //   redirectTo: '/examples/history_state/',
-              // ),
 
               // Nesting
               VNester(
