@@ -7,7 +7,7 @@ class RedirectionExampleDescription extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: '''
-You can use VRouter advances navigation control to protect some routes or use a dedicate VRouteElement (VRouteRedirector) to redirect from specific routes.''',
+In this example, VGuard protects the /home route from unauthenticated users by redirecting them to the /login route and VRouteRedirector redirects any routes not matching /login or /home to the /home route.''',
         style: textStyle,
       ),
     );
